@@ -1,0 +1,45 @@
+{
+    "description": "Structured collection of key data used for my analysis",
+    "buildings": [
+        {
+            "id": "shreevardhan_tower_mumbai",
+            "name": "Shreevardhan Tower",
+            "height_m": 84,
+            "storeys": 23,
+            "alternative_names": [],
+            "sources": [
+                "https://imaginoso.com/t/architecture/shree-vardhan-mumbai-india"
+            ]
+        },
+        {
+            "id": "baibro_international",
+            "name": "unknown",
+            "height_m": 30,
+            "storeys": 10,
+            "alternative_names": [],
+            "source": [
+                "https://osmbuildings.org/?lat=18.96690&lon=72.80425&zoom=20.0&tilt=1&rotation=87"
+            ]
+        }
+    ],
+    "characters": [
+        {
+            "id": "neil",
+            "name": "Robert Pattinson",
+            "weight_kg": 77,
+            "height_m": 1.85,
+            "source": [
+                "https://eternobody.com/blogs/celebrity-workouts/robert-pattinson-workout"
+            ]
+        },
+        {
+            "id": "protagonist",
+            "name": "John David Washington",
+            "weight_kg": 94,
+            "height_m": 1.75,
+            "source": [
+                "https://en.wikipedia.org/wiki/John_David_Washington"
+            ]
+        }
+    ]
+}

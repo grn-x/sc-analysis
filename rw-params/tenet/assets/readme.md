@@ -18,7 +18,10 @@ They are provided strictly for the purpose of analysis and commentary. They are 
 
 ---
 
-
+## [Tools used; Shree Vardhan Neighboring Buildings]
+- https://osmbuildings.org/
+- https://www.google.com/maps
+- https://earth.google.com/web/
 
 ---
 

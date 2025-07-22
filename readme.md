@@ -70,6 +70,11 @@
 ### Kennziffern
 [Attribute wichtiger Objekte](rw-params/tenet/datapoints_tenet.json)
 
+---
+
+---
+# Gegenwärtiger Bearbeitungsgegenstand
+
 ## Fast X Kausalkette 
 ![Fast X](sketches/fastX/fastX_dark_bg.excalidraw.png)
 ### Literaturquellen

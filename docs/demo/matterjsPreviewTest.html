@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fast X Physics Simulation - Parametric Analysis</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    canvas { border: 1px solid #444; display: block; margin: 20px 0; }
+    #controls { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px; 
+      max-width: 800px;
+    }
+    .param-group {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .param-group h3 { margin-top: 0; color: #333; }
+    label { display: block; margin: 5px 0; }
+    input[type="range"] { width: 100%; }
+    .value-display { font-weight: bold; color: #0066cc; }
+    .scene-buttons { 
+      grid-column: 1 / -1; 
+      display: flex; 
+      gap: 10px; 
+      justify-content: center;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #0052a3; }
+  </style>
+</head>
+<body>
+<h1>Fast X - Rome Scene Physics Simulation</h1>
+<p>Parametric analysis of Dom's car jump and crane collision sequence</p>
+
+<canvas id="world"></canvas>
+
+<div id="controls">
+  <!-- car params -->
+  <div class="param-group">
+    <h3>Car Parameters</h3>
+    <label>Mass (relative): <span class="value-display" id="carMassDisplay">1.5</span>
+      <input type="range" min="0.5" max="3" step="0.1" value="1.5" 
+             oninput="updateParam('carMass', this.value)">
+    </label>
+    <label>Speed: <span class="value-display" id="carSpeedDisplay">20</span>
+      <input type="range" min="5" max="40" step="1" value="20" 
+             oninput="updateParam('carSpeed', this.value)">
+    </label>
+    <label>
+      <input type="checkbox" id="usePhysicsRamp" onchange="updateParam('usePhysicsRamp', this.checked)">
+      Use Ramp Approach (vs instant jump)
+    </label>
+  </div>
+
+  <!-- ramp params -->
+  <div class="param-group">
+    <h3>Ramp Parameters</h3>
+    <label>Angle (degrees): <span class="value-display" id="rampAngleDisplay">30</span>
+      <input type="range" min="10" max="60" step="1" value="30" 
+             oninput="updateParam('rampAngle', this.value)">
+    </label>
+    <label>Length: <span class="value-display" id="rampLengthDisplay">200</span>
+      <input type="range" min="100" max="400" step="10" value="200" 
+             oninput="updateParam('rampLength', this.value)">
+    </label>
+  </div>
+
+  <!-- crane params -->
+  <div class="param-group">
+    <h3>Crane Parameters</h3>
+    <label>Boom Length: <span class="value-display" id="boomLengthDisplay">300</span>
+      <input type="range" min="200" max="500" step="10" value="300" 
+             oninput="updateParam('boomLength', this.value)">
+    </label>
+    <label>Counterweight Mass: <span class="value-display" id="counterweightMassDisplay">0.15</span>
+      <input type="range" min="0.05" max="0.3" step="0.01" value="0.15" 
+             oninput="updateParam('counterweightMass', this.value)">
+    </label>
+    <label>Crane Friction: <span class="value-display" id="craneFrictionDisplay">0.02</span>
+      <input type="range" min="0" max="0.9" step="0.005" value="0.02" 
+             oninput="updateParam('craneFriction', this.value)">
+    </label>
+  </div>
+
+  <!-- scene buttons -->
+  <div class="param-group scene-buttons">
+    <button onclick="sceneCarJump()">Scene 1: Car Jump</button>
+    <button onclick="sceneCrane()">Scene 2: Crane Impact</button>
+    <button onclick="clearWorld()">Clear</button>
+  </div>
+  
+  <!-- simulation controls -->
+  <div class="param-group">
+    <h3>Simulation Controls</h3>
+    <label>Simulation Speed: <span class="value-display" id="simSpeedDisplay">1.0</span>
+      <input type="range" min="0.1" max="2" step="0.1" value="1" 
+             oninput="updateSimSpeed(this.value)">
+    </label>
+  </div>
+</div>
+
+<script>
+// PARAMETERS
+const params = {
+    carMass: 1.5,            // density multiplier
+    carSpeed: 20,            // velocity units
+    usePhysicsRamp: false,   // flag for ramp-based vs instant jump
+    rampAngle: 30,           // degrees
+    rampLength: 200,         // matter.js units
+    boomLength: 300,         // matter.js units  
+    counterweightMass: 0.15, // density (now 10x car mass)
+    craneFriction: 0.02,     // angular damping for crane rotation
+};
+
+const { Engine, Render, Runner, Bodies, World, Body, Constraint } = Matter;
+
+const engine = Engine.create();
+const world = engine.world;
+
+const render = Render.create({
+  element: document.body,
+  canvas: document.getElementById('world'),
+  engine: engine,
+  options: { width: 800, height: 600, wireframes: false }
+});
+Render.run(render);
+
+const runner = Runner.create();
+Runner.run(runner, engine);
+
+let car, boom, counterweight;
+
+function updateParam(paramName, value) {
+    if (paramName === 'usePhysicsRamp') {
+        params[paramName] = value;
+        // no display update for checkbox
+    } else {
+        params[paramName] = parseFloat(value);
+        document.getElementById(paramName + 'Display').textContent = value;
+    }
+}
+
+function updateSimSpeed(value) {
+    engine.timing.timeScale = parseFloat(value);
+    document.getElementById('simSpeedDisplay').textContent = value;
+}
+
+function clearWorld() {
+  World.clear(world);
+  Engine.clear(engine);
+  car = boom = counterweight = null;
+}
+
+// scene car jump
+function sceneCarJump() {
+  clearWorld();
+  
+  // toggle gravity for side view xy plane (ramp scene)
+  engine.world.gravity.y = 1;
+  engine.world.gravity.x = 0;
+  
+
+  const ramp = Bodies.rectangle(200, 500, params.rampLength, 20, { 
+    isStatic: true, 
+    angle: -params.rampAngle * Math.PI/180 
+  });
+  
+  if (params.usePhysicsRamp) {
+    // car starts further left + accelerates onto ramp
+    car = Bodies.rectangle(50, 520, 60, 30, { 
+      density: 0.002 * params.carMass,
+      frictionAir: 0,  // no air resistance
+      friction: 0      // or surface friction todo mention
+    });
+    // constant horizontal force
+    Body.setVelocity(car, { x: params.carSpeed * 0.7, y: 0 });
+  } else {
+    // pseudo ramp maneuver with instant velocity
+    car = Bodies.rectangle(100, 480, 60, 30, { 
+      density: 0.002 * params.carMass 
+    });
+    Body.setVelocity(car, { x: params.carSpeed, y: -10 });
+  }
+  
+  World.add(world, [ramp, car]);
+}
+
+// scene crane impact; TOP-DOWN VIEW xz plane
+function sceneCrane() {
+  clearWorld();
+  
+  // disable gravity for top-down view
+  engine.world.gravity.y = 0;
+  engine.world.gravity.x = 0;
+  
+  const pivotX = 400;
+  const pivotY = 300;
+  
+  // crane boom with angular damping
+  boom = Bodies.rectangle(pivotX, pivotY, params.boomLength, 20, { 
+    density: 0.001,
+    frictionAir: params.craneFriction,  // angular damping to prevent infinite spinning; todo research pivot direct friction instead of air dampening workaround
+    angle: Math.PI / 2  // 90° rotation boom points vertically in top-down view
+  });
+  
+  const boomConstraint = Constraint.create({
+    pointA: { x: pivotX, y: pivotY },
+    bodyB: boom,
+    pointB: { x: 0, y: 0 },
+    stiffness: 1,
+    length: 0
+  });
+
+  // counterweight at rotated arm end; short side
+  const counterArmLength = 150; // fixed counter arm length
+  counterweight = Bodies.circle(pivotX, pivotY - counterArmLength, 30, {  
+    density: params.counterweightMass
+  });
+  
+  const counterConstraint = Constraint.create({
+    bodyA: boom,
+    pointA: { x: 0, y: -counterArmLength },  // 90° rotation
+    bodyB: counterweight,
+    pointB: { x: 0, y: 0 },
+    stiffness: 1,
+    length: 0
+  });
+
+  // calculate boom tip position; long side of boom
+  const boomTipLength = params.boomLength / 2; 
+  const boomTipX = pivotX;
+  const boomTipY = pivotY + boomTipLength; 
+  
+  // position car to hit boom tip tangentially
+  const carStartDistance = 200; // distance before impact
+  car = Bodies.rectangle(boomTipX - carStartDistance, boomTipY*0.9, 60, 30, {
+    density: 0.002 * params.carMass 
+  });
+  
+
+  Body.setVelocity(car, { x: params.carSpeed + 5, y: 0 });
+
+  World.add(world, [boom, boomConstraint, counterweight, counterConstraint, car]);
+}
+
+</script>
+</body>
+</html>

@@ -1,14 +1,28 @@
 <details>
-<summary>Erweitern für den aktuellen (22-07-25) Projektbaum</summary>
+<summary>Erweitern für den aktuellen (28-09-25) Projektbaum</summary>
 
 ```
 ./root
 ¦   .gitignore
+¦   readme.md
+¦   toc.md
 ¦   tree.txt
 ¦   
++---docs
+¦   ¦   index.html
+¦   ¦   README.md
+¦   ¦   script.js
+¦   ¦   styles.css
+¦   ¦   
+¦   +---demo
+¦           matterjsPreviewTest.html
+¦           plotlyPreviewTest.html
+¦           
 +---ignore
-¦       excluded_large_movie_files
-¦       
+¦   	excluded_large_movie_files
+¦   	past_sketches
+¦   	or_showcase_backups
+¦                   
 +---rw-params
 ¦   +---fastX
 ¦   ¦       exported_links_13-5-2025_15-42-34.html
@@ -41,25 +55,35 @@
 ¦       ¦   webp-to-png.py
 ¦       ¦   
 ¦       +---.idea
-¦       ¦      .gitignore
-¦       ¦             
-¦       +---.venv
-¦              .gitignore
-¦                              
+¦           ¦   .gitignore
+¦           ¦   misc.xml
+¦           ¦   modules.xml
+¦           ¦   pythonProject.iml
+¦           ¦   vcs.xml
+¦           ¦   
+¦           +---inspectionProfiles
+¦                   profiles_settings.xml
+¦                   
 +---sketches
     +---fastX
-    ¦       fastX_dark_bg.excalidraw.png
-    ¦       fastX_light_nobg.excalidraw.svg
-    ¦       
+    ¦   ¦   fastX_dark_bg.excalidraw.png
+    ¦   ¦   fastX_light_nobg.excalidraw.svg
+    ¦   ¦   sequences_1x_light_nobg.excalidraw.svg
+    ¦   ¦   sequences_3x_dark_bg.excalidraw.png
+    ¦   ¦   
+    ¦   +---sequence-descriptions
+    ¦           sequences2-geometry.excalidraw
+    ¦           
     +---tenet
             tenet_dark_bg.excalidraw.png
             tenet_light_nobg.excalidraw.svg
             
-
 ```
 </details>
 
 # Bisherige Skizzen:
+<details>
+<summary>Veraltet</summary>
 
 ## Tenet Ein- und Ausbruch
 ![Tenet](sketches/tenet/tenet_dark_bg.excalidraw.png)
@@ -69,13 +93,22 @@
 [Markdown Datei](rw-params/tenet/assets/readme.md)
 ### Kennziffern
 [Attribute wichtiger Objekte](rw-params/tenet/datapoints_tenet.json)
+</details>
 
 ---
 
 ---
 # Gegenwärtiger Bearbeitungsgegenstand
 
+## Fast X Saving Rome Sequenzübersicht
+![Fast X Sequences](sketches/fastX/sequences_3x_dark_bg.excalidraw.png)
+
+
 ## Fast X Kausalkette 
 ![Fast X](sketches/fastX/fastX_dark_bg.excalidraw.png)
+
+
+<!-- TODO insert geometry descriptions once finished -->
+
 ### Literaturquellen
-[Provisorische Liste einiger in der Recherche verwendeter Quellen](rw-params/fastX/exported_links_13-5-2025_15-42-34.html)
+[Provisorische Liste einiger in der Recherche verwendeter Quellen](rw-params/fastX/exported_links_13-5-2025_15-42-34.html) <!--TODO needs updating -->

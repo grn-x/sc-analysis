@@ -16,7 +16,7 @@ x_off = 10.0  # Pivot x-Position (alt)
 y_off = -5.0  # Pivot y-Position (alt)
 r = 5.0  # Armlänge (Kreisdradius)
 alpha_0 = math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
-omega = 1.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
+omega = 0.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
 v = 30  # Kugelgeschwindigkeit (m/s)
 T_offset = 0.2  # Zeitverzögerung: Kran startet nach T_offset Sekunden
 
@@ -66,7 +66,12 @@ print(f"Rotationswinkel des Systems: {np.degrees(rotation_angle):.2f}°")
 print(f"Kran-Startwinkel (neues System): α_start = {np.degrees(alpha_start):.2f}°")
 print()
 
-
+# Weitere Konfigurations-Flags
+#seperate_windows
+#num_freeze_frames
+#num_frames
+#VISUALIZE_ITERATIONS
+#SHOW_ITERATION_LABELS
 # ============================================================================
 # MATHEMATISCHE FUNKTIONEN (Neues System)
 # ============================================================================
@@ -676,8 +681,16 @@ print()
 # VISUALISIERUNG 2x2 Tabelle
 # ============================================================================
 
-fig, axes = plt.subplots(2, 2, figsize=(16, 14))
-ax1, ax2, ax3, ax4 = axes.flatten()
+separate_windows = True  # Set to True for separate plot windows
+
+if separate_windows:
+    fig1, ax1 = plt.subplots(figsize=(8, 7))
+    fig2, ax2 = plt.subplots(figsize=(8, 7))
+    fig3, ax3 = plt.subplots(figsize=(8, 7))
+    fig4, ax4 = plt.subplots(figsize=(8, 7))
+else:
+    fig, axes = plt.subplots(2, 2, figsize=(16, 14))
+    ax1, ax2, ax3, ax4 = axes.flatten()
 
 # ============================================================================
 # PLOT 1 FEHLERFUNKTION Δφ(T) (oben links)
@@ -691,6 +704,7 @@ delta_phi_values = np.array(delta_phi_values)
 
 delta_phi_deg = np.degrees(delta_phi_values)
 delta_phi_deg[np.isinf(delta_phi_deg)] = np.nan
+
 
 ax1.plot(T_range, delta_phi_deg, 'b-', linewidth=2, label='Δφ(T) = φ_kugel - φ_kran')
 ax1.axhline(0, color='gray', linestyle='--', linewidth=1, alpha=0.5)
@@ -904,9 +918,9 @@ y_max_orig = max(y_off + r + margin_orig, margin_orig, 0)
 ax4.set_xlim(x_min_orig, x_max_orig)
 ax4.set_ylim(y_min_orig, y_max_orig)
 
-plt.tight_layout()
+if not separate_windows:
+    plt.tight_layout()
 plt.show()
-
 # ============================================================================
 # ANIMATION
 # ============================================================================

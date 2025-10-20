@@ -18,7 +18,7 @@ r = 5.0  # Armlänge (Kreisdradius)
 alpha_0 = math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
 omega = 1.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
 v = 30  # Kugelgeschwindigkeit (m/s)
-T_offset = 0.5  # Zeitverzögerung: Kran startet nach T_offset Sekunden
+T_offset = 0.0  # Zeitverzögerung: Kran startet nach T_offset Sekunden
 
 # Preset-Zeit (s) und Steuerflag
 use_preset_time = False  # Wenn True, wird preset_T verwendet
@@ -109,6 +109,10 @@ def theta_from_T(T):
 
     Formel: θ(T) = arccos(-(u² + T²v² - r²) / (2*u*Tv))
     """
+    # guard clause; keine div durch null
+    if T == 0 or np.isclose(T, 0):
+        return np.nan
+
     # Argument für arccos
     arg = -(u ** 2 + (T * v) ** 2 - r ** 2) / (2 * u * T * v)
 
@@ -669,19 +673,22 @@ else:
 print()
 
 # ============================================================================
-# VISUALISIERUNG 1: FEHLERFUNKTION Δφ(T)
+# VISUALISIERUNG 2x2 Tabelle
 # ============================================================================
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+fig, axes = plt.subplots(2, 2, figsize=(16, 14))
+ax1, ax2, ax3, ax4 = axes.flatten()
 
-# Plot Differenzfunktion
+# ============================================================================
+# PLOT 1 FEHLERFUNKTION Δφ(T) (oben links)
+# ============================================================================
+
 T_lower = min(T_min, T_max)
 T_upper = max(T_min, T_max)
 T_range = np.linspace(T_lower, T_upper, 200)
 delta_phi_values = [delta_phi(t) for t in T_range]
 delta_phi_values = np.array(delta_phi_values)
 
-# Von Rad zu Deg konvertieren und für Darstellung auf Intervall clippen
 delta_phi_deg = np.degrees(delta_phi_values)
 delta_phi_deg[np.isinf(delta_phi_deg)] = np.nan
 
@@ -701,7 +708,7 @@ ax1.grid(True, alpha=0.3)
 ax1.legend()
 
 # ============================================================================
-# VISUALISIERUNG 2: GEOMETRIE + KOLLISION (Neues Koordinatensystem)
+# PLOT 2 GEOMETRIE + KOLLISION (Rotiertes System) (oben rechts)
 # ============================================================================
 
 # Kreissegment (1. Quadrant)
@@ -724,12 +731,9 @@ ax2.plot(u, 0, 'go', markersize=12, label=f'U (Kugel-Start, u={u:.1f})', zorder=
 
 # Kugelbahn zur optimalen Zeit
 if not np.isinf(min_error):
-    # Bahn von U zu P
     ball_traj_x = [u, x_opt]
     ball_traj_y = [0, y_opt]
     ax2.plot(ball_traj_x, ball_traj_y, 'g--', linewidth=2, alpha=0.7, label='Kugelbahn')
-
-    # Kugelposition
     ax2.plot(x_opt, y_opt, 'ro', markersize=12, label=f'Kugel (T={T_optimal:.3f}s)', zorder=10)
 
     # Kranarm zur optimalen Zeit
@@ -738,11 +742,9 @@ if not np.isinf(min_error):
     ax2.plot([0, arm_x_opt], [0, arm_y_opt], 'b-', linewidth=3, label='Kranarm')
     ax2.plot(arm_x_opt, arm_y_opt, 'bo', markersize=12, zorder=10)
 
-    # Abstand
     ax2.plot([x_opt, arm_x_opt], [y_opt, arm_y_opt],
              'r:', linewidth=2, label=f'Abstand: {np.degrees(min_error):.3f}°')
 
-# Achsen
 ax2.axhline(0, color='k', linewidth=0.5)
 ax2.axvline(0, color='k', linewidth=0.5)
 
@@ -753,14 +755,157 @@ ax2.axis('equal')
 ax2.grid(True, alpha=0.3)
 ax2.legend(loc='best', fontsize=9)
 
-# Grenzen anpassen
 margin = 5
 ax2.set_xlim(u - margin, r + margin)
 ax2.set_ylim(-margin, r + margin)
 
+# ============================================================================
+# PLOT 3 WINKELFUNKTIONEN (unten links)
+# ============================================================================
+
+# Zeitbereich 0 bis T_max + Buffer
+T_plot_start = 0.0
+T_plot_end = max(T_min, T_max) * 1.1
+T_func_range = np.linspace(T_plot_start, T_plot_end, 300)
+
+"""# phi_kugel(T) nur im gültigen Bereich
+phi_kugel_values = np.array([phi_kugel(t) for t in T_func_range])
+phi_kugel_values[np.isnan(phi_kugel_values)] = np.nan
+"""
+
+# phi_kugel(T) über gesamten Zeitbereich
+phi_kugel_values = np.array([phi_kugel(t) for t in T_func_range])
+
+
+# phi_kran(T) über gesamten Zeitbereich
+phi_kran_values = np.array([phi_kran(t) for t in T_func_range])
+
+# theta(T) Abschusswinkel der Kugel
+theta_from_T_values = np.array([theta_from_T(t) for t in T_func_range])
+theta_from_T_values[np.isnan(theta_from_T_values)] = np.nan
+
+# Winkelfunktionen
+ax3.plot(T_func_range, np.degrees(phi_kugel_values), 'orange',
+         linewidth=2.5, label='φ_kugel(T) - Position auf Kreissegment', alpha=0.85)
+ax3.plot(T_func_range, np.degrees(phi_kran_values), 'blue',
+         linewidth=2.5, label='φ_kran(T) - Kranarm-Position', alpha=0.85)
+ax3.plot(T_func_range, np.degrees(theta_from_T_values), 'green',
+         linewidth=2, label='θ(T) - Abschusswinkel der Kugel', alpha=0.7)#, linestyle='--')
+
+# Markiere Kreissegment-Grenzen (0° - 90°)
+ax3.axhline(0, color='black', linestyle=':', linewidth=1.5, alpha=1)
+ax3.axhline(90, color='black', linestyle=':', linewidth=1.5, alpha=1,
+            label='Kreissegment-Grenzen (0°-90°)')
+
+# Zeitmarker T_min
+ax3.axvline(T_min, color='gray', linestyle='--', linewidth=1.5,
+            alpha=0.5, label=f'T_min = {T_min:.3f}s')
+
+# Zeitmarker T_max
+ax3.axvline(T_max, color='gray', linestyle='--', linewidth=1.5,
+            alpha=0.5, label=f'T_max = {T_max:.3f}s')
+
+# Zeitmarker T_offset für Kran, nur wenn > 0 (=aktiv)
+if T_offset > 0:
+    ax3.axvline(T_offset, color='blue', linestyle='--', linewidth=1.5,
+                alpha=0.6, label=f'T_offset = {T_offset:.3f}s (Kran startet)')
+
+# Zeitmarker T_optimal ^= Kollision
+if T_optimal is not None and not np.isinf(min_error):
+    ax3.axvline(T_optimal, color='red', linestyle='--', linewidth=2,
+                alpha=0.7, label=f'T_optimal = {T_optimal:.3f}s (Kollision)')
+    ax3.scatter([T_optimal], [np.degrees(phi_k_opt)], color='red', s=100,
+                zorder=5, marker='o', edgecolors='darkred', linewidths=2)
+    ax3.scatter([T_optimal], [np.degrees(phi_kr_opt)], color='red', s=100,
+                zorder=5, marker='o', edgecolors='darkred', linewidths=2)
+
+ax3.set_xlabel('Zeit T [s]', fontsize=12)
+ax3.set_ylabel('Winkel [°]', fontsize=12)
+ax3.set_title('Winkelfunktionen über Zeit', fontsize=13, fontweight='bold')
+ax3.grid(True, alpha=0.3)
+ax3.legend(loc='best', fontsize=8)
+ax3.set_xlim(T_plot_start, T_plot_end)
+ax3.set_ylim(-10, 100)  # Fokus auf 0°-90° Bereich mit Buffer
+
+# ============================================================================
+# PLOT 4 ORIGINAL-KOORDINATENSYSTEM (unten rechts)
+# ============================================================================
+
+# Rotation um -abs(rotation_angle) Rückübertragung auf originale Ausrichtung
+def rotate_back(x, y):
+    """Rotiere Punkt (x,y) vom gedrehten System zurück ins Original"""
+    abs_angle = abs(rotation_angle)
+    cos_r = np.cos(-abs_angle)
+    sin_r = np.sin(-abs_angle)
+    x_rot = x * cos_r - y * sin_r
+    y_rot = x * sin_r + y * cos_r
+    # Zum ursprünglichen Offset zurückverschieben
+    x_orig = x_rot + x_off
+    y_orig = y_rot + y_off
+    return x_orig, y_orig
+
+
+# Kreissegment zurück rotieren
+segment_x_orig, segment_y_orig = rotate_back(segment_x, segment_y)
+circle_x_orig, circle_y_orig = rotate_back(circle_x, circle_y)
+
+ax4.plot(segment_x_orig, segment_y_orig, 'orange', linewidth=4, alpha=0.6,
+         label='Kreissegment')
+ax4.plot(circle_x_orig, circle_y_orig, 'gray', linewidth=1, alpha=0.3, linestyle='--')
+
+# Drehpunkt
+ax4.plot(x_off, y_off, 'ko', markersize=12, label=f'Pivot ({x_off:.1f}, {y_off:.1f})', zorder=10)
+
+# Kugel-Start (0, 0) im ursprünglichen-System
+ax4.plot(0, 0, 'go', markersize=12, label='Kugel-Start (0, 0)', zorder=10)
+
+# Achsenlinien zu x_off und y_off
+ax4.axhline(y_off, color='k', linewidth=0.5, linestyle=':', alpha=0.5)
+ax4.axvline(x_off, color='k', linewidth=0.5, linestyle=':', alpha=0.5)
+ax4.axhline(0, color='k', linewidth=0.5)
+ax4.axvline(0, color='k', linewidth=0.5)
+
+# Verbindungslinie Kugel -> Pivot
+ax4.plot([0, x_off], [0, y_off], 'gray', linewidth=2, linestyle='--',
+         alpha=0.4, label=f'Distanz: {abs(u):.2f}m')
+
+# Kollisionspunkt und Kranarm zurück rotieren
+if not np.isinf(min_error):
+    # Kugelbahn
+    ball_x_orig, ball_y_orig = rotate_back(x_opt, y_opt)
+    ax4.plot([0, ball_x_orig], [0, ball_y_orig], 'g--', linewidth=2,
+             alpha=0.7, label='Kugelbahn')
+    ax4.plot(ball_x_orig, ball_y_orig, 'ro', markersize=12,
+             label=f'Kollision (T={T_optimal:.3f}s)', zorder=10)
+
+    # Kranarm
+    arm_x_orig, arm_y_orig = rotate_back(arm_x_opt, arm_y_opt)
+    ax4.plot([x_off, arm_x_orig], [y_off, arm_y_orig], 'b-', linewidth=3, label='Kranarm')
+    ax4.plot(arm_x_orig, arm_y_orig, 'bo', markersize=12, zorder=10)
+
+    # Abstandslinie
+    ax4.plot([ball_x_orig, arm_x_orig], [ball_y_orig, arm_y_orig],
+             'r:', linewidth=2, alpha=0.6)
+
+ax4.set_xlabel('x [m]', fontsize=12)
+ax4.set_ylabel('y [m]', fontsize=12)
+ax4.set_title('Original-Koordinatensystem', fontsize=13, fontweight='bold')
+ax4.axis('equal')
+ax4.grid(True, alpha=0.3)
+ax4.legend(loc='best', fontsize=9)
+
+# Grenzen anpassen
+margin_orig = 6
+x_min_orig = min(-margin_orig, x_off - r - margin_orig, 0)
+x_max_orig = max(x_off + r + margin_orig, margin_orig)
+y_min_orig = min(y_off - r - margin_orig, -margin_orig, 0)
+y_max_orig = max(y_off + r + margin_orig, margin_orig, 0)
+
+ax4.set_xlim(x_min_orig, x_max_orig)
+ax4.set_ylim(y_min_orig, y_max_orig)
+
 plt.tight_layout()
-#plt.savefig('kollision_analyse.png', dpi=150, bbox_inches='tight')
-#print("Visualisierung gespeichert: kollision_analyse_neu.png")
+plt.show()
 
 # ============================================================================
 # ANIMATION
@@ -802,7 +947,7 @@ time_text = ax_anim.text(0.02, 0.98, '', transform=ax_anim.transAxes,
 
 ax_anim.legend(loc='upper right')
 
-# Animation Data - Zeitarray mit Freeze erstellen
+# Zeitarray mit Freeze-Frames erstellen
 if T_optimal is not None and not np.isinf(min_error):
     t_anim_end = max(T_optimal * 1.3, T_offset + 0.5)
 else:
@@ -824,7 +969,7 @@ frames_before = int(num_frames * duration_before / total_duration)
 frames_after = num_frames - frames_before
 
 times_before = np.linspace(0, T_optimal, frames_before)
-times_freeze = np.full(num_freeze_frames, T_optimal)  # Wiederhole T_optimal
+times_freeze = np.full(num_freeze_frames, T_optimal)  # T_optimal wiederholen ^= Animation pausieren
 times_after = np.linspace(T_optimal, t_anim_end, frames_after)
 times = np.concatenate([times_before, times_freeze, times_after])
 
@@ -897,3 +1042,4 @@ anim = FuncAnimation(fig_anim, animate, init_func=init,
 
 plt.tight_layout()
 plt.show()
+

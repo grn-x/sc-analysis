@@ -1043,3 +1043,294 @@ anim = FuncAnimation(fig_anim, animate, init_func=init,
 plt.tight_layout()
 plt.show()
 
+
+# ============================================================================
+# VISUALISIERUNG DER ITERATIONSVERFAHREN (TODO: Implement)
+# ============================================================================
+
+def newton_raphson_visualized(func, dfunc, T_initial, T_min_bound, T_max_bound,
+                              ax, tol=1e-3, max_iter=20, show_labels=False):
+    """
+    Newton-Raphson mit visueller Darstellung der Iterationsschritte
+
+        Tangenten an jedem Iterationspunkt
+        Vertikale Linien von Nullstelle Tangente zur Funktion
+                mit entsprechendem nächsten Ausgangspunkt
+    """
+    T_current = T_initial
+    iteration_data = []  # Iterationsschritte eintragen
+
+    for iteration in range(max_iter):
+        function_value = func(T_current)
+
+        # Iterationsschritt anhängen
+        iteration_data.append({
+            'T': T_current,
+            'f_T': function_value,
+            'iteration': iteration
+        })
+
+        # ABBRUCH 1: Nullstelle gefunden
+        if abs(function_value) < tol:
+            # Visualisiere alle gesammelten Schritte
+            visualize_newton_steps(ax, func, dfunc, iteration_data, T_min_bound, T_max_bound, show_labels)
+            return T_current, iteration + 1
+
+        derivative_value = dfunc(T_current)
+
+        # ABBRUCH 2: Horizontale Tangente
+        if abs(derivative_value) < 1e-10:
+            visualize_newton_steps(ax, func, dfunc, iteration_data, T_min_bound, T_max_bound, show_labels)
+            return None, iteration + 1
+
+        # Newton-Schritt
+        T_next = T_current - function_value / derivative_value
+
+        # ABBRUCH 3: Außerhalb Bereich
+        if T_next < T_min_bound or T_next > T_max_bound:
+            visualize_newton_steps(ax, func, dfunc, iteration_data, T_min_bound, T_max_bound, show_labels)
+            return None, iteration + 1
+
+        T_current = T_next
+
+    # ABBRUCH 4: Max Iterationen
+    visualize_newton_steps(ax, func, dfunc, iteration_data, T_min_bound, T_max_bound, show_labels)
+    return None, max_iter
+
+
+def visualize_newton_steps(ax, func, dfunc, iteration_data, T_min, T_max, show_labels):
+    """Zeichnet die Newton-Raphson Iterationsschritte"""
+    # Durch 5 unterschiedliche Farben für Tangenten und Punkte cyclen
+    color_palette = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00']  # Rot, Blau, Grün, Lila, Orange
+    colors = [color_palette[i % len(color_palette)] for i in range(len(iteration_data))]
+
+    for i, step in enumerate(iteration_data):
+        T_curr = step['T']
+        f_curr = step['f_T']
+        df_curr = dfunc(T_curr)
+
+        # Punkt auf Funktion
+        ax.scatter([T_curr], [np.degrees(f_curr)], color=colors[i], s=80,
+                   zorder=100, edgecolors='black', linewidths=1.5,
+                   label=f'Iteration {i}' if show_labels else '')
+
+        # Tangente zeichnen; Steigung = df_curr
+        # y - f_curr = df_curr * (x - T_curr)
+        # y = df_curr * (x - T_curr) + f_curr
+        T_range = np.linspace(T_min, T_max, 100)
+        tangent = df_curr * (T_range - T_curr) + f_curr
+        ax.plot(T_range, np.degrees(tangent), color=colors[i],
+                linewidth=1.5, alpha=1, linestyle='-', zorder=50)
+
+        # Nullstelle Tangente
+        if abs(df_curr) > 1e-10:
+            T_zero = T_curr - f_curr / df_curr
+            if T_min <= T_zero <= T_max:
+                # Vertikale Linie von Nullstelle zur x-Achse
+                ax.plot([T_zero, T_zero], [0, 0], 'o', color=colors[i],
+                        markersize=6, alpha=0.6, zorder=90)
+                # Vertikale Linie zur Funktion für nächste Iteration
+                if i < len(iteration_data) - 1:
+                    ax.plot([T_zero, T_zero], [0, np.degrees(func(T_zero))],
+                            color=colors[i], linewidth=1, alpha=0.4,
+                            linestyle=':', zorder=80)
+
+
+def bisection_visualized(func, T_left_start, T_right_start, ax,
+                         tol=1e-3, max_iter=50, show_labels=False):
+    """
+    Bisection mit visueller Darstellung der Intervallhalbierungen
+
+
+    Grüne transparente Bereiche für aktuelle Intervalle
+    Horizontale Linien an Intervallgrenzen
+    Schnittpunkte von Intervallgrenzen und Funktion mit Vorzeichen
+    """
+    T_left = T_left_start
+    T_right = T_right_start
+
+    f_left = func(T_left)
+    f_right = func(T_right)
+
+    iteration_data = []  # Intervalle speichern
+
+    # VORBEDINGUNG: Vorzeichenwechsel
+    if f_left * f_right > 0:
+        return None, 0
+
+    for iteration in range(max_iter):
+        T_mid = (T_left + T_right) / 2
+        f_mid = func(T_mid)
+
+        # Intervalldaten für Visualisierung
+        iteration_data.append({
+            'T_left': T_left,
+            'T_right': T_right,
+            'T_mid': T_mid,
+            'f_left': f_left,
+            'f_right': f_right,
+            'f_mid': f_mid,
+            'iteration': iteration
+        })
+
+        # ABBRUCH 1: Nullstelle gefunden
+        if abs(f_mid) < tol:
+            visualize_bisection_steps(ax, iteration_data, show_labels)
+            return T_mid, iteration + 1
+
+        # ABBRUCH 2: Intervall klein genug
+        if (T_right - T_left) / 2 < tol:
+            visualize_bisection_steps(ax, iteration_data, show_labels)
+            return T_mid, iteration + 1
+
+        # Intervall halbieren
+        if f_left * f_mid < 0:
+            T_right = T_mid
+            f_right = f_mid
+        else:
+            T_left = T_mid
+            f_left = f_mid
+
+    # ABBRUCH 3: Max Iterationen
+    visualize_bisection_steps(ax, iteration_data, show_labels)
+    return (T_left + T_right) / 2, max_iter
+
+
+def visualize_bisection_steps(ax, iteration_data, show_labels):
+    """Zeichnet die Bisection Iterationsschritte"""
+    colors = plt.cm.viridis(np.linspace(0.2, 0.9, len(iteration_data)))
+
+    # y-Limits für horizontale Linien
+    y_min, y_max = ax.get_ylim()
+    line_length = (y_max - y_min) * 0.05  # 5% der Höhe
+
+    for i, step in enumerate(iteration_data):
+        T_left = step['T_left']
+        T_right = step['T_right']
+        T_mid = step['T_mid']
+        f_left = step['f_left']
+        f_right = step['f_right']
+        f_mid = step['f_mid']
+
+        # aktuelles Intervall grün schattieren
+        ax.axvspan(T_left, T_right, color='green', alpha=0.05, zorder=10)
+
+        # Horizontale Linien an Intervallgrenzen
+        y_pos = y_max - (i + 1) * line_length * 1.2
+        ax.plot([T_left, T_right], [y_pos, y_pos],
+                color=colors[i], linewidth=2, alpha=0.6, zorder=120,
+                label=f'Intervall {i}' if show_labels else '')
+
+        # Intervallgrenzen / Punkte mit Vorzeichen
+        # Links
+        sign_left = '+' if f_left > 0 else '-'
+        ax.scatter([T_left], [np.degrees(f_left)], color=colors[i],
+                   s=100, marker='o', zorder=130, edgecolors='black', linewidths=1.5)
+        ax.text(T_left, np.degrees(f_left) + 2, sign_left,
+                fontsize=10, ha='center', va='bottom', fontweight='bold',
+                color=colors[i], zorder=140)
+
+        # Rechts
+        sign_right = '+' if f_right > 0 else '-'
+        ax.scatter([T_right], [np.degrees(f_right)], color=colors[i],
+                   s=100, marker='o', zorder=130, edgecolors='black', linewidths=1.5)
+        ax.text(T_right, np.degrees(f_right) + 2, sign_right,
+                fontsize=10, ha='center', va='bottom', fontweight='bold',
+                color=colors[i], zorder=140)
+
+        # Mittelpunkt
+        ax.scatter([T_mid], [np.degrees(f_mid)], color=colors[i],
+                   s=80, marker='x', zorder=130, linewidths=2)
+
+
+# ============================================================================
+# VISUALISIERUNG ITERATIONSVERFAHREN
+# ============================================================================
+
+# Control Flags
+SHOW_ITERATION_LABELS = True  # True für Labels
+VISUALIZE_ITERATIONS = True  # False für Plot ohne Iteration
+
+# Neuer Plot mit Visualisierung
+fig_iter, ax_iter = plt.subplots(figsize=(14, 8))
+
+# Plot Differenzfunktion
+T_lower = min(T_min, T_max)
+T_upper = max(T_min, T_max)
+T_range = np.linspace(T_lower, T_upper, 200)
+delta_phi_values = [delta_phi(t) for t in T_range]
+delta_phi_values = np.array(delta_phi_values)
+
+delta_phi_deg = np.degrees(delta_phi_values)
+delta_phi_deg[np.isinf(delta_phi_deg)] = np.nan
+
+ax_iter.plot(T_range, delta_phi_deg, 'b-', linewidth=3,
+             label='Δφ(T) = φ_kugel - φ_kran', zorder=200)
+ax_iter.axhline(0, color='gray', linestyle='--', linewidth=1.5, alpha=0.5, zorder=5)
+
+# Zeitmarker T_min
+ax_iter.axvline(T_min, color='gray', linestyle='--', linewidth=1.5,
+            alpha=0.5, label=f'T_min = {T_min:.3f}s')
+
+# Zeitmarker T_max
+ax_iter.axvline(T_max, color='gray', linestyle='--', linewidth=1.5,
+            alpha=0.5, label=f'T_max = {T_max:.3f}s')
+
+# Visualisierungsmethoden
+if VISUALIZE_ITERATIONS and collision_possible:
+    T0 = (T_lower + T_upper) / 2
+
+    # Newton-Raphson mit Visualisierung
+    T_opt_vis, iters_vis = newton_raphson_visualized(
+        delta_phi, delta_phi_derivative, T0, T_lower, T_upper,
+        ax_iter, tol=1e-6, show_labels=SHOW_ITERATION_LABELS
+    )
+
+    if T_opt_vis is not None:
+        method_vis = "Newton-Raphson (visualisiert)"
+        # Lösung Vertikale
+        ax_iter.axvline(T_opt_vis, color='red', linestyle='--', linewidth=2.5,
+                        alpha=0.8, zorder=250, label='Lösung (vertikal)')
+        ax_iter.scatter([T_opt_vis], [np.degrees(delta_phi(T_opt_vis))],
+                        color='red', s=200, marker='*', zorder=300,
+                        edgecolors='darkred', linewidths=2, label='Lösung')
+    else:
+        # Fallback Bisection
+        T_samples = np.linspace(T_lower, T_upper, 100)
+        delta_phi_samples = [delta_phi(t) for t in T_samples]
+
+        T_a, T_b = None, None
+        for i in range(len(delta_phi_samples) - 1):
+            if not np.isinf(delta_phi_samples[i]) and not np.isinf(delta_phi_samples[i + 1]):
+                if delta_phi_samples[i] * delta_phi_samples[i + 1] < 0:
+                    T_a = T_samples[i]
+                    T_b = T_samples[i + 1]
+                    break
+
+        if T_a is not None:
+            T_opt_vis, iters_vis = bisection_visualized(
+                delta_phi, T_a, T_b, ax_iter, tol=1e-6,
+                show_labels=SHOW_ITERATION_LABELS
+            )
+            method_vis = "Bisection (visualisiert)"
+            if T_opt_vis is not None:
+                ax_iter.axvline(T_opt_vis, color='red', linestyle='--', linewidth=2.5,
+                                alpha=0.8, zorder=250, label='Lösung (vertikal)')
+                ax_iter.scatter([T_opt_vis], [np.degrees(delta_phi(T_opt_vis))],
+                                color='red', s=200, marker='*', zorder=300,
+                                edgecolors='darkred', linewidths=2, label='Lösung')
+
+
+
+ax_iter.set_xlabel('Zeit T [s]', fontsize=13)
+ax_iter.set_ylabel('Winkeldifferenz Δφ [°]', fontsize=13)
+ax_iter.set_title(f'Iteratives Lösungsverfahren: {method_vis if VISUALIZE_ITERATIONS else method_used}',
+                  fontsize=14, fontweight='bold')
+ax_iter.grid(True, alpha=0.3, zorder=1)
+if SHOW_ITERATION_LABELS:
+    ax_iter.legend(loc='best', fontsize=8, ncol=2)
+else:
+    ax_iter.legend(loc='best', fontsize=10)
+
+plt.tight_layout()
+plt.show()

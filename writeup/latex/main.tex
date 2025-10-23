@@ -1,0 +1,25 @@
+\documentclass[12pt,a4paper]{article}
+
+\input{header} % Formatierungsheader
+
+\begin{document}
+	
+	% ----- Titelseite -----
+	\input{chapters/titlepage}
+	
+	% ----- Inhaltsverzeichnis -----
+	\pagenumbering{Roman} % todo: römische ziffern davor
+	\tableofcontents
+	\newpage
+	
+	% ----- Hauptteil -----
+	\pagenumbering{arabic} % arabische seitenzahlen
+	\setcounter{page}{3}   % anpassen
+	
+	\input{chapters/intro}
+	
+	
+	
+	\input{chapters/bibliography}
+	
+\end{document}

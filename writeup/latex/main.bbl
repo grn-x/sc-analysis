@@ -1,0 +1,104 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global/global}
+    \entry{Brogliato2016}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d35ac9cd62f159fe057f5152ba981cc}{%
+           family={Brogliato},
+           familyi={B\bibinitperiod},
+           given={Bernard},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham, Switzerland}%
+      }
+      \list{publisher}{1}{%
+        {Springer Cham}%
+      }
+      \strng{namehash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{fullhash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{fullhashraw}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{bibnamehash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{authorbibnamehash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{authornamehash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{authorfullhash}{4d35ac9cd62f159fe057f5152ba981cc}
+      \strng{authorfullhashraw}{4d35ac9cd62f159fe057f5152ba981cc}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3}
+      \field{isbn}{978-3-319-28662-4}
+      \field{note}{107 illustrations in colour. Originally published in 1996 as volume 220 in Lecture Notes in Control and Information Sciences.}
+      \field{series}{Communications and Control Engineering}
+      \field{title}{Nonsmooth Mechanics: Models, Dynamics and Control}
+      \field{year}{2016}
+      \field{pages}{XXI + 628}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1007/978-3-319-28664-8
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-319-28664-8
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-319-28664-8
+      \endverb
+    \endentry
+    \entry{jacquelin2009rigid}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=cf66d32f51959ec667ef57f8729ec382}{%
+           family={Jacquelin},
+           familyi={J\bibinitperiod},
+           given={E},
+           giveni={E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{fullhash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{fullhashraw}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{bibnamehash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{authorbibnamehash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{authornamehash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{authorfullhash}{cf66d32f51959ec667ef57f8729ec382}
+      \strng{authorfullhashraw}{cf66d32f51959ec667ef57f8729ec382}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International journal of impact engineering}
+      \field{number}{8}
+      \field{title}{On the rigid projectile model for low velocity impacts}
+      \field{volume}{36}
+      \field{year}{2009}
+      \field{pages}{1006\bibrangedash 1011}
+      \range{pages}{6}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

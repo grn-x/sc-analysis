@@ -1,0 +1,1 @@
+ffmpeg -ss 23 -t 3 -i "..\..\rw-params\fastX\FastX-compressed-inRoma.mp4" -q:v 2 "frames/frame_%04d.png"

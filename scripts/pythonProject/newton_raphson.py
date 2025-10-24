@@ -18,7 +18,7 @@ r = 5.0  # Armlänge (Kreisdradius)
 alpha_0 = math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
 omega = 1.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
 v = 30  # Kugelgeschwindigkeit (m/s)
-T_offset = 0.0  # Zeitverzögerung: Kran startet nach T_offset Sekunden
+T_offset = 0.2  # Zeitverzögerung: Kran startet nach T_offset Sekunden
 
 # Preset-Zeit (s) und Steuerflag
 use_preset_time = False  # Wenn True, wird preset_T verwendet

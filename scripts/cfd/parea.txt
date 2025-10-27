@@ -1,0 +1,57 @@
+closed:
+
+
+PS ~\sc-Analysis\scripts\pythonProject\ignore\pareatests> ~\appdata\roaming\python\python311\scripts\parea.exe -stl carClosedCfd.stl -x
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "~\appdata\roaming\python\python311\scripts\parea.exe\__main__.py", line 7, in <module>
+  File "~\AppData\Roaming\Python\Python311\site-packages\parea\main.py", line 242, in main
+    p_area = _calculate_projected_area(args.stl_paths, args.pvec, args.fheight)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~\AppData\Roaming\Python\Python311\site-packages\parea\main.py", line 188, in _calculate_projected_area
+    triangles = _load_stl(stl_file, pvec)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~\AppData\Roaming\Python\Python311\site-packages\parea\main.py", line 158, in _load_stl
+    assert is_binary == False, 'currently supports ascii stls only..'
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: currently supports ascii stls only..
+PS ~\sc-Analysis\scripts\pythonProject\ignore\pareatests> ~\appdata\roaming\python\python311\scripts\parea.exe -stl carClosedCfdAscii.stl -x
+> projected area: 12.463548879480202
+PS ~\sc-Analysis\scripts\pythonProject\ignore\pareatests> ~\appdata\roaming\python\python311\scripts\parea.exe -stl carClosedCfdAscii.stl -y
+> projected area: 24.045975205647792
+PS ~\sc-Analysis\scripts\pythonProject\ignore\pareatests> ~\appdata\roaming\python\python311\scripts\parea.exe -stl carClosedCfdAscii.stl -z
+> projected area: 37.61339247758232
+
+200%scaled :/
+
+25.9 sq.ft => 2,41m2
+
+
+
+opened:
+
+
+~\sc-Analysis\scripts\pythonProject\ignore\pareatests>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 6ADB-442E
+
+ Directory of ~\sc-Analysis\scripts\pythonProject\ignore\pareatests
+
+27.10.2025  21:41    <DIR>          .
+27.10.2025  16:13    <DIR>          ..
+27.10.2025  14:56        17.150.584 carClosedCfd.stl
+27.10.2025  16:33        67.706.800 carClosedCfdAscii.stl
+27.10.2025  21:41        39.845.179 carOpenedCfdAscii.stl
+27.10.2025  16:13             2.194 cube_ascii.stl
+               4 File(s)    124.704.757 bytes
+               2 Dir(s)  303.755.878.400 bytes free
+
+~\sc-Analysis\scripts\pythonProject\ignore\pareatests>~\appdata\roaming\python\python311\scripts\parea.exe -stl carOpenedCfdAscii.stl -x
+> projected area: 5.05642135725926
+
+~\sc-Analysis\scripts\pythonProject\ignore\pareatests>~\appdata\roaming\python\python311\scripts\parea.exe -stl carOpenedCfdAscii.stl -y
+> projected area: 5.461604900103725
+
+~\sc-Analysis\scripts\pythonProject\ignore\pareatests>~\appdata\roaming\python\python311\scripts\parea.exe -stl carOpenedCfdAscii.stl -z
+> projected area: 10.493248390352383

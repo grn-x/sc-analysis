@@ -6,3 +6,5 @@ scripts/ps/frames/**
 !scripts/cfd/openFoamCase/carClosedCfd/.gitignore
 !scripts/cfd/base_model/smoothened/bloat/.gitignore
 !scripts/cfd/base_model/refined/bloat/.gitignore
+
+!scripts/cfd/base_model/_renders/bloat/.gitignore

@@ -17,9 +17,50 @@
 	\setcounter{page}{3}   % anpassen
 	
 	\input{chapters/intro}
-	
+	\input{chapters/intro_scenes}
+	\input{chapters/2_ramp_angle}
 	
 	
 	\input{chapters/bibliography}
 	
 \end{document}
+
+
+\iffalse
+%https://latex-tutorial.com/tutorials/figures/
+%\centerline{\includegraphics[scale=0.125]{resources/seq2/00_xy-angle_dom-pov.png}}
+% here; top; bottom; page; !
+\begin{figure}[h]
+	\includegraphics[width=.2\textwidth, right]{resources/seq2/00_xy-angle_dom-pov.png}
+	\caption{This is an image from a text that uses color to teach music.}
+	\label{fig}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{adjustbox}{valign=t}
+		\includegraphics[width=.25\textwidth]{resources/seq2/00_xy-angle_dom-pov.png}
+		\scriptsize\textcopyright\ 2025 Your Name
+	\end{adjustbox}
+	\captionsetup{font=footnotesize}
+	\caption{This is an image from a text that uses color to teach music.}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	% Minipage allows stacking image + copyright
+	\begin{minipage}{0.25\textwidth}
+		\includegraphics[width=2\linewidth]{resources/seq2/00_xy-angle_dom-pov.png}
+		\vspace{1mm} % optional spacing
+		{\scriptsize\textcopyright\ 2025 Your Name}
+	\end{minipage}
+	
+	% Main caption under the figure
+	\captionsetup{font=small}
+	\caption{This is an image from a text that uses color to teach music.}
+	\label{fig:color-musics}
+\end{figure}
+
+\fi

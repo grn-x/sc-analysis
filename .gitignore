@@ -1,5 +1,9 @@
 ignore/**
 scripts/ps/frames/**
+writeup/latex/main.pdf
+writeup/latex/main.synctex.gz
+writeup/latex/texput.log
+
 
 # other ignore-files here:
 !scripts/cfd/openFoamCase/carOpenedCfd/.gitignore
@@ -8,3 +12,6 @@ scripts/ps/frames/**
 !scripts/cfd/base_model/refined/bloat/.gitignore
 
 !scripts/cfd/base_model/_renders/bloat/.gitignore
+
+!writeup/latex/build/.gitignore
+!writeup/latex/resources/z_candidates/.gitignore

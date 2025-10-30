@@ -4,14 +4,31 @@
 \usepackage{setspace}			
 \usepackage[a4paper,left=3cm,right=2.5cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{placeins}  % \FloatBarrier  % lokal wrapping verhindern
+
 \usepackage[export]{adjustbox}
 \usepackage{caption}
 \usepackage[font=small,labelfont=bf]{caption}
 
+
 \usepackage{float}
 \usepackage{amsmath, amssymb}	% mathe
 \usepackage{csquotes}			% Zitieren
-\usepackage{hyperref}			
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	citecolor=black,
+	urlcolor=blue
+}
+%"\hyperref[fig:intro-sequences]{Abbildung~\ref*{fig:intro-sequences}}"
+
+\usepackage{cleveref}         % automatische referenzen 
+\crefname{figure}{Abbildung}{Abbildungen}
+\Crefname{figure}{Abbildung}{Abbildungen}
+% "Siehe \cref{fig:intro-sequences}"
+
 \usepackage{titlesec}			% überschriften konfig
 \usepackage{pdfpages}
 

@@ -5,8 +5,9 @@
 \begin{document}
 	
 	% ----- Titelseite -----
+
 	\input{chapters/titlepage}
-	
+
 	% ----- Inhaltsverzeichnis -----
 	\pagenumbering{Roman} % todo: römische ziffern davor
 	\tableofcontents
@@ -14,7 +15,7 @@
 	
 	% ----- Hauptteil -----
 	\pagenumbering{arabic} % arabische seitenzahlen
-	\setcounter{page}{3}   % anpassen
+	\setcounter{page}{1}   % anpassen
 	
 	\input{chapters/intro}
 	\input{chapters/intro_scenes}
@@ -25,14 +26,94 @@
 	
 \end{document}
 
-
+%Bild Einbettungs-Vorlagen
 \iffalse
+
+
+
+
+\begin{figure}[h]
+	%\centering
+	\begin{flushright}
+		% Bild, copyright und caption per minipage stapeln
+		\begin{minipage}{0.5\textwidth} % breite
+			\includegraphics[width=\linewidth]{resources/00_intro/sequences_blank_3x_nobg.png}
+			\vspace*{-10mm} % reduce spacing D:
+			\begin{flushright}
+				{\scriptsize Eigenkreation; Gezeichnet in Excalidraw }
+			\end{flushright}
+			
+			
+			
+			\captionsetup{
+				%width=0.5\textwidth, % caption breite begrenzen
+				labelfont=bf,          % fettegeddruckt "Abbildung X"
+				textfont=footnotesize,   % caption textgröße
+				skip=0pt
+			}
+			\caption{Aufteilung der Szene in abgeschlossene Untersequenzen}
+			\label{fig:intro-sequences}
+		\end{minipage}
+	\end{flushright}
+\end{figure}
+
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+	\vspace{-10pt} % Optionale Anpassung des oberen Abstands
+	\centering
+	\includegraphics[width=0.48\textwidth]{resources/00_intro/sequences_blank_3x_nobg.png}
+	\vspace*{-10mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Aufteilung der Szene in abgeschlossene Untersequenzen}
+	\label{fig:intro-sequences2}
+	\vspace{-10pt} % Optionale Anpassung des unteren Abstands
+\end{wrapfigure}
+
+
+\begin{figure}[h]
+	%\centering
+	\begin{flushleft}
+		% Bild, copyright und caption per minipage stapeln
+		\begin{minipage}{0.5\textwidth} % breite
+			\includegraphics[width=\linewidth]{resources/seq2/00_xy-angle_dom-pov.png}
+			\vspace*{-10mm} % reduce spacing D:
+			\begin{flushright}
+				{\scriptsize\textcopyright\ 2023 Universal Pictures}
+			\end{flushright}
+			
+			
+			
+			\captionsetup{
+				%width=0.5\textwidth, % caption breite begrenzen
+				labelfont=bf,          % fettegeddruckt "Abbildung X"
+				textfont=footnotesize,   % caption textgröße
+				skip=0pt
+			}
+			\caption{Screenshot Fast X: Dom fährt auf Rampe zu}
+			\label{fig:00_xy-angle_dom-pov}
+		\end{minipage}
+	\end{flushleft}
+\end{figure}
+
+
+
+
+
+
 %https://latex-tutorial.com/tutorials/figures/
 %\centerline{\includegraphics[scale=0.125]{resources/seq2/00_xy-angle_dom-pov.png}}
 % here; top; bottom; page; !
 \begin{figure}[h]
 	\includegraphics[width=.2\textwidth, right]{resources/seq2/00_xy-angle_dom-pov.png}
-	\caption{This is an image from a text that uses color to teach music.}
+	\caption{caption label}
 	\label{fig}
 \end{figure}
 
@@ -44,7 +125,7 @@
 		\scriptsize\textcopyright\ 2025 Your Name
 	\end{adjustbox}
 	\captionsetup{font=footnotesize}
-	\caption{This is an image from a text that uses color to teach music.}
+	\caption{caption label}
 \end{figure}
 
 
@@ -59,8 +140,8 @@
 	
 	% Main caption under the figure
 	\captionsetup{font=small}
-	\caption{This is an image from a text that uses color to teach music.}
-	\label{fig:color-musics}
+	\caption{caption label}
+	\label{fig:color}
 \end{figure}
 
 \fi

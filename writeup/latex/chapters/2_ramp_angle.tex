@@ -22,10 +22,16 @@ Doms Sprung von der provisorischen Stangenrampe markiert den Anfang der Berechnu
 \\
 Der Abschusswinkel des Autos bestimmt jedoch maßgeblich wo, und ob Dom überhaupt mit dem Ausleger kollidiert.
 \\
-Da auf das Auto senkrecht zur Flugrichtung keinerlei Kräfte wirken, und sich das Geschoss somit aus der Draufsicht annähernd geradlinig bewegt, lässt sich diese eigentlich 3-dimensionale Trajektorie einfach über eine 2-dimensionale Parabel eines schrägen Wurfs beschreiben.
+Da auf das Auto senkrecht zur Flugrichtung keinerlei Kräfte wirken, und sich das Geschoss somit aus der Draufsicht annähernd geradlinig bewegt, lässt sich diese eigentlich 3-dimensionale Trajektorie einfach über eine 2-dimensionale Parabel eines schrägen Wurfs beschreiben.\\
+Zur Vereinfachung wird die Breite des Fahrzeugs auf einen einzelnen Referenzpunkt reduziert. Unter Berücksichtigung einer Toleranzkonstante, die die tatsächliche Fahrzeugbreite repräsentiert, könnten mit einem wesentlich komplexeren Modell vergleichbare Ergebnisse erzielt werden. Der zusätzliche Rechenaufwand steht jedoch in keinem angemessenen Verhältnis zum erwarteten Gewinn an Genauigkeit.
+
 
 \subsection{Rampenwinkel} %im kontext
-\begin{wrapfigure}{l}{0.4\textwidth}
+Der Geometrie des Sprungs ist in \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}} simpel skizziert worden. Der rote Punkt im linken oberen Eck steht für den Absprung des Autos, den Punkt ab dem die Reifen den Boden verlassen und die Flugbahn beginnt.
+Die Zeichnung stellt den Sachverhalt aus der Obersicht dar. Die Flugbahn wird daher nicht nur aus der zur Erdoberfläche parallelen XY-Ebene, sondern zu einem Teil auch aus der %für die Höhe zuständige
+XZ-Ebene betrachtet. 
+Dadurch ergibt sich die leichte Krümmung der orange gestrichelten Flugbahn des Autos.
+\begin{wrapfigure}{l}{0.4\textwidth} %L
 	\centering
 	\includegraphics[width=0.38\textwidth]{resources/seq2/sketch-simple.png}
 	\vspace*{-5mm}
@@ -42,18 +48,13 @@ Da auf das Auto senkrecht zur Flugrichtung keinerlei Kräfte wirken, und sich da
 	\label{fig:01_xy-angle_sketch-simple}
 	%\vspace{-10pt}
 \end{wrapfigure}
-Der Geometrie des Sprungs ist in \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}} simpel skizziert worden. Der rote Punkt im linken oberen Eck steht für den Absprung des Autos, den Punkt ab dem die Reifen den Boden verlassen und die Flugbahn beginnt.
-Die Zeichnung stellt den Sachverhalt aus der Obersicht dar. Die Flugbahn wird daher nicht nur aus der zur Erdoberfläche parallelen XY-Ebene, sondern zu einem Teil auch aus der %für die Höhe zuständige
-XZ-Ebene betrachtet. 
-Dadurch ergibt sich die leichte Krümmung der orange gestrichelten Flugbahn des Autos.\\
 Der zweite rote Punkt steht für den Drehpunkt des Turmkrans und ist im Echtwelt-Äquivalent mit dem Drehkranz auf dem Gittermastturm gleichzusetzen. 
 Über den Betrag der Differenz der jeweiligen X und Y Komponente der Koordinaten, werden die Punkte in Relation gesetzt. Da die beiden Punkte nur über ihre relativen Abstände definiert sind, wäre es hier falsch von einem Koordinatensystem zu sprechen, viel eher befinden wir uns in einem metrischen Raum \parencite{MetrischerRaumWiki}. %todo 
 \\
 Der grüne Balken der durch besagten Punkt verläuft ist dementsprechend das Oberschwenkwerk. Der hintere Teil der Linie, der mit der X-Achse den Drehwinkel $\varphi$ einschließt, trägt im Film das Gegengewicht.
 Dom muss mit dem vorderen Teil, dem Ausleger, kollidieren um den Kran in die richtige Drehbewegung zu versetzen.
 \\
-Der grün-markierte Bereich zwischen den beiden Pfeilen kennzeichnet alle für einen erfolgreichen Stoß gültigen Winkel
-
+Der grün-markierte Bereich zwischen den beiden Pfeilen kennzeichnet alle für einen erfolgreichen Stoß gültigen Winkel. 
 
 
 
@@ -76,4 +77,36 @@ Der grün-markierte Bereich zwischen den beiden Pfeilen kennzeichnet alle für e
 	\label{fig:02_xy-angle_sketch-detailed}
 	%\vspace{-10pt}
 \end{wrapfigure}
-Um nun das gesamte System vollständig zu beschreiben und Unbestimmten zu eliminieren, muss man sich der grundlegenden Gesetze der Trigonometrie bedienen. Man kann schritt f
+Zur vollständigen Beschreibung des Systems und zur Eliminierung aller Unbekannten ist eine sukzessive Zerlegung in Teil-Dreiecke erforderlich. Daher muss sich im Folgenden auch vieler grundlegenden Gesetze der Trigonometrie bedient werden. Jede dieser Unbekannten kann mithilfe bekannter Größen trigonometrisch gelöst werden, wodurch sich neue Werte ergeben, die wiederum als Ausgangspunkt für die nächste Berechnungsiteration dienen. Durch dieses schrittweise Vorgehen lässt sich das gesamte System vollständig rekonstruieren. \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angle_sketch-detailed}} zeigt eine detailliertere Version von \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}}. In \hyperref[fig:02_xy-angle_sketch-detailed]{~\ref*{fig:02_xy-angle_sketch-detailed}} sind nun alle relevanten Größen eingetragen. Des weiteren befinden wir uns jetzt in strikter Draufsicht. Die beiden gekrümmten orangenen Pfeile sind als violette Geraden eingezeichnet. 
+\\
+Zu Beginn sind lediglich die Abstände $x$ und $y$, die Auslegerlänge $b$ sowie der Winkel $\varphi$ bekannt. Der Winkel $\sigma$ ist in dieser Phase nicht aus den gegebenen Größen bestimmbar, da er sich im Intervall zwischen $\beta$ und $\beta + \delta$ befindet und später als externer Eingabewinkel definiert wird.
+\\
+Um unnötige Rechenschritte überspringen zu können wird unter anderem aus diesem Grund $\beta$ und $\delta$ errechnet. Dadurch kann bereits vorab durch einfaches Abgleichen mit den Intervallgrenzen eine boolesche Kollisionsvorhersage für jeden Winkel $\sigma$ getroffen werden. 
+\\
+Für spätere Rechnungen sind wir außerdem pro Eingangswinkel $\sigma$ auch noch an den Werten $r$ für den Abstand zwischen Einschlags- und Drehpunkt, $t$ der Länge X-Komponente der Flugkurve und $\tau$ dem Impaktwinkel interessiert. %TODO
+\\
+\\
+Die Hypotenuse $h$ ist die direkte Distanz zwischen Ursprung und Drehpunkt. Sie ergibt sich aus aus dem Satz des Pythagoras mit $h=\sqrt{x^2+y^2}$.\\
+Der Winkel $\alpha$ lässt sich mit dem SSS-Fall des Kosinussatz berechnen:\\
+$\alpha=\arccos(\frac{h^2+y^2-x^2}{2\cdot h\cdot y})$.
+Über die Innenwinkelsumme eines Dreiecks ergibt sich dadurch $\beta = 180\degree-90\degree-\alpha$
+\\
+\\
+Um das gegenüberliegende Dreieck mit der selben Hypotenuse $h$, aber mit Kathete $u$ und Gegenkathete $b$ zu beschreiben, muss bei den Kranwinkeln begonnen werden.
+$\gamma$ und $\varphi$ bilden einen $90\degree$ Winkel zwischen gedachter X- und Y-Achse. Daraus folgt: $\gamma=90\degree-\varphi$\\
+Da das Oberschwenkwerk des Krans eine gerade Linie bildet gilt $\varepsilon=180\degree-\alpha-\gamma$
+\\
+Nun da wir uns bis in das 2. Dreieck vorgearbeitet haben können auch hier die inneren Winkel berechnet werden.
+Per SWS-Fall des Sinussatzes gilt $u=\sqrt{h^2+b^2-2\cdot h \cdot b\sin(\varepsilon)}$
+$\kappa=\arcsin(\frac{\sin(\varepsilon)}{u}\cdot h)$
+Und schließlich $\delta=180\degree-\varepsilon-\kappa$
+\\
+\\
+Für Winkel $\sigma$ die zwischen $\beta$ und $\beta + \delta$ liegen, kann $\tau$ wieder über die Innenwinkelsumme hergeleitet werden.
+$\tau=180\degree-\sigma-\varepsilon$
+\\
+Mit $h$, $\sigma$, $\tau$ und $\varepsilon$ kann dann mittels WSW-Sinussatz auch der Flugweg $t$ und der Abstand zum Drehpunkt $r$ bestimmt werden. 
+$t=\frac{h}{\sin(\tau)}\cdot\sin(\varepsilon)$
+$b=\frac{h}{\sin(\tau)}\cdot\sin(\sigma)$
+
+\subsection{Beispielrechnung}

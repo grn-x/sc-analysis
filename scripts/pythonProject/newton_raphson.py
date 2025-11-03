@@ -15,10 +15,10 @@ matplotlib.use('TkAgg')
 x_off = 10.0  # Pivot x-Position (alt)
 y_off = -5.0  # Pivot y-Position (alt)
 r = 5.0  # Armlänge (Kreisdradius)
-alpha_0 = math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
-omega = 0.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
+alpha_0 = math.radians(130)#math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
+omega = 3.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
 v = 30  # Kugelgeschwindigkeit (m/s)
-T_offset = 0.2  # Zeitverzögerung: Kran startet nach T_offset Sekunden
+T_offset = 0.15  # Zeitverzögerung: Kran startet nach T_offset Sekunden
 
 # Preset-Zeit (s) und Steuerflag
 use_preset_time = False  # Wenn True, wird preset_T verwendet
@@ -67,11 +67,12 @@ print(f"Kran-Startwinkel (neues System): α_start = {np.degrees(alpha_start):.2f
 print()
 
 # Weitere Konfigurations-Flags
-#seperate_windows
+#separate_windows
 #num_freeze_frames
 #num_frames
 #VISUALIZE_ITERATIONS
 #SHOW_ITERATION_LABELS
+#save_animation
 # ============================================================================
 # MATHEMATISCHE FUNKTIONEN (Neues System)
 # ============================================================================
@@ -183,13 +184,16 @@ def phi_kugel(T):
     return phi
 
 
-def phi_kran(T):
+def phi_kran(T, skip_normalization=False):
     """
     Kranwinkel φ als Funktion der Zeit
 
     Parameter:
         T: Zeit (s)
-
+        skip_normalization: Wenn True, wird die Modulo-Normalisierung übersprungen
+                            Wird für das Plotting benötigt, wenn der Kranwinkel
+                            0° (bei alpha_0 zwischen 116° und 117°) unterschreitet.
+                            Parameter wird nur von der Plotfunktion verwendet.
     Rückgabe:
         phi: Winkel von M aus (rad)
 
@@ -209,7 +213,8 @@ def phi_kran(T):
         phi = alpha_start + omega * (T - T_offset)
 
     # Normalisiere auf [0, 2π[
-    phi = phi % (2 * np.pi)
+    if not skip_normalization:
+        phi = phi % (2 * np.pi)
 
     return phi
 
@@ -681,7 +686,7 @@ print()
 # VISUALISIERUNG 2x2 Tabelle
 # ============================================================================
 
-separate_windows = True  # Set to True for separate plot windows
+separate_windows = False  # Set to True for separate plot windows
 
 if separate_windows:
     fig1, ax1 = plt.subplots(figsize=(8, 7))
@@ -792,7 +797,7 @@ phi_kugel_values = np.array([phi_kugel(t) for t in T_func_range])
 
 
 # phi_kran(T) über gesamten Zeitbereich
-phi_kran_values = np.array([phi_kran(t) for t in T_func_range])
+phi_kran_values = np.array([phi_kran(t, True) for t in T_func_range])
 
 # theta(T) Abschusswinkel der Kugel
 theta_from_T_values = np.array([theta_from_T(t) for t in T_func_range])
@@ -925,6 +930,8 @@ plt.show()
 # ANIMATION
 # ============================================================================
 
+save_animation=True
+
 fig_anim, ax_anim = plt.subplots(figsize=(10, 10))
 
 # Setup
@@ -1056,7 +1063,8 @@ anim = FuncAnimation(fig_anim, animate, init_func=init,
 
 plt.tight_layout()
 plt.show()
-
+if(save_animation):
+    anim.save("kugel_kran_animation.gif", writer='pillow', fps=25)
 
 # ============================================================================
 # VISUALISIERUNG DER ITERATIONSVERFAHREN (TODO: Implement)

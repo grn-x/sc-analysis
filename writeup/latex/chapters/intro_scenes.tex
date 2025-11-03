@@ -82,16 +82,21 @@ Diese Widersprüche erschweren eine präzise Analyse der Umgebungsparameter, wes
 %Unkalibrierte Stereobild-Triangulation
 
 \subsection{Ziel und mögliche Einflussnahme}
-
+Entgegen der öffentlichen Auffassung besteht Doms Ziel in der Schadenminimierung. Er und sein Team versuchen die rollende Bombe zu stoppen um das Ausmaß der Zerstörung im Rahmen zu halten und Zivilisten zu schützen. 
+Im Kontext der Schlusssequenz bildet der Stoß der Kugel ins Wasser und die damit einhergehende reduzierte Sprengkraft, das zu erstrebende Ziel. 
+Sollte dieses Verhalten durch modellhafte Berechnungen replizierbar sein gilt die Mission als geglückt und diese Szene als realistisch. 
+\\
+Dabei hat Dom direkten Einfluss auf die Geschwindigkeit seines Wagens. Auch kann er die Richtung und damit den Einschlag-Punkt auf dem Kran, und den Kraftübertragungswinkel variieren. 
+\\
+Zu den sicher-festlegbaren Parametern gehört lediglich das Gewicht seines Gefährts. Alle anderen Umgebungsvariablen lassen sich aus genannten Gründen nur schwer bis gar nicht herausfinden. Aus diesem Grund werden sie in der folgenden Arbeit auch vorerst wie Parameter behandelt, um sie dann zum Schluss auf Intervalle zu approximieren, und durch empirisches Testen die unterschiedlichen Erfolgsquoten herausfinden zu können.
 
 \subsection{Aufteilung in Untersequenzen}
-
-
-\begin{wrapfigure}{r}{0.5\textwidth}
-	\vspace{-10pt} % Optionale Anpassung des oberen Abstands
+Um einen logischen Aufbau und ein systematisches Untersuchen zu gewährleisten wird die gesamte Szene auf physikalisch-zusammenhängende Prozesse, hier jeweils Sequenzen genannt, heruntergebrochen.
+Dabei lässt sich die Szene in folgende \hyperref[fig:intro-sequences]{9 Unternehmungen} Doms unterteilen.\hspace*{\fill}
+\begin{wrapfigure}{r}{0.60\textwidth}
 	\centering
-	\includegraphics[width=0.48\textwidth]{resources/00_intro/sequences_blank_3x_nobg.png}
-	%\vspace*{-10mm}
+	\includegraphics[width=0.58\textwidth]{resources/00_intro/sequences_blank_3x_nobg.png}
+	\vspace*{-10pt}
 	\begin{flushright}
 		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
 	\end{flushright}
@@ -103,9 +108,21 @@ Diese Widersprüche erschweren eine präzise Analyse der Umgebungsparameter, wes
 	}
 	\caption{Aufteilung der Szene in abgeschlossene Untersequenzen}
 	\label{fig:intro-sequences}
-	\vspace{-10pt} % Optionale Anpassung des unteren Abstands
+	\vspace{10pt}
 \end{wrapfigure}
-
-
-\hyperref[fig:intro-sequences]{Abbildung~\ref*{fig:intro-sequences}} Zeigt die Unterteilung der Szenen 
-\FloatBarrier
+Das Geschehen startet mit Doms scheiterndem Versuch, die Kugel direkt per Auto zu stoppen. Da ich diese Sequenz aus genau diesem Grund nicht weiter untersuchen werde, bekommt sie den Index 0. \footnote{Im Onlinerepositorium und in einigen anderen meiner Skizzen trägt diese Sequenz noch die Nummer 1. }%TODO
+\\
+Die Untersuchungen beginnen mit Sequenz 1. Hier wird, unter Berücksichtigung aller räumlichen Umgebungsparamater, berechnet, in welchem horizontalen Winkel das Auto die Rampe verlassen muss, um mit einem Teil des Auslegers zu kollidieren. 
+\\
+In Sequenz 2 wird dieses Prinzip von der XY-Draufsicht-Ebene auf die XZ-Seitenansicht übertragen. Über das Umkehren der Bahnkurvengleichung lässt sich dann herausfinden, ob das Geschoss unter bestimmten Eingangsbedingungen zur richtigen Zeit auf Höhe des Auslegers wäre, und eine Kollision stattfinden kann.
+\\
+Sequenz 3 beschreibt die Kraftübertragung des Autos auf den Kran, sollte es zu einem Zusammenstoß gekommen sein. Die resultierende Geschwindigkeit des Autos, und die neu übertragene Bahngeschwindigkeit kann dann in die Winkelgeschwindigkeit des Krans umgerechnet werden. 
+\\
+Über die Bahngeschwindigkeit kann dann in Sequenz 4 die Kollision des Gegengewichts mit der Kugel festgestellt werden. Die Kraftübertragung und die neue Bewegungsrichtung werden hier beschrieben.
+\\
+Diese Arbeit endet mit der Zergliederung der 5. Sequenz. Hier werden lediglich die räumlichen Grenzen für das Glücken der Mission definiert. Über das Schaffen dieser Umgrenzungen können dann finale Aussagen über Intervalle von nötigen Ablenkungswinkeln der Kugeln für ein erfolgreiches Ende der Mission getätigt werden. 
+\\
+\\
+Die übrigen Sequenzen stellen zwar interessante und untersuchenswerte Sachverhalte dar, die jedoch aus mangelnder Importanz im Kontext des Szenen-Ziels nicht weiter bearbeitet werden.
+%\hyperref[fig:intro-sequences]{Abbildung~\ref*{fig:intro-sequences}} Zeigt die Unterteilung der Szenen 
+%\FloatBarrier

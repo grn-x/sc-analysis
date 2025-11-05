@@ -1,0 +1,64 @@
+\section{Zweite Sequenz}
+Nachdem im vorherigen Kapitel 
+Auch hier wird die Darbietung auf einen 2-dimensionalen Sachverhalt reduziert. 
+Dieses Mal betrachten wir allerdings die XZ-Ebene. %TODO
+Die Bewegungsrichtung ist daher nicht mehr geradlinig sondern folgt aufgrund der Natur des Schiefen Wurfs, die einer Parabel. %TODO
+\newpage %TODO
+\begin{wrapfigure}{R}{0.5\textwidth}
+	\centering
+	\includegraphics[width=0.48\textwidth]{resources/seq3/sketch.png}
+	\vspace*{-10mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Skizze der Sequenz in Draufsicht}
+	\label{fig:03_xz-angle_sketch}
+	%\vspace{-10pt}
+\end{wrapfigure}
+\hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} zeigt die für diese Vorgang bedeutsamen Variablen. 
+Die Rampenlänge und -höhe werden auf den Abschusswinkel $\alpha$ reduziert, mit 
+$\alpha=\arctan(\frac{y_r}{x_r})$\\
+Die in \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angle_sketch-detailed}} dargestellte Strecke $t$, die das Auto in der reduzierten Draufsicht bis zur Kollision mit dem Ausleger zurücklegen muss, ist hier in \hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} in Form der Strecke $x$ wiederzufinden.
+Der Parameter $x$ wird also mit dem Wert von $t$ aus den Berechnungen der vorherigen Sequenz besetzt, für $y$ gibt es allerdings noch keinen Wert, dieser muss genau wie $x_r$ und $y_r$ für die Berechnungen dieser Sequenz neu geschätzt werden. 
+$h$ Ist die direkte Strecke zwischen Rampenende und Kollisionspunkt am Ausleger.
+Wenn die Flugbahn nicht nur in der XY sondern nun auch noch in der XZ-Ebene geradlinig verlief würde Dom sich auf $h$ bewegen. Da die Bahnkurve beim schiefen Wurf allerdings einer Parabel ähnelt\footnote{Gestauchte Parabel, Gedankengang erklären}, hat $h$ für die weiteren Rechnungen keine Relevanz. 
+\subsection{Unbeschleunigte Flugkurve des Autos}
+%TODO Quellen; Grafik 
+Das physikalische Modell eines Wurfes erlaubt die Entkopplung der x und y Komponente. Diese beiden Bewegungen werden also völlig unabhängig voneinander und nur in Relation der Zeit als Funktionen $x(t)$ und $y(t)$ abgebildet.
+\\
+Unter widerstandsfreien Bedingungen enthält die Funktion $x(t)$ das grundlegende Zeit-Ort-Gesetz\parencite{WegZeitGesetzWiki}, das lediglich um einen Koeffizienten für die Berücksichtigung des Startwinkels erweitert ist. 
+Dieser Koeffizient ist nötig, da wir nur den gesamten Betrag der Abschussgeschwindigkeit kennen. Durch den Winkel $\alpha$ können dann der x und y Betrag aus der gesamt Geschwindigkeit isoliert werden. 
+\\
+Die $y(t)$ Funktion verhält sich ähnlich. Als Startgeschwindigkeit wird nun allerdings die Komponente senkrecht und nicht parallel zum Boden benutzt. Um die Erdbeschleunigung zu berücksichtigen wird $\frac{1}{2}\cdot g \cdot t^2$ abgezogen.
+\\
+Aus der allgemeinen Startgeschwindigkeit $v_0$ in Kombination mit dem Abschusswinkel $\alpha$ folgen die horizontale und vertikale Komponente für jeweiligen x bzw. y Term mit: \\
+$v_{0,x} = v_0\cdot\cos(\alpha)$ und
+$v_{0,y} = v_0\cdot\sin(\alpha)$
+\\Daraus ergibt sich:
+$x(t)=v_{0,x}\cdot t$ und
+$y(t)=v_{0,y}\cdot t- \frac{1}{2}\cdot g \cdot t^2$
+\\
+Optional ließen sich die Gleichungen um ein $+x_0$ bzw. $+y_0$ erweitern, um einen Startversatz zu akkommodieren. Da die gewählten Anfangsparameter diesen bereits implizit enthalten, wurde darauf verzichtet.
+\\
+Nebenbei kann man in dieser Darstellung ganz einfach qualitative Aussagen über den Höhepunkt der Flugparabel tätigen. $y(t)$ steigt so lange bis $\frac{1}{2}\cdot g\cdot t^2$ größer als $v_{0,y}\cdot t$ wird. Das passiert bei $t=\frac{v_{0,y}}{g}$.
+\\
+\subsubsection{Auswirkungen des Lachgaseinspritzsystems}
+An dieser Stelle kommt auch das aus den Filmen hinlänglich bekannte \enquote{NOS-System}(engl. \textit{Nitrous Oxide}, deutsch: Stickoxid) zum Einsatz. Während eine Lachgaseinspritzung in der Realität lediglich den Sauerstoffanteil im Brennraum erhöht und somit eine temporäre Leistungssteigerung des Motors bewirkt\parencite{NosWiki}, scheint das filmische Pendant einer gänzlich anderen Physik zu gehorchen. Dort äußert sich der Effekt in leuchtend blauen Flammen, plötzlicher Schubkraft und einer augenscheinlich vervielfachten Traktion, eine Darstellung, die eher an eine nachträglich montierte Turbine als an einen chemisch effizienteren Oxidationsprozess im Hubraum erinnert.  
+\\
+Im Sinne der filmischen Authentizität, werde ich die Wirkung von NOS als unmittelbare externe Beschleunigung betrachten, anstatt wie eigentlich realistisch als eine erhöhte Motorleistung.  
+\\
+Diese nicht auf Traktion beruhende Form der Kraftübertragung ermöglicht es dem Fahrzeug, selbst während der Flugphase eine zusätzliche Geschwindigkeitserhöhung zu erfahren. Zur Vereinfachung wird dieser Effekt ausschließlich auf die horizontale Komponente angewandt. Diese Annäherung entspricht offensichtlich nicht der Realität.\\
+Betrachtet man die Dynamik genauer, fällt auf, dass bei sich die Fahrzeugneigung nach dem Überfahren der Rampe tatsächlich kontinuierlich ändert.
+Daraus ergibt sich eine zeitabhängige Beschleunigungsrichtung. 
+Intuitiv scheint es so, als ob der Fahrzeugwinkel mit der jeweils momentanen Steigung der $y(t)$ korreliert. \\
+Diese Verhältnismäßigkeiten weiter zu untersuchen und korrekt zu berücksichtigen würden leider mein zeitliches Budget übersteigen, und müssen, so weh es mir tut, durch die genannte Maßnahmen approximiert werden. %TODO
+
+\subsection{Unbeschleunigte Flugkurve des Autos}
+
+Infolgedessen verläuft die Bewegung in x-Richtung gemäß dem Weg-Zeit-Gesetz\parencite{WegZeitGesetzWiki} nicht mehr linear, sondern weist eine quadratische Abhängigkeit auf.

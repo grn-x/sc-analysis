@@ -89,6 +89,7 @@ Im Sinne der filmischen Authentizität, werde ich die Wirkung von NOS als unmitt
 	\label{fig:xy-angle_dom-pov}
 	%\vspace{-10pt}
 \end{wrapfigure}
+\label{sec:unbeschleunigt_neigungswinkel}
 Diese nicht auf Traktion beruhende Form der Kraftübertragung ermöglicht es dem Fahrzeug, selbst während der Flugphase eine zusätzliche Geschwindigkeitserhöhung zu erfahren. Zur Vereinfachung wird dieser Effekt ausschließlich auf die horizontale Komponente angewandt. Diese Annäherung entspricht offensichtlich nicht der Realität.\\
 Betrachtet man die Dynamik genauer, fällt auf, dass bei sich die Fahrzeugneigung nach dem Überfahren der Rampe tatsächlich kontinuierlich ändert.
 Daraus ergibt sich eine zeitabhängige Beschleunigungsrichtung. 
@@ -98,26 +99,48 @@ Diese Verhältnismäßigkeiten weiter zu untersuchen und korrekt zu berücksicht
 \subsection{Beschleunigte Flugkurve des Autos}
 Benutzt man diese Annäherung im Falle einer beschleunigten Flugphase, verhält sich die Bewegung in x-Richtung gemäß dem Weg-Zeit-Gesetz\parencite{WegZeitGesetzWiki} nicht mehr linear, sondern weist eine quadratische Abhängigkeit auf.
 Die y-Komponente bleibt wie genannt unverändert, die x-Komponente wird um den Term $+\frac{1}{2}\cdot a_x\cdot t^2$ erweitert. \\
-Daraus folgt
-$x(t)=v_{0,x}\cdot t+\frac{1}{2}\cdot a_x\cdot t^2$ und
-$y(t)=v_{0,y}\cdot t-\frac{1}{2}\cdot g \cdot t^2$\\
+Daraus folgt:
+\[
+x(t)=v_{0,x}\cdot t+\frac{1}{2}\cdot a_x\cdot t^2 \qquad \text{und} \qquad
+y(t)=v_{0,y}\cdot t-\frac{1}{2}\cdot g \cdot t^2
+\]
 \subsubsection{Bahnkurve des beschleunigten schiefen Wurfs}
 
 \subsection{Einfluss der Aerodynamik}
-Den Gegenspieler zu dieser beinahe magischen \parencite{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. 
+Den Gegenspieler zu dieser beinahe magischen \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. 
 
 \subsection{Gebremste Flugkurve des Autos}
+Der Luftwiderstand kann grundsätzlich als lineare oder quadratische Funktion der Geschwindigkeit modelliert werden. 
+Für kleine Reynolds-Zahlen $\mathrm{Re} \lesssim 1$ dominiert die viskose Reibung, und der Widerstand ist näherungsweise proportional zur Geschwindigkeit $F_L \propto v$ \parencite{owen_ryu_drag}.
+Bei hohen Reynolds-Zahlen $\mathrm{Re} \gtrsim 10^3$ hingegen überwiegen trägheitsbedingte Effekte, sodass der Luftwiderstand quadratisch mit der Geschwindigkeit skaliert $F_L \propto v^2$ \parencite{owen_ryu_drag}.
+Da das betrachtete Fahrzeug beim Sprung über die Rampe mit vergleichsweise hohen Geschwindigkeiten durch die Luft bewegt wird und die Reynolds-Zahl somit deutlich über $10^3$ liegt, wird in den folgenden Berechnungen der quadratische Luftwiderstand verwendet.
+\[
+F_L = \frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v^2 \quad \text{\parencite{tipler_aero}}
+\]
+$A$ ist dabei die Frontalfläche, auf die der Luftstrom wirkt. $\rho$ steht für die momentane Luftdichte. In dieser Rechnung wird sie als konstant betrachtet. Im \textcite{tipler_aero} ist beispielsweise der Wert $1,3\frac{kg}{m^3}$ für einen \enquote{warmen Frühlingstag} gegeben.
+$v$ ist der Gesamtbetrag der relativen Geschwindigkeit zwischen Oberfläche und Luftstrom und $c_w$ ist der Luftwiderstandsbeiwert. 
+$c_w$ charakterisiert den strömungsbedingten Widerstand eines Körpers in Abhängigkeit von dessen Form und Oberflächenbeschaffenheit und kann ausschließlich empirisch bestimmt werden. %Wie etwa durch Windkanalversuche oder numerische Strömungssimulationen; siehe kapitel oben drüber
+\\
+Die Luftwiderstandskraft wirkt stets entgegengesetzt zur Bewegungsrichtung des Fahrzeugs. Das bedeutet, dass die momentane Geschwindigkeit nicht nur durch die anfänglichen Bedingungen, sondern auch durch die ständig gegenwirkende Bremskraft beeinflusst wird. Weil $F_L$ selber jedoch quadratisch mit der Gesamtgeschwindigkeit wächst, entsteht daraus ein Differentialgleichungssystem. 
+\\
+Der Luftwiderstand wirkt dabei in jedem Moment gegen beide, die horizontal $v_x$- und die vertikal $v_y$-Komponente.
+Da die Kraft ihrerseits aber (quadratisch) von der Gesamt- und nicht von den beiden Teilgeschwindigkeiten der Komponenten abhängt, enthält nun jede der beiden Teilgleichung eine Referenz auf die jeweils andere. Das liegt an der Definition der Gesamtgeschwindigkeit mit $v = \sqrt{v_x^2 + v_y^2}$. Weil jetzt mit jeweils beiden Komponenten irgendwie das $F_L$-Konstrukt mit Abhängigkeit von gesamt $v$ verrechnet werden müsste, kommt in der Differentialgleichung des einen Teils, beispielsweise $v_x$, über das $v$ in $F_L$ dann auch der wechselseitige Term mit $v_y$ vor.
+\\
+Diese gegenseitige Abhängigkeit von $v_x$ und $v_y$ führt zu einem nichtlinearen gekoppelten Differentialgleichungssystem, da die Kraft in jeder Richtung von der Summe der quadratischen Beiträge beider Komponenten abhängt. 
+Analytische Lösungen sind hier nicht möglich, weil sich die Geschwindigkeit in jeder Richtung gleichzeitig ändert und die quadratische Kopplung nicht in einfache Einzelgleichungen zerlegt werden kann. 
+\\
+\\
+Um die unvermeidliche Sünde des numerischen Rechnens noch ein wenig hinauszuzögern, können unter bestimmten Annahmen Näherungen getroffen werden, die eine analytische Behandlung ermöglichen. Neben üblichen Vereinfachungen wie konstanter Luftdichte und konstantem Widerstandsbeiwert müssen noch einige weitere Maßnahmen ergriffen werden, um das System zu entkoppeln. Diese stellen aber aufgrund der augenscheinlich relativ flachen Flugkurve im Film keine großen Verzerrungen des Ergebnisses dar.
+\\
+Die flache Kurve entsteht durch einen sehr kleinen Flugwinkel, was bedeutet, dass die horizontale Geschwindigkeit $v_x$ den größten Teil der Gesamtgeschwindigkeit $v$ ausmacht. Dadurch gilt näherungsweise $v \approx v_x$ und die Kopplung über $v_y$ wird vernachlässigbar. Folglich spielt die vertikale Luftreibung, wie erwähnt, für das Endergebnis nur eine untergeordnete Rolle und wird der Vereinfachung halber außer Acht gelassen
+\\
+Ganz allgemein muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hyperref[sec:unbeschleunigt_neigungswinkel]{beschleunigten Flugkurve}, vernachlässigt werden. Dadurch wird sichergestellt, dass die Frontalfläche $A$ während des Flugverlaufs konstant bleibt.
+\\
+%Unter diesen Annahmen reduziert sich die Differentialgleichung für die horizontale Komponente zu einer separierbaren Gleichung:
+\\
+\input{chapters/3_curve_a_dgl}
+\\
 
-$F_L = \frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v^2$\parencite{tipler_aero}
-sample cite\parencite{tipler_traegheitsmoment}
-$\dot{x} = v_x$ Das Zeitintegral der Geschwindigkeit ist ergibt eine Strecke
-$m\cdot \ddot{x}=m\cdot a_{x,ges}$ Die doppelte Ableitung der Strecke nach Zeit ergibt eine Beschleunigung 
-$m\cdot \ddot{x}=m\cdot a_x - F_L$
-$\ddot{x}=a_x-\frac{F_L}{m}$
-$\ddot{x}=a_x-\frac{\frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v^2}{m}$
-$u=\frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot$
-$q=\frac{u}{m}$
-$\ddot{x}=a_x-q\cdot v^2$
 
 \subsubsection{Bahnkurve des gebremsten schiefen Wurfs}
 \subsection{Einführung eines Toleranzspielraums}

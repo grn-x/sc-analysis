@@ -1,0 +1,64 @@
+Um die Bremskraft in Abhängigkeit vom Ort ausdrücken zu können, müssen zunächst die zugrunde liegenden Bewegungsgleichungen aufgestellt werden:
+\[
+\dot{x} = v_x \qquad
+\ddot{x} = \frac{dv_x}{dt} = a_x \qquad
+\overset{\text{2. Newton}}{\Longrightarrow} \quad
+m\cdot \ddot{x} = m\cdot a_x = \sum F_x
+\]
+Mittels Newton 2: $F=m\cdot a$ kann die Bremskraft mit $\ddot{x}$ verrechnet werden:
+%Nach dem zweiten Newtonschen Gesetz $F = m \cdot a$ gilt für die horizontale Beschleunigung:
+\[
+m \cdot \frac{dv_x}{dt} = -\frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v_x^2 \qquad \frac{dv_x}{dt}= a_x -\underbrace{\frac{\frac{1}{2} \cdot A \cdot \rho \cdot c_w}{m}}_{q} \cdot v_x^2 \; = a_x-q\cdot v_x^2
+\]
+Mit der Einführung der Substitutionsvariable $q$ vereinfacht sich die Gleichung. 
+Da für diesen Fall keine zusätzliche horizontale Beschleunigung angenommen wird, fällt der Term $a_x$ auf $0$. Damit erhalten wir folgende separierbare Differentialgleichung:
+% alle Terme mit $v_x$ auf die eine Seite und alle Terme mit $t$; dann integration beider seiten
+\[
+\frac{dv_x}{dt} = -q \cdot v_x^2 \qquad \frac{dv_x}{v_x^2} = -q \cdot dt \qquad \int \frac{dv_x}{v_x^2} = \int -q \cdot dt
+\]
+Der Bruch des linken Integrals kann umgeformt werden, die Lösung des Rechten ist trivial. Beim Zusammenfassen der Terme werden die bislang unbestimmten Konstanten vereint $C_3 = C_2 - C_1$ 
+%mit der Regel $\int x^{-2} dx = -x^{-1} + C$ lösen:
+\[
+\int v_x^{-2} \, dv_x = -v_x^{-1} + C_1 \qquad \int -q \, dt = -q \cdot t + C_2 \qquad -\frac{1}{v_x} = -q \cdot t + C_3
+\]
+Mittels der Anfangsbedingung $t = 0 \; \overset{!}{=} \; v_{0,x}$ lässt sich $C_3$ bestimmen
+\[
+-\frac{1}{v_{0,x}} = -q \cdot 0 + C_3 \qquad -\frac{1}{v_{0,x}} = C_3 \qquad \overset{\text{Einsetzen}}{\Longrightarrow} \qquad -\frac{1}{v_x} = -q \cdot t - \frac{1}{v_{0,x}}
+\]
+Um nach $v_x$ aufzulösen, multiplizieren wir beide Seiten mit $-1$, und kehren die Brüche
+\[
+\frac{1}{v_x} = q \cdot t + \frac{1}{v_{0,x}} \qquad v_x(t) = \frac{1}{q \cdot t + \frac{1}{v_{0,x}}} \; = \; \frac{v_{0,x}}{q \cdot v_{0,x} \cdot t + 1}
+\]
+% Von v_x(t) zu x(t)
+Um die Position $x(t)$ zu erhalten, muss die Geschwindigkeit $v_x(t)$ über die Zeit integriert werden, da $v_x = \dot{x}$ gilt:
+%umkehrung quotientenregel / kettenregel
+\iffalse
+\[
+x(t) = \int v_x(t) \, dt = \int \frac{1}{q \cdot t + \frac{1}{v_{0,x}}} \, dt \quad = \quad \frac{1}{q} \ln\left(q \cdot t + \frac{1}{v_{0,x}}\right) + C_4
+\]
+\fi
+\[
+x(t) = \int v_x(t) \, dt = \int \frac{v_{0,x}}{q \cdot v_{0,x} \cdot t + 1}\, dt \quad = \quad \frac{1}{q}\cdot \ln\left(q \cdot v_{0,x} \cdot t+1\right) + C_4
+\]
+% Bestimmung der zweiten Integrationskonstante
+Die Integrationskonstante $C_4$ lässt sich durch die Anfangsbedingung $x(0) = 0$ eliminieren
+%0 = \frac{1}{q}\cdot \underbrace{\ln\left(1\right)}_0 + C_4 
+\[
+0 = \frac{1}{q}\cdot \underbrace{\ln\left(q \cdot v_{0,x} \cdot 0+1\right)}_0 + C_4 \qquad 0 = C_4 \quad \Longrightarrow \quad x(t)=\frac{1}{q}\cdot \ln\left(q \cdot v_{0,x} \cdot t+1\right)
+\]
+% Umkehrung zu t(x)
+Um von $x(t)$ zu $t(x)$ zu gelangen, müssen wir die Gleichung umkehren und nach $t$ auflösen. Dafür multiplizieren wir mit $q$, lösen den $ln$ mit $e$ auf und subtrahieren 1
+%ln auflösen $e^{\ln(a)} = a$;
+\[
+x = \frac{1}{q} \ln(q \cdot v_{0,x} \cdot t + 1) \qquad q \cdot x = \ln(q \cdot v_{0,x} \cdot t + 1) \qquad e^{q \cdot x} = q \cdot v_{0,x} \cdot t + 1 \qquad e^{q \cdot x} - 1 = q \cdot v_{0,x} \cdot t
+\]
+Nach der Division durch $q \cdot v_{0,x}$ erhalten wir $t(x)$
+\[
+t(x) = \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}}
+\]
+% Zusammenführung zu y(x)
+Für die vertikale Komponente gilt bei vernachlässigtem Luftwiderstand in $y$-Richtung die bereits bekannte Gleichung. Für einen allgemeinen Term der Bahnkurve muss $t(x)$ in $y(t)$ eingesetzt werden:
+\[
+y(t)=v_{0,y}\cdot t-\frac{1}{2}\cdot g \cdot t^2 \qquad y\bigl(t(x)\bigl) \; \rightarrow \; y(x) \;= \;v_{0,y} \cdot \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}} - \frac{1}{2}\cdot g \cdot \left(\frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}}\right)^2
+\]
+Diese Näherungen liefern eine gute analytische Beschreibung der Flugbahn, solange die horizontalen Geschwindigkeiten dominieren und die Flugwinkel klein sind.

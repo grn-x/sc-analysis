@@ -33,10 +33,24 @@
 \usepackage{titlesec}			% überschriften konfig
 \usepackage{pdfpages}
 
-\usepackage[backend=biber,style=authoryear,citestyle=numeric, sorting=none]{biblatex} 
+%\usepackage[backend=biber,style=authoryear,citestyle=numeric, sorting=none]{biblatex} 
+%\usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
+\usepackage[
+backend=biber,
+style=numeric,
+sorting=none,
+uniquename=false,
+uniquelist=false,
+maxcitenames=2,
+mincrossrefs=999
+]{biblatex}
 \addbibresource{literature.bib}
 %\bibliographystyle{plain}
-
+\AtEveryBibitem{%
+	\ifentrytype{inbook}{%
+		\clearfield{crossref}%
+	}{}
+}
 
 % Schrift
 \onehalfspacing  % Zeilenabstand 1,5

@@ -1,1 +1,1 @@
-ffmpeg -ss $([TimeSpan]::Parse("00:00:06:09").TotalSeconds) -t 4 -i "..\..\ignore\Fast X (2023) - Dom Saves The Vatican Scene.mp4" -q:v 2 "frames_write_up/frame_%04d.png"
+ffmpeg -ss $([TimeSpan]::Parse("00:00:06:03").TotalSeconds) -t 3 -i "..\..\ignore\Fast X (2023) - Dom Saves The Vatican Scene.mp4" -q:v 2 "frames_write_up/frame_%04d.png"

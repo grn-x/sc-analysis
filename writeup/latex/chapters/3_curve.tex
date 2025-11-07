@@ -48,7 +48,7 @@ $v_{0,y} = v_0\cdot\sin(\alpha)$
 $x(t)=v_{0,x}\cdot t$ und
 $y(t)=v_{0,y}\cdot t- \frac{1}{2}\cdot g \cdot t^2$
 \\
-Optional ließen sich die Gleichungen um ein $+x_0$ bzw. $+y_0$ erweitern, um einen Startversatz zu akkommodieren. Da die gewählten Anfangsparameter diesen bereits implizit enthalten, wurde darauf verzichtet.
+Optional ließen sich die Gleichungen um ein $+x_0$ bzw. $+y_0$ erweitern, um einen Startversatz zu akkommodieren. Da die gewählten Anfangsparameter diesen bereits implizit enthalten, wird darauf verzichtet.
 \\
 Nebenbei kann man in dieser Darstellung ganz einfach qualitative Aussagen über den Hochpunkt der Flugparabel tätigen. $y(t)$ steigt so lange bis $\frac{1}{2}\cdot g\cdot t^2$ größer als $v_{0,y}\cdot t$ wird. Das passiert bei $t=\frac{v_{0,y}}{g}$.
 \\
@@ -61,12 +61,16 @@ Um eine Kollision nachzuweisen gilt es nun eine realistische Kombination aus Ein
 
 
 \subsection{Unbeschleunigte Flugkurve des Autos}
+Gemäß eben genannten Aussagen, muss nun $x(t)$ umgekehrt, bzw. nach $t$ aufgelöst und in $y(t)$ eingesetzt werden. Ausgehend von $x(t) = v_{0,x}\cdot t$ folgt $t = \tfrac{x}{v_{0,x}}$. Eingesetzt in $y(t) = v_{0,y}\cdot t - \tfrac{1}{2}\cdot g\cdot t^2$ ergibt sich 
+$y(x) = v_{0,y}\cdot\tfrac{x}{v_{0,x}} - \tfrac{1}{2}\cdot g \left( \tfrac{x}{v_{0,x}} \right)^2 
+= \tfrac{v_{0,y}}{v_{0,x}}\cdot x - \tfrac{g}{2\cdot{v_{0,x}}^{2}}\cdot x^{2}$. 
+Da $\tfrac{v_{0,y}}{v_{0,x}} = \tfrac{v_{0}\cdot\sin(\alpha)}{v_{0}\cdot\cos(\alpha)} = \tan(\alpha)$ gilt, 
+kann die Bahnkurve auch als 
+\[
+y(x) = -\frac{g}{2\cdot{v_{0,x}}^{2}}\cdot x^{2} + \tan(\alpha)\cdot x
+\]
+geschrieben werden.
 
-
-
-$y(x)=-\frac{1}{2}\cdot \frac{g}{{v_{0,x}}^2}\cdot x^2+\frac{v_{0,y}}{v_{0,x}}\cdot x$
-Da $\frac{v_{0,y}}{v_{0,x}} => \frac{v_0\cdot\sin(\alpha)}{v_0\cdot\cos(\alpha)}=\tan(\alpha)$, kann $y(x)$ auch als $y(x)=-\frac{1}{2}\cdot \frac{g}{{v_{0,x}}^2}\cdot x^2+\tan(\alpha)\cdot x$ geschrieben werden.
-		
 \subsection{Einfluss des Lachgaseinspritzsystems}
 An dieser Stelle kommt auch das aus den Filmen hinlänglich bekannte \enquote{NOS-System}(engl. \textit{Nitrous Oxide}, deutsch: Stickoxid) zum Einsatz. Während eine Lachgaseinspritzung in der Realität lediglich den Sauerstoffanteil im Brennraum erhöht und somit eine temporäre Leistungssteigerung des Motors bewirkt\parencite{NosWiki}, scheint das filmische Pendant einer gänzlich anderen Physik zu gehorchen. Dort äußert sich der Effekt in leuchtend blauen Flammen, plötzlicher Schubkraft und einer augenscheinlich vervielfachten Traktion, eine Darstellung, die eher an eine nachträglich montierte Turbine als an einen chemisch effizienteren Oxidationsprozess im Hubraum erinnert.  
 \\
@@ -74,7 +78,8 @@ Im Sinne der filmischen Authentizität, werde ich die Wirkung von NOS als unmitt
 \\
 \begin{wrapfigure}{l}{0.5\textwidth}
 	\centering
-	\includegraphics[width=0.48\textwidth]{resources/seq3/dom-airborne-exhaust-nitroflames-lool.png}
+	%\includegraphics[width=0.48\textwidth]{resources/seq3/dom-airborne-exhaust-nitroflames-lool.png}
+	\includegraphics[width=0.48\textwidth]{resources/seq3/dom-nitro_boost.png}
 	\vspace*{-5mm}
 	\begin{flushright}
 		{\scriptsize\textcopyright\ 2023 Universal Pictures}
@@ -98,16 +103,55 @@ Diese Verhältnismäßigkeiten weiter zu untersuchen und korrekt zu berücksicht
 
 \subsubsection{Beschleunigte Flugkurve des Autos}
 Benutzt man diese Annäherung im Falle einer beschleunigten Flugphase, verhält sich die Bewegung in x-Richtung gemäß dem Weg-Zeit-Gesetz\parencite{WegZeitGesetzWiki} nicht mehr linear, sondern weist eine quadratische Abhängigkeit auf.
-Die y-Komponente bleibt wie genannt unverändert, die x-Komponente wird um den Term $+\frac{1}{2}\cdot a_x\cdot t^2$ erweitert. \\
+Die y-Komponente bleibt unverändert, die x-Komponente wird um den Term $+\frac{1}{2}\cdot a_x\cdot t^2$ erweitert.
 Daraus folgt:
 \[
-x(t)=v_{0,x}\cdot t+\frac{1}{2}\cdot a_x\cdot t^2 \qquad \text{und} \qquad
-y(t)=v_{0,y}\cdot t-\frac{1}{2}\cdot g \cdot t^2
+x(t) = v_{0,x} \cdot t + \frac{1}{2} \cdot a_x \cdot t^2 \qquad \text{und} \qquad
+y(t) = v_{0,y} \cdot t - \frac{1}{2} \cdot g \cdot t^2
+\]
+Wie zuvor muss nun die Funktion $x(t)$ umgekehrt und in $y(t)$ eingesetzt werden.
+% Umstellung der x(t)-Gleichung %Subtraktion von $x$ auf beiden Seiten:
+Um $x(t)$ nach $t$ aufzulösen, bringen wir zunächst alle Terme auf eine Seite:
+\[
+x = v_{0,x} \cdot t + \frac{1}{2} \cdot a_x \cdot t^2 \qquad 0 = \frac{1}{2} \cdot a_x \cdot t^2 + v_{0,x} \cdot t - x
+\]
+Diese quadratische Gleichung lässt sich per Mitternachtsformel lösen $t_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$ mit $a = \tfrac{1}{2} \cdot a_x, \; b = v_{0,x}, \; c = -x$
+%Diese quadratische Gleichung lässt sich per Mitternachtsformel lösen $t_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$
+%quadratische Gleichung $at^2 + bt + c = 0$
+%\[a = \frac{1}{2} a_x, \; b = v_{0,x}, \; c = -x \quad t_{1,2} = \frac{-v_{0,x} \pm \sqrt{v_{0,x}^2 - 4 \cdot \frac{1}{2} a_x \cdot (-x)}}{2 \cdot \frac{1}{2} a_x} \; = \; \frac{-v_{0,x} \pm \sqrt{v_{0,x}^2 + 2 a_x \cdot x}}{a_x}\]
+%\[a = \frac{1}{2} \cdot a_x, \; b = v_{0,x}, \; c = -x \quad t_{1,2} = \frac{-v_{0,x} \pm \sqrt{{v_{0,x}}^2 - 4 \cdot \frac{1}{2} \cdot a_x \cdot (-x)}}{2 \cdot \frac{1}{2} \cdot a_x} \; = \; \frac{-v_{0,x} \pm \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}\]
+\[
+t_{1,2} = \frac{-v_{0,x} \pm \sqrt{{v_{0,x}}^2 - 4 \cdot \tfrac{1}{2} \cdot a_x \cdot (-x)}}{2 \cdot \tfrac{1}{2} \cdot a_x} \; = \; \frac{-v_{0,x} \pm \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}
+\]
+Für die Diskriminante $D = {v_{0,x}}^2 + 2 \cdot a_x \cdot x$ muss für reelle Lösungen $D \geq 0$ gelten. Dies ist für positive $x$-Werte ($\hat{=}$ Vorwärtsbewegung) bei positiver Beschleunigung $a_x > 0$ stets erfüllt, da beide Terme positiv sind. Die Gleichung liefert also folgende zwei Lösungen
+\[
+t_1 = \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x} \qquad \text{und} \qquad t_2 = \frac{-v_{0,x} - \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}
+\]
+Welche der Lösungen physikalisch sinnvoll ist, hängt von den Vorzeichen und den Anfangsbedingungen ab.
+Da die Triebwerke nur in positive x-Richtung beschleunigen können ($a_x > 0$) und die Anfangsgeschwindigkeit positiv ist ($v_{0,x} > 0$), ist die Wurzel $\sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}$ für positive $x$ stets größer als $v_{0,x}$. Weil der Nenner ebenfalls positiv ist ($a_x > 0$), ist $t_1 > 0$, daher ist die $+$ Lösung $t_1$ die kontextuell Richtige.
+\[
+\sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x} > \sqrt{{v_{0,x}}^2} = v_{0,x} \quad \text{für } x > 0 \qquad t_1 = \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x} > 0
+\]
+Aus genau diesen Gründen ist $t_2$ im relevanten Untersuchungsbereich $t_2 < 0$ und physikalisch sinnfrei. Damit lauten die Umkehr- und Bahnkurvenfunktion: 
+\[
+t(x) = \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x} \qquad y\bigl(t(x)\bigr) \; \rightarrow \; y(x) \;= \; v_{0,y} \cdot t(x) - \frac{1}{2} \cdot g \cdot [t(x)]^2
+\]
+\[
+y(x) = v_{0,y} \cdot \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x} - \frac{1}{2} \cdot g \cdot \left(\frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}\right)^2
+\]
+Der zweite Term lässt sich weiter ausmultiplizieren:
+\[
+\frac{1}{2} \cdot g \cdot \left(\frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}\right)^2 = \frac{g}{2 \cdot a_x^2} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)^2
+\]
+Damit erhalten wir die vollständige Bahngleichung unter zusätzlicher konstanter Beschleunigung $a_x$ in horizontaler x-Richtung:
+\[
+y(x) = \frac{v_{0,y}}{a_x} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right) - \frac{g}{2 \cdot a_x^2} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)^2
 \]
 
 
 \subsection{Einfluss der Aerodynamik}
 Den Gegenspieler zu dieser beinahe magischen \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. 
+%TODO
 
 \subsubsection{Gebremste Flugkurve des Autos}
 Der Luftwiderstand kann grundsätzlich als lineare oder quadratische Funktion der Geschwindigkeit modelliert werden. 
@@ -144,34 +188,47 @@ Ganz allgemein muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hype
 
 
 \subsection{Zusammenfassung der verschiedenen Formeln}
-Je nach Situation besitzt die Funktion $x(t)$ eine unterschiedliche Darstellung. Dies liegt daran, dass bestimmte algebraische Grenzwerte die Funktion undefiniert erscheinen lassen würden, die jedoch physikalisch durchaus erreichbar und wahrscheinlich sind.
+Je nach Situation besitzt die Funktion $x(t)$ leider eine unterschiedliche Darstellung. Das liegt daran, dass bestimmte algebraische Grenzwerte die Funktion undefiniert erscheinen lassen würden, die jedoch physikalisch durchaus erreichbar und sogar wahrscheinlich sind.
 Während die vertikale Bewegung des Objekts in allen Fällen durch die bekannte Gleichung $y(t) = v_{0,y} \cdot t - \frac{1}{2} g \cdot t^2$ beschrieben wird, unterscheidet sich die horizontale Bewegung $x(t)$ je nach den vorliegenden physikalischen Bedingungen.\\
+\begin{wrapfigure}{l}{0.5\textwidth}
+	\centering
+	\includegraphics[width=0.48\textwidth]{resources/seq3/qualitativeAcceleration.png}
+	\vspace*{-10mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Qualitative Skizze der möglichen Beschleunigungseinflüsse}
+	\label{fig:03_qualitativeAcceleration}
+	%\vspace{-10pt}
+\end{wrapfigure}
 Fall 1: Konstante Geschwindigkeit$x(t) = v_{0,x} \cdot t$\\
-Der einfachste Fall tritt auf, wenn die horizontale Beschleunigung $a_x$ null ist. Realistisch gesehen entspricht dies nicht einer tatsächlich verschwindenden Beschleunigung, sondern einer Situation, in der der durch Doms magische blauen Auspuffflammen bereitgestellte Schub exakt die Luftreibung kompensiert. Infolgedessen bewegt sich das Fahrzeug mit konstanter Geschwindigkeit durch die Luft.
+Der einfachste Fall tritt auf, wenn sich die resultierende horizontale Geschwindigkeit nicht ändert. Realistisch gesehen entspricht dies aber nicht einer tatsächlichen Beschleunigung von 0, sondern einer Situation, in der der durch Doms magische blauen Auspuffflammen bereitgestellte Schub exakt die Luftreibung kompensiert. Infolgedessen bewegt sich das Fahrzeug mit konstanter Geschwindigkeit durch die Luft. Anstatt die Reibungs- und Beschleunigungskomponente, $a_x$ und $F_L$, kompliziert anzugleichen, werden einfach beide ignoriert. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall dem Koordinatenursprung.
 \\
 Fall 2: Positive Netto-Beschleunigung $x(t) = v_{0,x} \cdot t + \frac{1}{2} a_x \cdot t^2$\\
-In diesem Fall übersteigt die erzeugte Beschleunigung die durch Luftreibung verursachte Bremswirkung. Vereinfachend kann die Luftreibung in der Formel vernachlässigt werden, sodass die horizontale Bewegung ausschließlich durch $a_x$ beschrieben wird. Es ist jedoch zu beachten, dass der in der Formel verwendete Beschleunigungswert kleiner ist als die tatsächliche Antriebskraft, da diese zusätzlich die Reibung überwinden muss.
+In diesem Fall übersteigt die erzeugte Beschleunigung die durch Luftreibung verursachte Bremswirkung. Vereinfachend kann die Luftreibung in der Formel vernachlässigt werden, da beide Optionen in der Gesamtbilanz den selben Bereich abdecken, und so beinahe identisch sind\footnote{Nur beinahe, da Flugkurve wahrscheinlich dennoch kleine Unterschiede aufweisen würde}. Ein großes $a_x$ von dem ein kleineres $F_L$ \enquote{abgezogen} wird, führt zum selben Ergebnis, wie wenn von vornherein ein kleineres $a_x$ gewählt worden wäre. Daher kann die horizontale Bewegung ausschließlich durch $a_x$ beschrieben werden, wobei jedoch zu beachten ist, dass der in der Formel verwendete Beschleunigungswert, dann kleiner als die tatsächliche aufzuwendende Antriebskraft in der filmischen Realität ist. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall der grün markierten Fläche. Je größer $a_x$ wird, desto größer ist auch die positive Geschwindigkeitsänderung.
 \\
-Fall 3: Luftwiderstand ohne Ausgleich $x(t) = \frac{1}{q} \ln\left(q \cdot v_{0,x} \cdot t + 1 \right)$
-Hier ist die tatsächliche Beschleunigung positiv, aber nicht ausgeglichen. Das Objekt erfährt weiterhin Luftreibung, sodass die Geschwindigkeit im Verlauf des Flugs abnimmt.
+Auch wenn die Formeln der Fälle 1 und 2 beide die Reibung vernachlässigen, lassen sie sich nicht zu einer einzigen Funktion kombinieren. Das liegt daran, dass in Fall 2 $a_x$ im Nenner der inversen Funktion erscheint. Für $a_x = 0$ wäre die Funktion dann nicht definiert. 
 \\
-Die Formeln der Fälle 1 und 2 lassen sich nicht zu einer einzigen Funktion kombinieren, da in Fall 2 $a_x$ im Nenner der inversen Funktion erscheint. Für $a_x = 0$ wäre die Funktion dann nicht definiert. Fall 3 stellt einen grundsätzlich anderen Typ von Bewegung dar.
+Fall 3: Luftwiderstand ohne Ausgleich $x(t) = \frac{1}{q} \ln\left(q \cdot v_{0,x} \cdot t + 1 \right)$\\
+Das Objekt erfährt Luftreibung, jedoch keine externe positive Beschleunigung die diesen Verlust ausgleichen oder negieren würde. Die Geschwindigkeit nimmt im Verlauf des Flugs ab. Dabei ist zu beachten, dass es keinen Übergang von Fall 1 zu Fall 3 gibt. In der Gesamtgeschwindigkeitsbilanz startet diese Funktion also nicht bei null, sondern mit einem Versatz. Das liegt daran, dass, sobald die Reibungskraft nicht mehr ausgeglichen wird, sie als \enquote{abrupter Sprung} auf das Fahrzeug wirkt. Variierende Parameter wie der cw-Wert in Kombination Querschnittsflächenkonfiguration können die Funktion weiter ins Negative verschieben, jedoch nicht die Lücke zwischen \enquote{-x} und null schließen. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall daher der blauen Fläche im negativen Geschwindigkeits-Änderungsbereich. 
 \\
-Fall 4:
-Zunächst scheint dieser Fall redundant, da die vorherigen Szenarien bereits abgedeckt sind. Er beschreibt jedoch die Situation, in der die Summe der beschleunigenden Kräfte größer null, jedoch kleiner als die Summe der hemmenden Reibungskräfte ist.  
-
-In diesem Fall müsste eine Funktion $x(t)$ aufgestellt werden, die sowohl die positive Beschleunigung durch das Antriebssystem als auch die verzögernde Wirkung der Reibung berücksichtigt. Für große $a_x$ ist diese Funktion nahezu überflüssig, da der resultierende Effekt $a_x - F_L$ bereits durch Fall 2 und das Benutzen von kleineren, in der Gesamtbilanz äquivalenten $a_x$ Werten, approximiert werden kann. 
-
-Problematisch ist jedoch der Bereich sehr kleiner $a_x$, bei dem die Netto-Beschleunigung negativ, aber kleiner als im Fall 3 ist. Dieser Bereich ist durch die bisherigen Fälle nicht abgedeckt, da der Übergang von Fall 1 zu Fall 3 einen abrupten Sprung von null auf negative Geschwindigkeitsänderung erzeugt. Variierende Parameter wie der cw-Wert oder Türkonfigurationen können die Funktion weiter ins Negative verschieben, jedoch nicht die Lücke zwischen -x und null schließen.  
-
-Die Vernachlässigung dieses Falles wird im Abschnitt \hyperref[sec:fall_vier_ax]{Gebremste Flugkurve vor Kürzung} begründet.
-
-
+Fall 4 beschreibt die genau diese Situation, in der die Summe der beschleunigenden Kräfte größer null, jedoch kleiner als die Summe der hemmenden Reibungskräfte ist. In diesem Fall müsste eine Funktion $x(t)$ aufgestellt werden, die sowohl die positive Beschleunigung durch das Antriebssystem als auch die verzögernde Wirkung der Reibung berücksichtigt. Für große $a_x$ ist diese Funktion nahezu überflüssig, da der resultierende Effekt $a_x - F_L$ bereits durch Fall 2 und das Benutzen von kleineren, in der Gesamtbilanz äquivalenten $a_x$ Werten, approximiert werden kann. Problematisch ist jedoch der Bereich sehr kleiner $a_x$, bei dem die Netto-Beschleunigung negativ, aber größer als im Fall 3 ist. Dieser Bereich ist in \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} durch den roten Bereich gekennzeichnet und durch die bisherigen Fälle nicht abgedeckt.
 \\
 \\
+Die Vernachlässigung dieses Falles wird im Folgenden begründet.
 \\
-
-Die horizontale Bewegung unter Wirkung einer positiven Beschleunigung $a_x$ und Luftwiderstand $q \cdot v_x^2$ kann durch die Differentialgleichung beschrieben werden:
+Das Aufstellen einer expliziten Gleichung für Fall 4 erfordert eine Reevaluierung der Differentialgleichung aus Abschnitt \hyperref[sec:fall_vier_ax]{\enquote{Gebremste Flugkurve vor Kürzung}}. Da in diesem Fall $a_x$ nicht entfällt, ergibt sich ein deutlich komplexeres Integral. In der \textit{7.\ Auflage von \enquote{Table of Integrals, Series, and Products} von Gradshteyn und Ryzhik}\parencite{toi_p71} (S.\,71) wird ein ähnliches Integral angegeben, wobei jedoch ein Satz von Vorzeichen gegenüber der hier vorliegenden Form vertauscht ist. Eine einfache Lösung wäre hier die Substitution der betroffenen Variablen durch Gegenstücke mit getauschtem Vorzeichen.\\
+Doch ohne den gesamten vorherigen Rechenweg, der zu diesem Ergebnis geführt hat, im Detail zu traversieren und überprüfen, lässt sich nicht mit Sicherheit feststellen, ob eine Umkehr des Vorzeichens an dieser Stelle zulässig ist. Da das Vorzeichen innerhalb der Herleitung der Differentialgleichung möglicherweise bereits in impliziten Zwischenschritten verwendet wurde, bestünde die Gefahr, dass eine nachträgliche Substitution den mathematischen Zusammenhang der Gleichung und damit das Ergebnis verfälscht.
+\\
+Doch selbst mit diesen Umformung gelangen wir nicht zu einer allgemein gültigen Lösung. Der für die hier gegebene Konstellation relevante Teil des Integrals ergibt ein imaginäres Resultat. Eine physikalisch sinnvolle Interpretation wäre daher nur mit zusätzlicher, sorgfältiger Analyse und einer genauen Herleitung der Randbedingungen möglich.  
+\\
+Angesichts der hohen mathematischen Komplexität und des im Verhältnis dazu geringen Zugewinns an physikalischer Genauigkeit wird dieser Fall im Rahmen der vorliegenden Arbeit nicht weiterverfolgt. Er stellt jedoch eine interessante Grundlage für eine zukünftige, realistischere Modellierung dar. Erste Überlegungen und Umformungen sind daher nachfolgend exemplarisch aufgeführt.
 
 
 \begin{wrapfigure}{r}{0.60\textwidth}
@@ -292,5 +349,5 @@ enhanced jigsaw
 	wenn man $a \mapsto a_x$ und $b \mapsto -q$ setzt.
 \end{tcolorbox}
 \fi
-\parencite{toi_p71}
+
 \subsection{Beispielrechnung}

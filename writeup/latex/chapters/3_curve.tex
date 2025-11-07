@@ -61,7 +61,7 @@ Um eine Kollision nachzuweisen gilt es nun eine realistische Kombination aus Ein
 
 
 \subsection{Unbeschleunigte Flugkurve des Autos}
-\subsubsection{Bahnkurve des unbeschleunigten schiefen Wurfs}
+
 
 
 $y(x)=-\frac{1}{2}\cdot \frac{g}{{v_{0,x}}^2}\cdot x^2+\frac{v_{0,y}}{v_{0,x}}\cdot x$
@@ -96,7 +96,7 @@ Daraus ergibt sich eine zeitabhängige Beschleunigungsrichtung.
 Intuitiv scheint es so, als ob der Fahrzeugwinkel mit der jeweils momentanen Steigung der $y(t)$ korreliert. \\
 Diese Verhältnismäßigkeiten weiter zu untersuchen und korrekt zu berücksichtigen würden leider mein zeitliches Budget übersteigen, und müssen, so weh es mir tut, durch die genannte Maßnahmen approximiert werden. %TODO
 
-\subsection{Beschleunigte Flugkurve des Autos}
+\subsubsection{Beschleunigte Flugkurve des Autos}
 Benutzt man diese Annäherung im Falle einer beschleunigten Flugphase, verhält sich die Bewegung in x-Richtung gemäß dem Weg-Zeit-Gesetz\parencite{WegZeitGesetzWiki} nicht mehr linear, sondern weist eine quadratische Abhängigkeit auf.
 Die y-Komponente bleibt wie genannt unverändert, die x-Komponente wird um den Term $+\frac{1}{2}\cdot a_x\cdot t^2$ erweitert. \\
 Daraus folgt:
@@ -104,12 +104,12 @@ Daraus folgt:
 x(t)=v_{0,x}\cdot t+\frac{1}{2}\cdot a_x\cdot t^2 \qquad \text{und} \qquad
 y(t)=v_{0,y}\cdot t-\frac{1}{2}\cdot g \cdot t^2
 \]
-\subsubsection{Bahnkurve des beschleunigten schiefen Wurfs}
+
 
 \subsection{Einfluss der Aerodynamik}
 Den Gegenspieler zu dieser beinahe magischen \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. 
 
-\subsection{Gebremste Flugkurve des Autos}
+\subsubsection{Gebremste Flugkurve des Autos}
 Der Luftwiderstand kann grundsätzlich als lineare oder quadratische Funktion der Geschwindigkeit modelliert werden. 
 Für kleine Reynolds-Zahlen $\mathrm{Re} \lesssim 1$ dominiert die viskose Reibung, und der Widerstand ist näherungsweise proportional zur Geschwindigkeit $F_L \propto v$ \parencite{owen_ryu_drag}.
 Bei hohen Reynolds-Zahlen $\mathrm{Re} \gtrsim 10^3$ hingegen überwiegen trägheitsbedingte Effekte, sodass der Luftwiderstand quadratisch mit der Geschwindigkeit skaliert $F_L \propto v^2$ \parencite{owen_ryu_drag}.
@@ -142,6 +142,155 @@ Ganz allgemein muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hype
 \\
 
 
-\subsubsection{Bahnkurve des gebremsten schiefen Wurfs}
-\subsection{Einführung eines Toleranzspielraums}
+
+\subsection{Zusammenfassung der verschiedenen Formeln}
+Je nach Situation besitzt die Funktion $x(t)$ eine unterschiedliche Darstellung. Dies liegt daran, dass bestimmte algebraische Grenzwerte die Funktion undefiniert erscheinen lassen würden, die jedoch physikalisch durchaus erreichbar und wahrscheinlich sind.
+Während die vertikale Bewegung des Objekts in allen Fällen durch die bekannte Gleichung $y(t) = v_{0,y} \cdot t - \frac{1}{2} g \cdot t^2$ beschrieben wird, unterscheidet sich die horizontale Bewegung $x(t)$ je nach den vorliegenden physikalischen Bedingungen.\\
+Fall 1: Konstante Geschwindigkeit$x(t) = v_{0,x} \cdot t$\\
+Der einfachste Fall tritt auf, wenn die horizontale Beschleunigung $a_x$ null ist. Realistisch gesehen entspricht dies nicht einer tatsächlich verschwindenden Beschleunigung, sondern einer Situation, in der der durch Doms magische blauen Auspuffflammen bereitgestellte Schub exakt die Luftreibung kompensiert. Infolgedessen bewegt sich das Fahrzeug mit konstanter Geschwindigkeit durch die Luft.
+\\
+Fall 2: Positive Netto-Beschleunigung $x(t) = v_{0,x} \cdot t + \frac{1}{2} a_x \cdot t^2$\\
+In diesem Fall übersteigt die erzeugte Beschleunigung die durch Luftreibung verursachte Bremswirkung. Vereinfachend kann die Luftreibung in der Formel vernachlässigt werden, sodass die horizontale Bewegung ausschließlich durch $a_x$ beschrieben wird. Es ist jedoch zu beachten, dass der in der Formel verwendete Beschleunigungswert kleiner ist als die tatsächliche Antriebskraft, da diese zusätzlich die Reibung überwinden muss.
+\\
+Fall 3: Luftwiderstand ohne Ausgleich $x(t) = \frac{1}{q} \ln\left(q \cdot v_{0,x} \cdot t + 1 \right)$
+Hier ist die tatsächliche Beschleunigung positiv, aber nicht ausgeglichen. Das Objekt erfährt weiterhin Luftreibung, sodass die Geschwindigkeit im Verlauf des Flugs abnimmt.
+\\
+Die Formeln der Fälle 1 und 2 lassen sich nicht zu einer einzigen Funktion kombinieren, da in Fall 2 $a_x$ im Nenner der inversen Funktion erscheint. Für $a_x = 0$ wäre die Funktion dann nicht definiert. Fall 3 stellt einen grundsätzlich anderen Typ von Bewegung dar.
+\\
+Fall 4:
+Zunächst scheint dieser Fall redundant, da die vorherigen Szenarien bereits abgedeckt sind. Er beschreibt jedoch die Situation, in der die Summe der beschleunigenden Kräfte größer null, jedoch kleiner als die Summe der hemmenden Reibungskräfte ist.  
+
+In diesem Fall müsste eine Funktion $x(t)$ aufgestellt werden, die sowohl die positive Beschleunigung durch das Antriebssystem als auch die verzögernde Wirkung der Reibung berücksichtigt. Für große $a_x$ ist diese Funktion nahezu überflüssig, da der resultierende Effekt $a_x - F_L$ bereits durch Fall 2 und das Benutzen von kleineren, in der Gesamtbilanz äquivalenten $a_x$ Werten, approximiert werden kann. 
+
+Problematisch ist jedoch der Bereich sehr kleiner $a_x$, bei dem die Netto-Beschleunigung negativ, aber kleiner als im Fall 3 ist. Dieser Bereich ist durch die bisherigen Fälle nicht abgedeckt, da der Übergang von Fall 1 zu Fall 3 einen abrupten Sprung von null auf negative Geschwindigkeitsänderung erzeugt. Variierende Parameter wie der cw-Wert oder Türkonfigurationen können die Funktion weiter ins Negative verschieben, jedoch nicht die Lücke zwischen -x und null schließen.  
+
+Die Vernachlässigung dieses Falles wird im Abschnitt \hyperref[sec:fall_vier_ax]{Gebremste Flugkurve vor Kürzung} begründet.
+
+
+\\
+\\
+\\
+
+Die horizontale Bewegung unter Wirkung einer positiven Beschleunigung $a_x$ und Luftwiderstand $q \cdot v_x^2$ kann durch die Differentialgleichung beschrieben werden:
+
+
+\begin{wrapfigure}{r}{0.60\textwidth}
+	\vspace{-8pt} % tweak vertical alignment
+	\begin{minipage}{0.59\textwidth}
+		\begin{tcolorbox}[
+			title={Gradshteyn \& Ryzhik, 7.\ Aufl., §2.124},%\parencite{toi_p71}},
+			fonttitle=\bfseries\footnotesize,   
+			fontupper=\footnotesize,            
+			colback=white,
+			colframe=gray!60!black,
+			fonttitle=\bfseries,
+			boxrule=0.4pt
+			]
+			\[
+			\int \frac{dx}{a + bx^2}
+			= \frac{1}{\sqrt{ab}} \arctan\!\left(x\sqrt{\frac{b}{a}}\right),
+			\quad [ab>0]
+			\]
+			\[
+			= \frac{1}{2i\sqrt{ab}}
+			\ln\!\left(\frac{a + xi\sqrt{ab}}{a - xi\sqrt{ab}}\right),
+			\quad [ab<0]
+			\]
+		\end{tcolorbox}
+	\end{minipage}
+	\vspace{-6pt}
+\end{wrapfigure}
+
+$\displaystyle \frac{dv_x}{dt} = a_x - q \cdot v_x^2$\\[6pt]
+$\displaystyle \frac{dv_x}{a_x - q \cdot v^2} = dt \quad  p := -q$\\[6pt]
+$\displaystyle\frac{dv_x}{a_x + p \cdot v^2} = dt$\\[6pt]
+$\displaystyle \int \frac{dv_x}{a_x - q \cdot v^2} = \int dt$\\[6pt]
+$\displaystyle \qquad \overset{[a_x p >0]}{\Longrightarrow} $\\[8pt]
+$\displaystyle \frac{1}{\sqrt{a_x\cdot p}}\cdot \arctan\!\left(v_x\cdot \sqrt{\frac{p}{a_x}}\right)$\\[10pt]
+$\displaystyle \qquad \overset{[a_x p <0]}{\Longrightarrow} $\\[8pt]
+$\displaystyle \frac{1}{2i\sqrt{a_x\cdot p}}
+\ln\!\left(\frac{a_x + v_x\cdot i\sqrt{a_x \cdot p}}{a_x - v_x\cdot i\sqrt{a_x \cdot b}}\right)$\\[4pt]
+$\displaystyle \int \frac{dv_x}{a_x - q \cdot v^2} 
+= \frac{\tanh^{-1}\!\left(\frac{\sqrt{q}}{\sqrt{a_x}} v_x\right)}{\sqrt{a_x q}} + C$\\
+
+
+
+
+
+\iffalse
+\begin{tcolorbox}[
+	title={Gradshteyn \& Ryzhik, 7.\ Aufl., §2.124},
+	colback=white,
+	colframe=gray!60!black,
+	fonttitle=\bfseries
+	%sharp corners
+	]
+	\[
+	\int \frac{dx}{a + bx^2}
+	= \frac{1}{\sqrt{ab}} \arctan\!\left(x\sqrt{\frac{b}{a}}\right),
+	\quad [ab>0]
+	\]
+	\[
+	= \frac{1}{2i\sqrt{ab}}
+	\ln\!\left(\frac{a + xi\sqrt{ab}}{a - xi\sqrt{ab}}\right),
+	\quad [ab<0]
+	\]
+\end{tcolorbox}
+
+
+$\frac{dv_x}{dt} = a_x-q\cdot v_x^2 $\\
+$\frac{dv_x}{a_x-q\cdot v^2} = dt$\\
+$\int \frac{dv_x}{a_x-q\cdot v^2} = \int dt$\\
+$\int \frac{dv_x}{a_x-q\cdot v^2} = \frac{\tanh^{-1}\!\left(\frac{\sqrt{q}}{\sqrt{a_x}} v_x\right)}{\sqrt{a_x q}} + C$\\
+
+
+\[
+\frac{dv_x}{dt} = a_x-q\cdot v_x^2 \qquad \frac{dv_x}{a_x-q\cdot v^2} = dt
+\]
+\[
+\int \frac{dv_x}{a_x-q\cdot v^2} = \int dt
+\]
+
+\[
+\int \frac{dv_x}{a_x-q\cdot v^2} = \frac{\tanh^{-1}(\frac{\sqrt{q}}{\sqrt{a_x}}\cdot v_x)}{\sqrt{a_x\cdot v_x}} + C
+\]
+
+title={Gradshteyn \& Ryzhik, 7.\ Aufl., §2.124 (1)},
+colback=white,          % transparenter (weißer) Hintergrund
+colframe=black!40,      % dezenter grauer Rahmen
+fonttitle=\bfseries,
+boxrule=0.4pt,          % dünner Rahmen
+sharp corners,          % ohne Rundungen
+before skip=10pt,
+after skip=10pt,
+enhanced jigsaw
+]
+
+\begin{tcolorbox}[
+	title={Aus Gradshteyn \& Ryzhik, 7.\ Aufl., §2.124 (1)},
+	colback=gray!5,
+	colframe=gray!60!black,
+	fonttitle=\bfseries,
+	sidebyside,    % Kasten neben Text
+	sidebyside align=top,
+	lefthand width=8cm
+	]
+	\[
+	\int \frac{dx}{a + bx^2}
+	= \frac{1}{\sqrt{ab}} \arctan\!\left(x\sqrt{\frac{b}{a}}\right),
+	\quad [ab>0]
+	\]
+	
+	\[
+	= \frac{1}{2i\sqrt{ab}}
+	\ln\!\left(\frac{a + xi\sqrt{ab}}{a - xi\sqrt{ab}}\right),
+	\quad [ab<0]
+	\]
+	\tcblower
+	Dies entspricht dem Eintrag in \textbf{Gradshteyn \& Ryzhik}, 7.\ Aufl., Gleichung (2.124.1).  
+	Diese Form kann direkt auf die gegebene Differentialgleichung angewendet werden,
+	wenn man $a \mapsto a_x$ und $b \mapsto -q$ setzt.
+\end{tcolorbox}
+\fi
+\parencite{toi_p71}
 \subsection{Beispielrechnung}

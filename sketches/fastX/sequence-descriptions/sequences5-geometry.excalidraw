@@ -496356,7 +496356,7 @@
       "version": 15,
       "versionNonce": 177494629,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1761731572405,
       "link": null,
       "locked": false,
@@ -496435,10 +496435,7 @@
         0
       ],
       "simulatePressure": false,
-      "lastCommittedPoint": [
-        -0.47234698202976233,
-        28.183326549720846
-      ]
+      "lastCommittedPoint": null
     },
     {
       "id": "Fcx9d3vxbWSmrX3YhlMaZ",
@@ -496463,7 +496460,7 @@
       "version": 23,
       "versionNonce": 1979901509,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1761731573534,
       "link": null,
       "locked": false,
@@ -496582,10 +496579,7 @@
         0
       ],
       "simulatePressure": false,
-      "lastCommittedPoint": [
-        0.7872416332760395,
-        15.272530729934886
-      ]
+      "lastCommittedPoint": null
     },
     {
       "id": "9dOkF8kPv9c-yGWSZeYlU",
@@ -496610,7 +496604,7 @@
       "version": 15,
       "versionNonce": 1158958379,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1761731641717,
       "link": null,
       "locked": false,
@@ -496689,10 +496683,7 @@
         0
       ],
       "simulatePressure": false,
-      "lastCommittedPoint": [
-        -1.2134633578559715,
-        31.550147599410224
-      ]
+      "lastCommittedPoint": null
     },
     {
       "id": "gsnAq0kJhAcgq64_9eF5K",
@@ -496717,7 +496708,7 @@
       "version": 12,
       "versionNonce": 1456715429,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1761731642695,
       "link": null,
       "locked": false,
@@ -496781,10 +496772,7 @@
         0
       ],
       "simulatePressure": false,
-      "lastCommittedPoint": [
-        -1.9415598885981353,
-        14.076193467158049
-      ]
+      "lastCommittedPoint": null
     }
   ],
   "appState": {

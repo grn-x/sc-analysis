@@ -187,7 +187,7 @@ Ganz allgemein muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hype
 
 
 
-\subsection{Zusammenfassung der verschiedenen Formeln}
+\subsection{Erklärung der verschiedenen Formen}
 Je nach Situation besitzt die Funktion $x(t)$ leider eine unterschiedliche Darstellung. Das liegt daran, dass bestimmte algebraische Grenzwerte die Funktion undefiniert erscheinen lassen würden, die jedoch physikalisch durchaus erreichbar und sogar wahrscheinlich sind.
 Während die vertikale Bewegung des Objekts in allen Fällen durch die bekannte Gleichung $y(t) = v_{0,y} \cdot t - \frac{1}{2} g \cdot t^2$ beschrieben wird, unterscheidet sich die horizontale Bewegung $x(t)$ je nach den vorliegenden physikalischen Bedingungen.\\
 \begin{wrapfigure}{l}{0.5\textwidth}
@@ -349,5 +349,73 @@ enhanced jigsaw
 	wenn man $a \mapsto a_x$ und $b \mapsto -q$ setzt.
 \end{tcolorbox}
 \fi
+\subsection{Gesamtgeschwindigkeit und Zusammenfassung relevanter Formeln}
 
-\subsection{Beispielrechnung}
+Die Gesamtgeschwindigkeit $v$ ergibt sich aus dem Betrag des Geschwindigkeitsvektors und kann allgemein als $v = \sqrt{v_x^2 + v_y^2}$ ausgedrückt werden.
+\\
+Um von den bekannten Ortsfunktionen auf die jeweiligen Geschwindigkeitskomponenten zu schließen, werden die entsprechenden Funktionen nach der Zeit $t$ abgeleitet.
+\\
+Zur Bestimmung der Geschwindigkeit zum Kollisionszeitpunkt wird die bereits bekannte Weglänge bis zur Kollision in die für alle drei Fälle bekannten Zeitfunktionen $t(x)$ eingesetzt. Das so erhaltene $t$ kann anschließend in die zeitabhängigen Ausdrücke $y(t)$ sowie in die fallspezifischen $v_x(t)$ eingesetzt werden.\\
+Für alle Fälle gilt dabei:
+\[
+y(t) = v_{0,y} \cdot t - \frac{1}{2} \cdot g \cdot t^2,
+\qquad
+v_{0,x} = v_0 \cdot \cos(\alpha),
+\qquad
+v_{0,y} = v_0 \cdot \sin(\alpha)
+\]
+Die zeitabhängige vertikale Geschwindigkeitskomponente ist daher ebenfalls für alle Fälle gültig und ergibt sich aus der Ableitung der vertikalen Ortsfunktion nach der Zeit:
+\[
+v_y(t) = \frac{dy}{dt} = v_{0,y} - g \cdot t
+\]
+\subsubsection{Ableitung der unbeschleunigten Bahnkurve}
+
+Die Geschwindigkeitsfunktion folgt aus der Ableitung der bereits bekannten Ortsfunktion der unbeschleunigten Bahn. Nach Differentiation der Zeit bleibt hier selbstverständlich die Konstante $v_{0,x}$ übrig:
+\[
+x(t) = v_{0,x} \cdot t \qquad v_x(t) = \frac{dx}{dt} = v_{0,x}
+\]
+Die für den Kollisionszeitpunkt nötige Umkehrfunktion $t(x)$ ist bereits bekannt:
+\[
+t(x) = \frac{x}{v_{0,x}}
+\]
+Die bereits ermittelte Bahnkurve lautet:
+\[
+y(x) = -\frac{g}{2 \cdot {v_{0,x}}^{2}} \cdot x^{2} + \tan(\alpha) \cdot x
+\]
+
+\subsubsection{Ableitung der beschleunigten Bahnkurve}
+
+Für eine Bahn mit konstanter positiver Beschleunigung $a_x$ gilt:
+\[
+x(t) = v_{0,x} \cdot t + \frac{1}{2} \cdot a_x \cdot t^2 \qquad v_x(t) = \frac{dx}{dt} = v_{0,x} + a_x \cdot t
+\]
+Die für den Kollisionszeitpunkt nötige Umkehrfunktion $t(x)$ ist bereits bekannt:
+\[
+t(x) = \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}
+\]
+Die entsprechende Bahnkurve ergibt sich zu:
+\[
+y(x) = \frac{v_{0,y}}{a_x} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)
+- \frac{g}{2 \cdot a_x^2} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)^2
+\]
+
+\subsubsection{Ableitung der gebremsten Bahnkurve}
+
+Für den Fall einer durch Luftwiderstand horizontal gebremsten Bewegung ergibt sich die bekannte Zeit-Orts-Funktion zu:
+\[
+x(t) = \frac{1}{q} \cdot \ln\!\left(q \cdot v_{0,x} \cdot t + 1 \right) \qquad \text{wobei} \; q := \frac{A \cdot \rho \cdot c_w}{2 \cdot m}
+\]
+die Substitutionsvariable mit Widerstandskoeffizienten darstellt.\\
+Im Kontext der zuvor gelösten Differentialgleichung wurde die horizontale Geschwindigkeitskomponente bereits errechnet:
+\[
+v_x(t) = \frac{v_{0,x}}{q \cdot v_{0,x} \cdot t + 1}
+\]
+Die für den Kollisionszeitpunkt nötige Umkehrfunktion $t(x)$ ist bereits bekannt:
+\[
+t(x) = \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}}
+\]
+Die bereits ermittelte Bahnkurve lautet:
+\[
+y(x) = v_{0,y} \cdot \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}} 
+- \frac{1}{2} \cdot g \cdot \left(\frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}}\right)^2
+\]

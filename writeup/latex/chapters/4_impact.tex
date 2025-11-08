@@ -127,14 +127,188 @@ m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}},
 \]
 wobei $I_{\text{kran}}$ das Trägheitsmoment des Kranarms und $r_{\text{kran}}$ der Abstand zwischen Drehpunkt und Kollisionspunkt ist.
 \\
-Diese Verhältnismäßigkeit lässt sich plausibel herleiten, wenn man die kinetische Energie der Rotation $\tfrac{1}{2} I \omega^2$ mit der translatorischen Bewegungsenergie $\tfrac{1}{2} m_{\text{eff}} v^2$ gleichsetzt und in letzterer das $v$ als Bahngeschwindigkeit behandelt und durch seine Definition\(v = \omega \cdot r\) ersetzt. Daraus folgt $\tfrac{1}{2} I \omega^2 =\tfrac{1}{2} m_{\text{eff}} \cdot (\omega \cdot r)^2$. Im nächsten Schritt werden die Halben gekürzt, und das System durch $(\omega \cdot r)^2$ geteilt um auf $\frac{I \omega^2}{(\omega \cdot r)^2} = m_{\text{eff}}$ zu kommen. Im letzten Schritt können die $\omega^2$ gekürzt werden um die finale Form $m_{\text{eff}} = \frac{I}{\omega^2}$ zu erhalten. 
+Diese Verhältnismäßigkeit lässt sich plausibel herleiten, wenn man die kinetische Energie der Rotation $\tfrac{1}{2} I \omega^2$ mit der translatorischen Bewegungsenergie $\tfrac{1}{2} m_{\text{eff}} v^2$ gleichsetzt und in letzterer das $v$ als Bahngeschwindigkeit behandelt und durch seine Definition\(v = \omega \cdot r\) ersetzt. Daraus folgt $\tfrac{1}{2} I \omega^2 =\tfrac{1}{2} m_{\text{eff}} \cdot (\omega \cdot r)^2$. Im nächsten Schritt werden die Halben gekürzt, und das System durch $(\omega \cdot r)^2$ geteilt um auf $\frac{I \omega^2}{(\omega \cdot r)^2} = m_{\text{eff}}$ zu kommen. Im letzten Schritt können die $\omega^2$ gekürzt werden um die finale Form $m_{\text{eff}} = \frac{I}{r^2}$ zu erhalten. 
 \\
 Dadurch wird das Trägheitsmoment des gesamten Rotationssystems auf einen Punkt äquivalenter translatorischer Masse reflektiert.
 
-
-
-
 \subsubsection{Gerader Zentrischer Stoß}
+Mithilfe dieser reduzierten Masse lässt sich der Stoßvorgang, unter der Annahme eines fest gelagerten Drehpunkts des Kranarms, auf eine eindimensionale Impulsübertragung entlang der Stoßlinie reduzieren. Zur realistischeren Beschreibung des Energie- und Impulsaustauschs wird hierbei das Modell des teilelastischen Stoßes unter Verwendung eines Restitutionskoeffizienten $k$ herangezogen\parencite{kuchling_geschw-teilelastisch}.
+\\
+Diese Stoßzahl beschreibt das Verhältnis der relativen Geschwindigkeiten zweier Körper nach und vor dem Stoß und liegt definitionsgemäß im Intervall $0 \leq k \leq 1$. Ein Wert von $k = 1$ entspricht einem vollständig elastischen Stoß ohne Energieverlust, während $k = 0$ einem vollkommen inelastischen Stoß mit maximaler Energieabsorption entspricht \parencite{kuchling_geschw-teilelastisch}.
+In der Praxis wird der Wert der Stoßzahl in der Regel empirisch durch Fall- oder Aufpralltests bestimmt\parencite{boege_stosszahl}. Für Stahl beträgt der Restitutionskoeffizient bei Raumtemperatur ($20\,^{\circ}\mathrm{C}$) typischerweise etwa $k = 0{,}7$, während er bei erhöhter Temperatur von etwa $1100\,^{\circ}\mathrm{C}$ auf rund $k = 0{,}35$ absinkt \parencite{boege_stosszahl}.
+\\
+Für die Berechnung wird ausschließlich die tangentiale Komponente der Fahrzeuggeschwindigkeit berücksichtigt, also jene Komponente, die senkrecht auf den Kranarm wirkt. Wie bereits in den vorangegangenen Kapiteln hergeleitet, ergibt sich deren Betrag zu $ \lvert\vec{v_{c,t}}\rvert = \sin(\tau) \cdot \lvert \vec{v_c} \rvert$.
+\\
+Unter Anwendung der Impuls-Geschwindigkeits-Gleichungen des teilweisen elastischen Stoßes\parencite{kuchling_geschw-teilelastisch} lässt sich die Geschwindigkeit des Fahrzeugs nach der Kollision $v'_{c,t}$ sowie die Bahngeschwindigkeit des Kranarms $v'_{b}$ am Kollisionspunkt mit Radius $r$ durch die effektive Masse des Kranarms $m_{\text{eff}}$ ausdrücken:
+\[
+v'_{c,t} = \frac{m_c \cdot v_{c,t} + m_{\text{eff}} \cdot v_b - m_{\text{eff}} \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}},
+\quad
+v'_{b} = \frac{m_c \cdot v_{c,t} + m_{\text{eff}} \cdot v_b + m_c \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}}.
+\]
+Da die Bahngeschwindigkeit des Kranarms zu Beginn null ist ($v_b = 0$), entfallen sämtliche Terme, in denen $v_b$ auftritt. Somit vereinfachen sich die Gleichungen entsprechend:
+\[
+v'_{c,t} = \frac{m_c \cdot v_{c,t} - m_{\text{eff}} \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}},
+\qquad
+v'_{b} = \frac{m_c \cdot v_{c,t} + m_c \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}}.
+\]
+
 \subsection{Kraftübertragungsmaxima}
+Um eine Aussage über den Radius $r$ für eine optimale Kraftübertragung zu können muss herausgefunden werden unter welchen Bedingungen die Winkelbeschleunigung 
+
+% Teil I: Definitionen und grundlegende Beziehungen
+Die Winkelgeschwindigkeit $\omega$ des Krans nach dem Stoß ergibt sich aus der Bahngeschwindigkeit am Einschlagspunkt:\\
+I:
+\[
+\omega = \frac{v_b'}{r}
+\]
+
+Dabei ist $v_b'$ die Bahngeschwindigkeit des Krans nach dem Stoß am Radius $r$.
+
+Die effektive Masse beim Stoß hängt vom Trägheitsmoment $I$ des Krans und dem Radius $r$ ab:
+\[
+m_{eff} = \frac{I}{r^2}
+\]
+
+% Stoßgleichungen
+Beim teilelastischen Stoß gelten zwei grundlegende Beziehungen. Die erste beschreibt den Zusammenhang zwischen den Geschwindigkeiten vor und nach dem Stoß über den Stoßkoeffizienten $k$:
+\[
+\left(v_{n,c} - v_b\right) \cdot k = v_b' - v_{n,c}'
+\]
+
+Da der Kran anfangs ruht, gilt $v_b = 0$. Die Gleichung vereinfacht sich zu:
+\[
+v_{n,c} \cdot k = v_b'-v_{n,c}'
+\]
+
+Da wir uns nicht für die resultierende Geschwindigkeit des Autos interessieren, kann diese Gleichung nach ihr umgestellt, und $v_{n,c}'$ später durch ihre alternative Darstellung ersetzt werden \\
+II:
+\[
+v_{n,c}' = v_b'- v_{n,c} \cdot k
+\]
+
+
+% Teil II: Impulserhaltung
+Die zweite fundamentale Beziehung ist die Impulserhaltung beim Stoß. Der Gesamtimpuls vor dem Stoß muss gleich dem Gesamtimpuls nach dem Stoß sein:
+\[
+v_{n,c} \cdot m_c + v_b \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff}
+\]
+
+Mit $v_b = 0$ wird daraus:\\
+III:
+\[
+v_{n,c} \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff}
+\]
+
+II in III einsetzen:
+Wir setzen nun die Beziehung für $v_{n,c}'$ aus der ersten Gleichung in die Impulserhaltung ein:
+\[
+v_{n,c} \cdot m_c =\left(v_b'- v_{n,c} \cdot k \right)  \cdot m_c + v_b' \cdot m_{eff}
+\]
+
+Ausmultiplizieren:
+\[
+v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot m_c \cdot m_c + v_b' \cdot m_{eff}
+\]
+$v_b'$ Ausklammern
+
+\[
+v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot \left( m_c + m_{eff}\right)
+\]
+
+$v_{n,c} \cdot k \cdot m_c$ Addieren
+\[
+v_{n,c} \cdot m_c \; + \; v_{n,c} \cdot k \cdot m_c = v_b'\cdot \left( m_c + m_{eff}\right)
+\]
+
+$m_c$ Ausklammern
+\[
+v_{n,c} \cdot m_c \cdot \left(1+k\right) = v_b'\cdot \left( m_c + m_{eff}\right)
+\]
+Auflösen nach $v_b'$:
+\[
+\frac{v_{n,c} \cdot m_c \cdot \left(1+k\right)}{ m_c + m_{eff}} = v_b'
+\]
+
+I einsetzen 
+% Einsetzen von m_eff
+Mit $m_{eff} = \frac{I}{r^2}$ ergibt sich:
+\[
+v_b' = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
+\]
+
+Mit $v_b' = \omega\cdot r$ ergibt sich:
+\[
+\omega\cdot r = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
+\]
+
+Mit $v_b' = \omega\cdot r$ ergibt sich:
+\[
+\omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c + \frac{I}{r^2}}\cdot \frac{1}{r}
+\]
+
+Schrittweise Ausmultiplizieren:
+\[
+\omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c \cdot r^2 + I}\cdot \frac{r^2}{r} \qquad = \frac{v_{n,c} \cdot m_c \cdot (1 + k)\cdot r}{m_c \cdot r^2 + I}
+\]
+
+Um optimale Einschlagsposition zu finden, bei der die Winkelgeschwindigkeit maximal wird, $\omega$ nach unserer Gesuchten Größe $r$ ableitebn und setzen die Ableitung gleich null(Extremum finden):
+\[
+\frac{d\omega}{dr} = 0
+\]
+
+Für die Funktion $\omega(r) = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot r}{m_c \cdot r^2 + I}$ verwenden wir die Quotientenregel:
+\[
+\frac{d}{dr}\left(\frac{u}{v}\right) = \frac{u' \cdot v - u \cdot v'}{v^2}
+\]
+
+\[
+\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (m_c \cdot r^2 + I) - v_{n,c} \cdot m_c \cdot (1 + k) \cdot r \cdot 2 \cdot m_c \cdot r}{(m_c \cdot r^2 + I)^2}
+\]
+
+Den gemeinsamen Faktor $v_{n,c} \cdot m_c \cdot (1 + k)$ im Zähler ausklammern:
+\[
+\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot \left[(m_c \cdot r^2 + I) - r \cdot 2 \cdot m_c \cdot r\right]}{(m_c \cdot r^2 + I)^2}
+\]
+
+Die Klammer im Zähler vereinfachen:
+\[
+(m_c \cdot r^2 + I) - 2 \cdot m_c \cdot r^2 = m_c \cdot r^2 + I - 2 \cdot m_c \cdot r^2 = I - m_c \cdot r^2
+\]
+
+Somit:
+\[
+\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (I - m_c \cdot r^2)}{(m_c \cdot r^2 + I)^2}
+\]
+
+% Nullstellen bestimmen
+Für ein Extremum muss gelten:
+\[
+\frac{d\omega}{dr} = 0
+\]
+
+Dafür muss eine Zählernullstelle gefunden werden der Nenner $(m_c \cdot r^2 + I)^2$ immer positiv ist und der Vorfaktor $v_{n,c} \cdot m_c \cdot (1 + k)$ ebenfalls nicht null ist, muss der Zählerterm null werden:
+\[
+\underbrace{v_{n,c} \cdot m_c \cdot (1 + k)}_{>0} \cdot (I - m_c \cdot r^2) = 0
+\]
+
+Da $v_{n,c} \cdot m_c \cdot (1 + k) > 0$, folgt:
+\[
+I - m_c \cdot r^2 \overset{!}{=} 0
+\]
+
+Auflösen nach $r$:
+\[
+I = m_c \cdot r^2
+\]
+
+\[
+r^2 = \frac{I}{m_c}
+\]
+
+Der optimale Radius ist somit:
+\[
+r_{opt} = \sqrt{\frac{I}{m_c}}
+\]
+
 \subsection{FEM Analyse}
 cool :DAD:SD:ASDUIAFHwuihQAWEUIFRHWSEUIFASLJDFBN

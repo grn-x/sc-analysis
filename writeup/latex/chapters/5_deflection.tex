@@ -93,7 +93,7 @@ Im nächsten Schritt wird die trigonometrische Identität angewandt:
 	\vspace{-8pt} % tweak vertical alignment
 	\begin{minipage}{0.39\textwidth}
 		\begin{tcolorbox}[
-			title={Trig. Identität FoSa. 241},
+			title={Trig. Identität\textcolor{white}{\parencite{handbuch_nawi_trig}}}, %TODO
 			fonttitle=\bfseries\footnotesize,   
 			fontupper=\footnotesize,            
 			colback=white,
@@ -189,7 +189,7 @@ Es kann also vorkommen, dass die Winkel zu einem Zeitpunkt $T$ identisch sind. D
 \\
 Wenn sich die beiden $\varphi$ zeitabhängig verändern, zu einem gemeinsamen Zeitpunkt jedoch denselben Wert annehmen, ergibt ihre Differenz null: 
 \\
-$\Delta(T) = \varphi_{Gewicht}(T) - \varphi_{Kugel}(\vartheta(T))$ 
+$\Delta(T) = \varphi_{Gewicht}(T) - \varphi_{Kugel}(\vartheta(T)) \; \overset{!}{=} \; 0$ 
 \\
 Berücksichtigt man bei der Dynamik des Kranarms eine zeitliche Verzögerung und einen Startwinkel, ergibt sich diese Gesamtformel:
 \\
@@ -201,6 +201,8 @@ Berücksichtigt man bei der Dynamik des Kranarms eine zeitliche Verzögerung und
 }_{\varphi_{Kugel}}
 \qquad mit \; \vartheta := \arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)
 \]
+Der \textit{mod $2 \pi$} Operator normiert die Kranwinkel nach vollständigen Umdrehungen auf $\leq 360\,^{\circ}$, das tiefgestellte Plus ist die \enquote{Positivteil-Notation} und agiert wie die $max(x,y)$ Funktion. Solange $T < T_{\text{offset}}$ hat die Rotation noch nicht begonnen, dieser Teilterm ergibt null, und die Funktion gibt nur den ursprünglichen Startwinkel zurück. 
+\\
 Analytisch kann für diese Gleichung, wie oben bereits beschrieben, keine Nullstelle errechnet werden. Daher habe ich in \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py}{Python ein Hybridverfahren} zum numerischen Lösen diese Nullstellenproblems geschrieben. 
 \\
 Das Programm ist so konfiguriert, dass es zunächst das schnellere Newton-Raphson-Verfahren bevorzugt. 
@@ -223,7 +225,7 @@ Dieses Verfahren ist zwar deutlich langsamer, konvergiert jedoch garantiert, sof
 Hierbei wird das Intervall wiederholt halbiert und stets diejenige Hälfte beibehalten, in der der Vorzeichenwechsel auftritt. 
 Die Methode benötigt keine Ableitung und funktioniert auch bei ungünstigen Startwerten zuverlässig. 
 \\
-Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem bereits Newton-Raphson-freundlichen Szenario unattraktiver als das Verfahren, das seinen Namen der bekanntesten Jungfrau der gesamten Physikgeschichte verschuldet.
+Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem, sowieso bereits Newton-Raphson-freundlichen, Szenario unattraktiver als das Verfahren, das seinen Namen der bekanntesten Jungfrau der gesamten Physikgeschichte verschuldet.
 
 
 
@@ -238,8 +240,180 @@ Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem bereits Ne
 
 %\Delta = \underbrace{\bigl[\varphi_0 + \omega_{\text{Kran}}\,(T - T_{\text{offset}})_+\bigr] \bmod 2\pi}_{\varphi_{Gewicht}} - \underbrace{\varphi(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)) = \arctan\left(\frac{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))\cdot \sin(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))}{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)))\cdot \cos(\vartheta) + u}\right)}_{\varphi_{Kugel}}
 \subsection{Massenträgheitsmoment der Kugel}
+\begin{wrapfigure}{r}{0.2\textwidth} %L
+	\centering
+	\includegraphics[width=0.28\textwidth]{resources/seq5/06_sketch-density.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkr.; Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Querschnitt der Dichteschichten der Kugelbombe aus Sequenz 4}
+	\label{fig:05_sketch_density}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Da die Kugelbombe im Laufe des Films als \enquote{DM-79 sub-nautical neutron mine}\parencite{fastXwiki} bezeichnet wird, liegt die Annahme nahe, dass die Kugel keine homogene Dichte besitzt, sondern aus mehreren Schichten besteht. 
+\\
+Die Schichtstruktur ist in \hyperref[fig:05_sketch_density]{Abbildung~\ref*{fig:05_sketch_density}} dargestellt. Der Querschnitt zeigt die innere Hülle 1 vom Zentrum bis zum Radius $r_i$, deren Volumen eine Dichte von $\rho_i$ aufweist. Die äußere Schale erstreckt sich von $r_i$ bis $R_a$ und besitzt eine Dichte von $\rho_a$. 
+\\
+Zur Berechnung des Trägheitsmoments müssen die Sphären in kleine Masseelemente zerlegt und unter Berücksichtigung ihres Abstands vom Zentrum sowie der Dichte gewichtet werden. Dabei gilt, je näher sich eine Masse an der Rotationsachse befindet, desto geringer ist ihr Beitrag zum Trägheitsmoment. Dies führt zu
+\[
+I \;=\; \int r_\perp^{\,2}\, dm \;\Rightarrow\; \int (r \cdot \sin(\theta))^2\, \rho(r)\, dV
+\]
+\\
+Um jeden Punkt innerhalb der Kugel beschreiben zu können, wird das Volumenelement \(dV = r^2 \sin(\theta)\, dr\, d\theta\, d\varphi\) benötigt. Es beschreibt in Kugelkoordinaten das infinitesimale Raumstück, das durch kleine Änderungen von Radius, Polarwinkel und Azimutwinkel aufgespannt wird. Durch Ausführung des dreifachen Volumenintegrals über die entsprechenden Integrationsgrenzen erhält man schließlich das Volumen der Kugel.
+\\
+\begin{wrapfigure}{R}{0.4\textwidth} %TODO!!!!
+	\centering
+	\includegraphics[width=0.38\textwidth]{resources/seq5/05_sketch-sphere.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Nach \parencite{nolting_fig_sphere}; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Basisvektoren der Kugelkoordinaten für Sequenz 4}
+	\label{fig:05_sketch_sphere}
+	%\vspace{-10pt}
+\end{wrapfigure}
+$\displaystyle I \;=\; \int \rho(r) \cdot (r \cdot \sin(\theta))^2 \cdot r^2 \cdot \sin(\theta)\cdot  \, dr \, d\theta \, d\varphi$
+\\[8pt]
+$\displaystyle I \;=\; \int \rho(r) \cdot r^4 \cdot \sin^3(\theta) \cdot \, dr \, d\theta \, d\varphi$
+\\[8pt]
+$\displaystyle I \;=\; \int \rho(r) \cdot r^4\cdot \underbrace{\left(\int_0^{\pi} \sin^3(\theta)\cdot  \, d\theta\right)}_{\frac{4}{3}} \cdot \underbrace{\left(\int_0^{2\pi} d\varphi\right)}_{2\pi} \, dr $
+\\[8pt]
+$\displaystyle \Rightarrow\quad I \;=\; \frac{8\pi}{3} \cdot \int \rho(r) \cdot r^4\cdot \, dr$
+\\[8pt]
+Da $\rho=const.$ für jede der beiden Schichten kann $\rho$ vor das Integral gezogen werden. Außerdem dürfen die Trägheitsmomente der beiden Kugelhüllen wie in Sequenz 3 bereits beschrieben, direkt addiert werden\parencite{brenneke_schuster_ges-traegheit}, daraus folgt diese Darstellung: 
+$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3} \cdot\left(\rho_i \int_{0}^{r_i} \cdot \; r^4\cdot \, dr \; + \; \rho_a \cdot \int_{r_i}^{R_a}  \cdot \; r^4\cdot \, dr \right)$
+\\[8pt]
+$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3}\left( \rho_i \cdot \frac{r_i^5}{5} \;+\; \rho_a \cdot \frac{R_a^5 - r_i^5}{5} \right)\;=\; \frac{8\pi}{15} \left( \rho_i \cdot r_i^5 \;+\; \rho_a \cdot (R_a^5 - r_i^5)\right)$
+\\[8pt]
+
 \subsection{Kollision Kugel mit Gegengewicht}
+\begin{wrapfigure}{R}{0.4\textwidth} 
+	\centering
+	\includegraphics[width=0.38\textwidth]{resources/seq5/07_sketch-collision.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Skizze der Kollisionsvektoren aus Sequenz 5}
+	\label{fig:05_sketch_collision}
+	%\vspace{-10pt}
+\end{wrapfigure}
+In \hyperref[fig:05_sketch_collision]{Abbildung~\ref*{fig:05_sketch_collision}} sieht man die in der Kollision beteiligten Vektoren. Der Kugel $\vec{v_k}$ zeigt in die Richtung des vorhin berechneten Winkels $\vartheta$. Da die genaue Geschwindigkeit aber parametrisiert bleiben soll, besteht $\vec{v_k}$ aus dem Einheitsvektor in Richtung $\vartheta$ mit Berücksichtigung des rotierten Bezugsystems um $\beta$, also $e_{\vec{v_k}} = \left( \begin{smallmatrix} x = \cos(\vartheta-\beta) \\ y = \sin(\vartheta-\beta) \end{smallmatrix} \right)$, mit der Gewichtung $v_{Kugel}$ als Geschwindigkeitsskalar: $\vec{v_k} = e_{\vec{v_k}} \cdot |v_{Kugel}|$.
+\\
+Die Zusammensetzung des momentanten Bahngeschwindigkeitsvektors folgt ähnlichem System. Dabei muss beachtet werden, dass der Bahngeschwindigkeitsvektor allerdings senkrecht auf den Arm steht und daher zusätzlich $90\,^{\circ}$ mit dem momentanten Armwinkel $\varphi$ verrechnet werden müssen: $e_{\vec{v_b}} = \left( \begin{smallmatrix} x = \cos(\varphi+90\,^{\circ}-\beta) \\ y = \sin(\varphi+90\,^{\circ}-\beta) \end{smallmatrix} \right)$
+\\
+\\
+Da allerdings wieder das Modell des eindimensionalen teilelastischen Stoßes angewandt werden soll, können die Vektoren in dieser Konfiguration noch nicht miteinander verrechnet werden. Es wechselwirken bei der Kollision nur die jeweils Antiparallelen Geschwindigkeitsvektoren. 
 
 \subsubsection{Orthogonale Projektion}
+Der Kugelvektor $\vec{v_k}$ soll also relativ zum Bahnvektor $\vec{v_b}$ in eine tangentiale Komponente $\vec{v_{k,t}} \; \hat{=} \;  \vec{v_{kp}}\parallel \vec{v_b}$, die parallel verläuft, und in eine Normale, die orthogonal zur Bahn verläuft $\vec{v_{k,n}} \; \hat{=}\; \vec{v_{ko}}\bot \vec{v_b}$, aufgespalten werden:
+\\
+Da die Vektoren $\vec{v_{kp}}$ und $\vec{v_b}$ parallel sind, lassen sie sich über einen hypothetischen Skalar $x$ ineinander überleiten. Ebenso ist das Skalarprodukt aus der orthogonalen Vektorkombination$\vec{v_{ko}}$ $\vec{v_b}$ null:
+\[
+\textbf{0}\qquad \vec{v_k} = \vec{v_{kp}} + \vec{v_{ko}} \qquad \qquad \textbf{I}\qquad	\vec{v_{kp}} = x \cdot \vec{v_b} \qquad \qquad \textbf{II}\qquad	\vec{v_b} \circ \vec{v_{ko}} = 0
+\]
+Mit dieser Orthogonalitätsbedingung kann $x$ durch Einsetzen von $0$ in $II$ und Substitution von $I$ bestimmt werden:
+\[
+	\vec{v_{ko}} = \vec{v_k} - \vec{v_{kp}} \qquad 	\vec{v_b} \circ (\vec{v_k} - \vec{v_{kp}}) = 0 \qquad 	\vec{v_b} \circ (\vec{v_k} - x \cdot \vec{v_b}) = 0
+\]
+Beim Ausmultiplizieren gilt $\vec{v_b} \circ \vec{v_b} = |\vec{v_b}|^2$\parencite{tipler_vektor}, nach dem Umstellen erhalten wir:
+\[
+	\vec{v_b} \circ \vec{v_k} - x \cdot |\vec{v_b}|^2 = 0 \qquad 	\vec{v_b} \circ \vec{v_k} = x \cdot |\vec{v_b}|^2 \qquad 	x = \frac{\vec{v_b} \circ \vec{v_k}}{|\vec{v_b}|^2}
+\]
+Schließlich:
+\[
+	\vec{v_{kp}} = \frac{\vec{v_b} \circ \vec{v_k}}{|\vec{v_b}|^2} \cdot \vec{v_b} \qquad 	\vec{v_{ko}} = \vec{v_k} - \vec{v_{kp}}
+\]
+\subsubsection{Resultierende Geschwindigkeiten}
+
 \subsection{Überdrehen der Kugel}
+\begin{wrapfigure}{R}{0.4\textwidth} 
+	\centering
+	\includegraphics[width=0.38\textwidth]{resources/seq5/08_sketch-difference.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Skizze der kinematischen Differenz nach der Kollision in Sequenz 5}
+	\label{fig:05_sketch_difference}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Während des ursprünglichen Rollvorgangs waren die translatorische Bewegungsrichtung und die rotatorische Bewegung der Kugel kinematisch miteinander gekoppelt. Durch den Stoß ändert sich diese Kopplung jedoch. Der tangentiale Geschwindigkeitsanteil der Kugel \(\vec{v_{k,t}}\) wird durch die Kollision reduziert, während der orthogonale Anteil \(\vec{v_{k,n}}\) unverändert bleibt. Da das verwendete Kontaktmodell den Stoß als reibungslos beschreibt und somit keine direkte Kopplung zwischen translatorischer und rotatorischer Bewegung berücksichtigt, stimmen diese beiden Bewegungsanteile nach der Kollision, weder aus Sicht des Betrags, noch aus Sicht der Richtung überein. 
+\\
+Infolgedessen ist die Rotationsgeschwindigkeit der Kugel zunächst auf eine Richtung und ein Energieniveau angepasst, die nicht mehr mit der tatsächlichen Translationsbewegung korrespondieren. Die Kugel „überdreht“ daher unmittelbar nach der Kollision.
+\\
+Dieser Effekt führt zu einem kurzfristigen Gleitvorgang anstelle des reinen Rollens. In dieser Phase wirkt die Gleitreibung als ausgleichender Mechanismus zwischen Rotations- und Translationsenergie. Sie bewirkt, dass die translatorische Geschwindigkeit zunimmt, während die Rotationsgeschwindigkeit abnimmt, bis sich beide Bewegungsformen wieder angeglichen haben und sich im Rollzustand befinden.
+In \hyperref[fig:05_sketch_difference]{Abbildung~\ref*{fig:05_sketch_difference}} ist dies Phänomen versinnbildlichend durch den grünen Pfeil dargestellt.
+\\
 \subsubsection{Angleichen der Geschwindigkeiten}
+Um die kinematische Kopplung zwischen Rotation und Translation nach dem Stoß wiederherzustellen, muss das Überdrehen durch Gleitreibung ausgeglichen werden. Im Folgenden wird das Lösungsverfahren für diesen Angleichungsprozess hergeleitet.
+\\
+\\
+Während des Gleitvorgangs wirkt die Gleitreibungskraft $F_r = \mu \cdot m \cdot g$ \parencite{tipler_reibung} auf die Kugel. $\mu$ ist dabei ein werkstoffspezifischer Gleitreibungskoeffizient und muss nachgeschlagen werden. Die Kraft beschleunigt die langsamere translatorische, und bremst die schnellere rotatorische Bewegung.
+\\
+Nach dem Drallsatz hemmt das Reibungsmoment $M = F_r \cdot r_k$ die Winkelgeschwindigkeit\parencite{boege_drall}:
+\[
+M = I \cdot \alpha = I \cdot \frac{d\omega}{dt} \qquad \Longrightarrow \qquad I \cdot \frac{d\omega}{dt} = -F_r \cdot r_k \quad \Rightarrow \quad \frac{d\omega}{dt} = -\frac{F_r \cdot r_k}{I}
+\]
+Für die Translationsbewegung mit $F = m \cdot a$ wirkt die Gleitreibungskraft beschleunigend:
+\[
+F_r = m \cdot \frac{dv}{dt} \qquad \Longrightarrow \qquad \frac{dv}{dt} = \frac{F_r}{m}
+\]
+Um den Angleichungsprozess mathematisch zu beschreiben, wird die Überdrehung $\Delta(t)$ als Differenz zwischen der Bahngeschwindigkeit der Kugel und ihrer tatsächlichen Translationsgeschwindigkeit definiert. Für reines Rollen ohne Gleiten muss $\Delta = 0$ gelten, das heißt $\omega \cdot r_k = v$.
+\[
+\Delta(t) = \omega(t) \cdot r_k - v(t) \qquad \qquad \frac{d\Delta}{dt} \quad = \quad r_k \cdot \frac{d\omega}{dt} - \frac{dv}{dt} \quad = \quad \frac{d}{dt}\left[\omega(t) \cdot r_k - v(t)\right]
+\]
+Durch das Ableiten nach der Zeit, können die oben definierten Teilterme mit den Kraftkomponenten eingesetzt werden:
+\[
+\frac{d\Delta}{dt} \quad = \quad r_k \cdot \left(-\frac{F_r \cdot r_k}{I}\right) - \frac{F_r}{m} \quad = \quad -\frac{F_r \cdot r_k^2}{I} - \frac{F_r}{m} \quad = \quad -F_r \cdot \left(\frac{r_k^2}{I} + \frac{1}{m}\right)
+\]
+Durch den negativen Vorfaktor wird $\Delta$ mit der Zeit kleiner wird, bis die Rollbedingung erreicht ist. Wenn der Ausdruck in der Klammer auf einen Nenner gebracht wird, sieht die Gleichung wie folgt aus: 
+\[
+\frac{r_k^2}{I} + \frac{1}{m} = \frac{m \cdot r_k^2 + I}{I \cdot m} \qquad \qquad \frac{d\Delta}{dt} = -F_r \cdot \frac{m \cdot r_k^2 + I}{I \cdot m}
+\]
+Diese simple Differentialgleichung lässt sich durch direkte Integration lösen:
+\[
+\Delta(t) = \Delta_0 - F_r \cdot \frac{m \cdot r_k^2 + I}{I \cdot m} \cdot t
+\]
+wobei $\Delta_0 = \omega_0 \cdot r_k - v_0$ die anfängliche Überdrehung unmittelbar nach dem Stoß darstellt.
+\\
+Die Rollbedingung $\Delta = 0$ ist erreicht, wenn Translation und Rotation wieder kinematisch gekoppelt sind. Der Zeitpunkt $t_{\text{end}}$ dieser Angleichung ergibt sich aus der folgender Bedingung. Umgestellt ergibt sich die finale Form für $t_{\text{end}}$:
+\[
+0 = \Delta_0 - F_r \cdot \frac{m \cdot r_k^2 + I}{I \cdot m} \cdot t_{\text{end}} \qquad  \qquad \qquad t_{\text{end}} = \frac{\Delta_0 \cdot I \cdot m}{F_r \cdot (m \cdot r_k^2 + I)}
+\]
+Diese Zeitwerte liegen für realistische Eingangsbedingungen in der Größenordnung von quasi 0 bis wenige Sekunden. Viel interessanter als die Angleichszeit ist aber eigentlich die finale Geschwindigkeit. Diese kann durch Einsetzen von $t_{\text{end}}$ in die Bewegungsgleichungen bestimmt werden. Aus der Translationsbewegung folgt:
+\[
+v(t_{\text{end}}) = v_0 + \frac{F_r}{m} \cdot t_{\text{end}} \quad = \quad  v_0 + \frac{F_r}{m} \cdot \frac{\Delta_0 \cdot I \cdot m}{F_r \cdot (m \cdot r_k^2 + I)} \quad = \quad v_0 + \frac{\Delta_0 \cdot I}{m \cdot r_k^2 + I}
+\]
+Analog ergibt sich für die Rotationsgeschwindigkeit:
+\[
+\omega(t_{\text{end}}) = \omega_0 - \frac{F_r \cdot r_k}{I} \cdot t_{\text{end}} \quad = \quad \omega_0 - \frac{F_r \cdot r_k}{I} \cdot \frac{\Delta_0 \cdot I \cdot m}{F_r \cdot (m \cdot r_k^2 + I)} \quad = \quad \omega_0 - \frac{\Delta_0 \cdot m \cdot r_k}{m \cdot r_k^2 + I}
+\]
+Diese finalen Geschwindigkeiten erfüllen die Rollbedingung $v(t_{\text{end}}) = \omega(t_{\text{end}}) \cdot r_k$ und beschreiben den Zustand der Kugel nach vollständiger Angleichung. Die finale Geschwindigkeit liegt also logischerweise zwischen der anfänglichen Translationsgeschwindigkeit $v_0$ und der anfänglichen Bahngeschwindigkeit $\omega_0 \cdot r_k$.
+\\
+Zur Herleitung dieser Gleichungen habe ich unter anderem GeoGebra verwendet. In diesem Workspace\footnote{\url{https://www.geogebra.org/calculator/yqckwfjk}} befinden sich beispielsweise auch abgewandelte Signumfunktionen für eine vollständig algebraische Definition der Funktionen für den eigentlich nicht differenzierbaren Geschwindigkeitsverlauf mit linearer Zu- bzw. Abnahme bis zum abrupten Übergang zu einem konstanten Wert bei der Angleichung im Zeitpunkt $t_{\text{end}}$. 

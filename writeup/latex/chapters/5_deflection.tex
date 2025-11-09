@@ -32,13 +32,214 @@ Ebenso ist es kaum möglich, die notwendigen Parameter unmittelbar aus dem Filmm
 \\
 Um trotzdem nach meinen bisherigen Berechnungen, physikalisch korrekte Winkel zu benutzen, und Dom gleichzeitig ein wenig unter die Arme zu greifen, könnte im Sinne der filmischen Realität angenommen werden, dass die Kugel zufällig stets den bestmöglichen Winkel einnimmt, um mit dem Gegengewicht zu kollidieren und anschließend abgelenkt zu werden. 
 \\
-Im Folgenden wird daher eine kurze Nebenbetrachtung durchgeführt, um diesen optimalen Auftreffwinkel der Kugel, in Abhängigkeit von genannten Abständen, einem (eventuell zeitlich versetzt) rotierendem Kranarm, und der Kugelgeschwindigkeit selbst zu bestimmen.
+Hier wird daher eine kurze Nebenbetrachtung durchgeführt, um diesen optimalen Auftreffwinkel der Kugel, in Abhängigkeit von genannten Abständen, einem (eventuell zeitlich versetzt) rotierendem Kranarm, und der Kugelgeschwindigkeit selbst zu bestimmen. Hier ist anzumerken, dass das Gegengewicht in diesem Fall die Form einer Punktmasse annimmt.
+\\
+Aus diesen Gegebenheiten geht hervor, dass die analytische Gleichung, die sich hier bilden würde, transzendentaler Natur ist, und keine geschlossene Form annehmen kann. Ein algebraischer Lösungsansatz führt daher zu keinem Ergebnis. 
+\\%TODO 
+Der erste Ansatz, das Problem durch Minimierung des Kugel-Gegengewicht-Abstands mittels des Goldenen-Schnitt-Minimierungsalgorithmus zu lösen, funktionierte zwar in den meisten Situationen, erwies sich dann jedoch in der Gesamtheit als nicht immer zuverlässig. 
+\\
+Der entsprechende, Ansatz ist weiterhin im Online-Repository dokumentiert und kann unter \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/DEPRECATED--reduced_golden_section.py}{diesem Link} eingesehen werden.
+\\
+Im Folgenden wird daher ausschließlich der letztlich erfolgreiche Algorithmus erläutert.
 \subsubsection{Rotiertes Koordinatensystem}
-Für diese Unternehmung muss 
+Für die nachfolgenden Berechnungen wird das Bezugssystem angepasst, um die geometrischen Bedingungen zu vereinfachen und die Analyse zu optimieren.
+\begin{wrapfigure}{r}{0.6\textwidth} %L
+	\centering
+	\includegraphics[width=0.58\textwidth]{resources/seq5/01_sketch-approx.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Detaillierte Skizze des transformierten Systems aus Sequenz 4 in Draufsicht}
+	\label{fig:05_sketch_rotated}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Der Ursprung des Koordinatensystems befindet sich nun nicht mehr im Ausgangspunkt der Kugel, sondern auf der Rotationsachse des Krans, die in \hyperref[fig:05_sketch_rotated]{Abbildung~\ref*{fig:05_sketch_rotated}} mit $M(0,0)$ markiert ist. Das gesamte System wird um den Winkel 
+$\beta = \arctan\left(\frac{y_{\text{off}}}{x_{\text{off}}}\right)$ 
+gedreht. Dadurch liegt der Ausgangspunkt der Kugel nun direkt auf der x-Achse bei 
+$U(u,0)$ mit $u = -\sqrt{y_{\text{off}}^2 + x_{\text{off}}^2}$.
+\\
+\\
+Der Kreis $K$ mit der Kreisgleichung $x^2+y^2=r^2$ stellt alle möglichen Positionen $P_K \left( \begin{smallmatrix} x = r \cos(x) \\ y = r \cos(y) \end{smallmatrix} \right)$ des Gegengewichts dar. 
+\\
+Im ersten Quadranten ist in der Skizze das relevante Kreissegment 
+$P_K\!\left(\begin{smallmatrix} x = r \cdot \cos(\varphi) \\[2pt] y = r \cdot \sin(\varphi) \end{smallmatrix}\right)$ 
+gelb hervorgehoben. Es beschreibt die Menge aller möglichen Kollisionspunkte zwischen Kugel und Gegengewicht. Treffen Kugel und Kranarm außerhalb dieses Segments aufeinander, so würde der daraus resultierende Geschwindigkeitsvektor der Kugel in eine Richtung zeigen, in der ein Eintauchen ins Wasser ausgeschlossen wäre. Daher werden ausschließlich Lösungen innerhalb dieses Segments betrachtet.
+\\
+Der Winkel $\varphi$ beschreibt die Neigung der Strecke vom Ursprung bis zu einem Punkt auf dem Kreissegment. Er kann genutzt werden um Positionen auf dem Kreis zu beschreiben und existiert daher für den Schnittpunkt der Kugel mit dem Kreis und auch für die aktuelle Position des Gegengewichts. Diese Gemeinsamkeit ist später für den Vergleich essentiell.
+\\
+Die Kugel bewegt sich geradlinig vom Punkt $U$ aus, wobei ihre Bewegungsrichtung durch den Horizontalwinkel $\vartheta$ beschrieben wird. Die Strecke zwischen dem Startpunkt $U$ und dem Kollisionspunkt $P$ wird mit $h$ bezeichnet. Für $\vartheta = 0$ ergibt sich $h = u + r$, während für den maximalen Einschlagswinkel 
+$\vartheta_{\text{max}} = \arctan\!\left(\tfrac{r}{u}\right)$ 
+die Länge $h = \sqrt{u^2 + r^2}$ beträgt.
+\\
+Auf dieser Grundlage kann nun eine Funktion $h(\vartheta)$ definiert werden, die, unter der Voraussetzung, dass $\vartheta$ innerhalb des zulässigen Definitionsbereichs liegt, für jeden Winkel die entsprechende Distanz $h$ liefert.
+\\
+Beginnend wird vom Strahl $S(s)=\left( \begin{smallmatrix} x = u+s\cdot \cos(\vartheta)) \\ y = s\cdot \sin(\vartheta) \end{smallmatrix} \right)$ als Analogie für die ungestörte Bahn der Kugel ausgegangen. Da die Kugel den Weg des Kranarms schneiden und mit ihm kollidieren soll, benötigen wir die Schnittbedingung mit dem Segment. Diese kann mit der oben genannten Kreisgleichung für $K$ folgendermaßen dargestellt werden: $(u+s\cdot \cos(\vartheta))^2 + (s\cdot \sin(\vartheta))^2 = r^2$
+\\
+Ausmultipliziert folgt:
+\\
+$\displaystyle 
+u^2+2\cdot s\cdot u\cdot \cos(\vartheta)+s^2 \cdot \cos^2(\vartheta) \; + \; s^2\cdot \sin^2(\vartheta)=r^2$
+\\
+Im nächsten Schritt wird die trigonometrische Identität angewandt:
 
+\begin{wrapfigure}{r}{0.40\textwidth}
+	\vspace{-8pt} % tweak vertical alignment
+	\begin{minipage}{0.39\textwidth}
+		\begin{tcolorbox}[
+			title={Trig. Identität FoSa. 241},
+			fonttitle=\bfseries\footnotesize,   
+			fontupper=\footnotesize,            
+			colback=white,
+			colframe=gray!60!black,
+			fonttitle=\bfseries,
+			boxrule=0.4pt
+			]
+			In rechtwinkligen Dreieck \\gilt: $a^2+b^2=c^2$:
+			\[
+			\sin^2(x) + \cos^2(x) = 1
+			\]
+			\[
+			\sin(x) = \frac{a}{c} \; \Rightarrow \; \sin^2(x) = \frac{a^2}{c^2}
+			\]
+			\[
+			\cos(x) = \frac{b}{c} \; \Rightarrow \; \cos^2(x) = \frac{b^2}{c^2}
+			\]
+			\[
+			\Longrightarrow\quad \frac{a^2}{c^2} + \frac{b^2}{c^2} \; = \; \frac{c^2}{c^2} = 1
+			\]
+		\end{tcolorbox}
+	\end{minipage}
+	\vspace{-6pt}
+\end{wrapfigure}
+$\displaystyle u^2+2\cdot s\cdot u\cdot \cos(\vartheta)+s^2 =r^2$\\
+Anschließend bereiten wir die Gleichung auf die Mitternachtsformel vor. Wir sortieren die Terme nach Potenz und multiplizieren sie mit $\tfrac{1}{2}$ um später den Nenner der Mitternachtsformel streichen zu können:\\
+$\displaystyle s^2+2\cdot s\cdot u\cdot \cos(\vartheta)+u^2 =r^2$\\
+$\displaystyle s^2+2\cdot s\cdot u\cdot \cos(\vartheta)+u^2-r^2=0$\\
+$\displaystyle \frac{1}{2}\cdot s^2+s\cdot u\cdot \cos(\vartheta)+\frac{1}{2}\cdot (u^2-r^2)=0$\\
+$\displaystyle s_{1,2}=-u\cdot \cos(\vartheta)\pm\sqrt{u^2\cdot \cos^2(\vartheta)-(u^2-r^2)}$\\
+Die Diskriminante lässt sich weiter vereinfachen:\\
+$\displaystyle D=u^2\cdot \cos^2(\vartheta)-(u^2-r^2)\;=\;u^2\cdot \cos^2(\vartheta)-u^2+r^2\;=\;r^2-u^2 + u^2 \cdot \cos^2(\vartheta)$\\
+Hier kann $u^2$ ausgeklammert und wieder die Trigonometrische Identität angewendet werden:\\
+$D\;=\; r^2-u^2 \cdot (1-\cos^2(\vartheta))\; = \; r^2 - u^2 \cdot \sin^2(\vartheta)$
+\\
+Da nur die positiven Ergebnisse von Relevanz sind, sieht die finale Form so aus:
+\[
+h(\vartheta) = -u\cdot \cos(\vartheta)+\sqrt{r^2 - u^2 \cdot \sin^2(\vartheta)}
+\]
+\\
+Mit dieser Funktion lässt sich jetzt der Kreiswinkel $\varphi$ der Kugel in Abhängigkeit des Startwinkels $\vartheta$ berechnen. Dafür muss $h(\vartheta)$ in seine x- und y-Komponente aufgeteilt werden. Dabei ist zu beachten, dass von der x-Komponente noch die Verschiebung um $u$ abgezogen werden muss. Weil $u$ negativ definiert ist, muss sie, so kontraintuitiv  das scheint, addiert werden.
+\\
+Es ergeben sich die Koordinaten des Punktes P auf dem Kreissegment in Abhängigkeit von $\vartheta$. Unter Anwendung des Arkustangens kann $\varphi$ aus den beiden Kreiskoordinaten berechnet werden:
+\[
+P(\vartheta) \left(
+\begin{array}{l}
+	x = h(\vartheta)\cdot \cos(\vartheta) + u \\
+	y = h(\vartheta)\cdot \sin(\vartheta)
+\end{array}
+\right)
+\qquad \varphi(\vartheta) = \arctan\left(\frac{h(\vartheta)\cdot \sin(\vartheta)}{h(\vartheta)\cdot \cos(\vartheta) + u}\right)
+\]
+Nun da wir mit $\varphi$ eine gemeinsame Vergleichsgröße haben, brauchen wir noch eine Domäne, die die beiden vereinigt. Aktuell wird $\varphi_{Kugel}(\vartheta)$ in Abhängigkeit vom Ursprungswinkel angegeben, $\varphi_{Gewicht}(T)$ allerdings in Abhängigkeit von der Zeit, da vereinfacht $\varphi_{Gewicht}(T) = \omega_{Kran}\cdot T$.
+\\
+Um die beiden im selben Bezugssystem verwenden zu können, muss $h(\vartheta)$ zu $T(\vartheta)$ umgeformt, dann zu $\vartheta(T)$ umgekehrt und schließlich in $\varphi_{Kugel}(\vartheta(T))$ eingesetzt werden.
+\\
+Da $s=T\cdot v$, gilt $T(\vartheta)=\frac{h(\vartheta)}{v}$.
+\\
+Um die Gleichung nach der Zeit umzubauen, muss $s$ bzw. das $h()$ durch $s=T\cdot v$ ausgetauscht, und dann nach der Zeit $T$ aufgelöst werden:
+\[
+T v = -u \cdot \cos(\vartheta) + \sqrt{r^2 - u^2 \cdot \sin^2(\vartheta)}
+\qquad Tv + u \cdot \cos(\vartheta) = \sqrt{r^2 - u^2 \cdot \sin^2(\vartheta)}
+\]
+Nun Wurzel auflösen und anschließend ausmultiplizieren:
+\[
+(T v + u \cdot \cos(\vartheta))^2 = r^2 - u^2 \cdot \sin^2(\vartheta)
+\]
+\[
+T^2 v^2 + 2\cdot T v \cdot u \cdot \cos(\vartheta) + u^2\cdot \cos^2(\vartheta) = r^2 - u^2 \cdot \sin^2(\vartheta)
+\]
+Mit trigonometrischer Identität $\sin^2(\vartheta) = 1 - \cos^2(\vartheta)$ umformen und ausmultiplizieren
+\[
+T^2 v^2 + 2\cdot T v \cdot u \cdot \cos(\vartheta) + u^2\cdot \cos^2(\vartheta) = r^2 - u^2 \cdot (1 - \cos^2(\vartheta))
+\]
+\[
+T^2 v^2 + 2\cdot T v \cdot u \cdot \cos(\vartheta) + u^2\cdot \cos^2(\vartheta) = r^2 - u^2 + u^2\cdot \cos^2(\vartheta)
+\]
+Die Terme $u^2 \cos^2(\vartheta)$ heben sich auf, anschließend umstellen: 
+\[
+T^2 v^2 + 2 \cdot T v \cdot u \cdot \cos(\vartheta) = r^2 - u^2
+\qquad 2\cdot T v \cdot u \cdot \cos(\vartheta) = r^2 - u^2 - T^2 v^2
+\]
+
+An dieser Stelle taucht der \href{https://de.wikipedia.org/wiki/Kosinussatz#SSS-Fall}{SSS-Fall des Kosinussatz} auf: $\cos(\gamma) = \tfrac{a^2 + b^2 - c^2}{2\cdot a\cdot b}$
+\[
+\cos(\vartheta) = \frac{r^2 - u^2 - T^2 v^2}{2\cdot T v \cdot u}
+\qquad \vartheta(T) = \arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)
+\]
+\subsubsection{Näherungsverfahren}
+Die Winkel $\varphi_{Kugel}$ und $\varphi_{Gewicht}$ verlaufen über die Zeit gegensinnig. Während $\varphi_{Gewicht}$ kontinuierlich zunimmt, nimmt $\varphi_{Kugel}$ innerhalb seines kleinen Definitionsbereichs stetig ab. 
+\\
+Es kann also vorkommen, dass die Winkel zu einem Zeitpunkt $T$ identisch sind. Dies würde bedeuten, dass unter diesen Eingangsbedingungen eine Kollision möglich ist. Aus dem Äquivalenzzeitpunkt lässt sich anschließend auf den erforderlichen Startwinkel $\vartheta$ schließen. 
+\\
+Wenn sich die beiden $\varphi$ zeitabhängig verändern, zu einem gemeinsamen Zeitpunkt jedoch denselben Wert annehmen, ergibt ihre Differenz null: 
+\\
+$\Delta(T) = \varphi_{Gewicht}(T) - \varphi_{Kugel}(\vartheta(T))$ 
+\\
+Berücksichtigt man bei der Dynamik des Kranarms eine zeitliche Verzögerung und einen Startwinkel, ergibt sich diese Gesamtformel:
+\\
+\[
+\Delta(T) = \underbrace{\bigl[\varphi_0 + \omega_{\text{Kran}}\,(T - T_{\text{offset}})_+\bigr] \bmod 2\pi}_{\varphi_{Gewicht}} -
+\]
+\[
+ \underbrace{\arctan\left(\frac{-u\cdot \cos(\vartheta)+\sqrt{r^2 - u^2 \cdot \sin^2(\vartheta)}\cdot \sin(\vartheta)}{-u\cdot \cos(\vartheta)+\sqrt{r^2 - u^2 \cdot \sin^2(\vartheta)}\cdot \cos(\vartheta) + u}\right)
+}_{\varphi_{Kugel}}
+\qquad mit \; \vartheta := \arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)
+\]
+Analytisch kann für diese Gleichung, wie oben bereits beschrieben, keine Nullstelle errechnet werden. Daher habe ich in \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py}{Python ein Hybridverfahren} zum numerischen Lösen diese Nullstellenproblems geschrieben. 
+\\
+Das Programm ist so konfiguriert, dass es zunächst das schnellere Newton-Raphson-Verfahren bevorzugt. 
+Sollte dieses jedoch fehlschlagen, wird automatisch auf die robustere Bisektionsmethode zurückgegriffen. 
+Beide Verfahren arbeiten iterativ und nähern die Nullstelle schrittweise an.
+\\
+Das Newton-Raphson-Verfahren\parencite{NewtonRaphsonWiki} bildet am jeweiligen Untersuchungspunkt die lokale Tangente der Funktion. 
+Diese Tangente zeigt mit hoher Wahrscheinlichkeit in Richtung der gesuchten Nullstelle. 
+Der Schnittpunkt der Tangente mit der x-Achse wird dabei als neuer Iterationswert verwendet. 
+Auf diese Weise konvergiert die Folge der Näherungswerte bei geeignetem Startwert quadratisch gegen die tatsächliche Nullstelle.
+\\
+Für die Anwendung wird jedoch die Ableitung der Funktion benötigt. 
+Diese kann aber ebenfalls numerisch, wie bei mir über die \textit{finite zentrale Differentiation}\parencite{FiniteDifferenzWiki} bestimmt werden. 
+Dabei darf der Startwert allerdings nicht in einem Bereich mit sehr geringer oder gar keiner Steigung liegen, da dies zu übermäßig großen oder nicht definierten Schritten führen kann. 
+Zugleich muss der Startwert aber in der Nähe der tatsächlichen Nullstelle gewählt werden, um Konvergenz überhaupt zu ermöglichen. 
+Im Allgemeinen kann das Verfahren auch Divergieren und für abschnittsweise definierte Funktionen wie bei uns nur eingeschränkt geeignet. So kann es vorkommen, dass der nächste Näherungswert außerhalb des gültigen Intervalls liegt und das Verfahren fehlschlägt.
+\\
+Aus diesen Gründen wird im Fehlerfall auf die Bisektionsmethode\parencite{BisektionWiki} zurückgegriffen. 
+Dieses Verfahren ist zwar deutlich langsamer, konvergiert jedoch garantiert, sofern im betrachteten Intervall ein Vorzeichenwechsel der Funktion vorliegt. 
+Hierbei wird das Intervall wiederholt halbiert und stets diejenige Hälfte beibehalten, in der der Vorzeichenwechsel auftritt. 
+Die Methode benötigt keine Ableitung und funktioniert auch bei ungünstigen Startwerten zuverlässig. 
+\\
+Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem bereits Newton-Raphson-freundlichen Szenario unattraktiver als das Verfahren, das seinen Namen der bekanntesten Jungfrau der gesamten Physikgeschichte verschuldet.
+
+
+
+
+%\[
+%\underbrace{\arctan\left(\frac{-u\cdot \cos(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \sin(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}{-u\cdot \cos(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \cos(\cos^-1\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right) + u}\right)
+%}_{\varphi_{Kugel}}
+%\]
+
+
+%\underbrace{\arctan\left(\frac{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \sin(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right) + u}\right)}_{\varphi_{Kugel}}
+
+%\Delta = \underbrace{\bigl[\varphi_0 + \omega_{\text{Kran}}\,(T - T_{\text{offset}})_+\bigr] \bmod 2\pi}_{\varphi_{Gewicht}} - \underbrace{\varphi(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)) = \arctan\left(\frac{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))\cdot \sin(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))}{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)))\cdot \cos(\vartheta) + u}\right)}_{\varphi_{Kugel}}
 \subsection{Massenträgheitsmoment der Kugel}
 \subsection{Kollision Kugel mit Gegengewicht}
-\subsubsection{Näherungsverfahren}
+
 \subsubsection{Orthogonale Projektion}
 \subsection{Überdrehen der Kugel}
 \subsubsection{Angleichen der Geschwindigkeiten}

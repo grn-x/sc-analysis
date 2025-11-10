@@ -11,6 +11,9 @@
 \usepackage{caption}
 \usepackage[font=small,labelfont=bf]{caption}
 
+\usepackage[hyphens]{url}
+\usepackage{xurl}
+
 
 \usepackage{float}
 \usepackage{amsmath, amssymb}	% mathe
@@ -54,7 +57,9 @@ mincrossrefs=999
 		\clearfield{crossref}%
 	}{}
 }
-
+\setcounter{biburlnumpenalty}{100}
+\setcounter{biburlucpenalty}{100}
+\setcounter{biburllcpenalty}{100}
 % Schrift
 \onehalfspacing  % Zeilenabstand 1,5
 

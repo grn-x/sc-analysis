@@ -23,19 +23,19 @@ In \hyperref[fig:05_sketch_initial]{Abbildung~\ref*{fig:05_sketch_initial}} ist 
 Mit einem vollständigen System aus diesen Eingangsgrößen ließe sich die Kollision zwischen Gegengewicht und Kugel vollständig beschreiben und daraus ein Ablenkwinkel beziehungsweise ein resultierender Geschwindigkeitsvektor bestimmen.
 
 \subsection{Eliminierung von Unbekannten}
-Das derzeitige System enthält jedoch noch zu viele unbekannte Größen. Das Problem hier ist vor Allem, dass es beinahe unmöglich ist, einen Startwinkel der Kugel manuell abzuschätzen, unter dem dann tatsächlich eine Kollision mit dem zeitgleich rotierenden Gegengewicht stattfindet. 
+Das derzeitige System enthält jedoch noch zu viele unbekannte Größen. Das Problem hier ist vor allem, dass es beinahe unmöglich ist, einen Startwinkel der Kugel manuell abzuschätzen, unter dem dann tatsächlich eine Kollision mit dem zeitgleich rotierenden Gegengewicht stattfindet. 
 \\
-Selbst ein Ansatz nach dem Prinzip der \enquote{Brute-Force-Methode}, dem stumpfen Durchprobieren sämtlicher denkbarer Kombinationen \parencite{BruteForceWiki}, erwiese sich hier als wenig zielführend. Das Verhältnis von gültigen Treffern zu vollkommen unbrauchbaren Ergebnissen wäre derart grotesk unausgewogen, dass mein armer PC sich hier angesichts der anderen Parameter die auch jedes Mal neu geschätzt werden müssten, sprichwörtlich einen Wolf rechnen würde.
+Selbst ein Ansatz nach dem Prinzip der \enquote{Brute-Force-Methode}, dem stumpfen Durchprobieren sämtlicher denkbarer Kombinationen \parencite{BruteForceWiki}, erwiese sich hier als wenig zielführend. Das Verhältnis von gültigen Treffern zu vollkommen unbrauchbaren Ergebnissen wäre derart grotesk unausgewogen, dass die Berechnungen schier endlos dauern würden.
 \\
 Ebenso ist es kaum möglich, die notwendigen Parameter unmittelbar aus dem Filmmaterial herauszulesen. Die hektische Schnittfolge, kombiniert mit verwackelten Aufnahmen und ungünstigen Kameraperspektiven, lässt keine präzise Rekonstruktion der Kugeltrajektorie zu.
 \\
-Um trotzdem nach meinen bisherigen Berechnungen, physikalisch korrekte Winkel zu benutzen, und Dom gleichzeitig ein wenig unter die Arme zu greifen, könnte im Sinne der filmischen Realität angenommen werden, dass die Kugel zufällig stets den bestmöglichen Winkel einnimmt, um mit dem Gegengewicht zu kollidieren und anschließend abgelenkt zu werden. 
+Um trotzdem nach meinen bisherigen Berechnungen physikalisch korrekte Winkel zu benutzen, und Dom gleichzeitig ein wenig unter die Arme zu greifen, könnte im Sinne der filmischen Realität angenommen werden, dass die Kugel zufällig stets den bestmöglichen Winkel einnimmt, um mit dem Gegengewicht zu kollidieren und anschließend abgelenkt zu werden. 
 \\
 Hier wird daher eine kurze Nebenbetrachtung durchgeführt, um diesen optimalen Auftreffwinkel der Kugel, in Abhängigkeit von genannten Abständen, einem (eventuell zeitlich versetzt) rotierendem Kranarm, und der Kugelgeschwindigkeit selbst zu bestimmen. Hier ist anzumerken, dass das Gegengewicht in diesem Fall die Form einer Punktmasse annimmt.
 \\
 Aus diesen Gegebenheiten geht hervor, dass die analytische Gleichung, die sich hier bilden würde, transzendentaler Natur ist, und keine geschlossene Form annehmen kann. Ein algebraischer Lösungsansatz führt daher zu keinem Ergebnis. 
 \\%TODO 
-Der erste Ansatz, das Problem durch Minimierung des Kugel-Gegengewicht-Abstands mittels des Goldenen-Schnitt-Minimierungsalgorithmus zu lösen, funktionierte zwar in den meisten Situationen, erwies sich dann jedoch in der Gesamtheit als nicht immer zuverlässig. 
+Der erste Ansatz das Problem durch Minimierung des Kugel-Gegengewicht-Abstands mittels des Goldenen-Schnitt-Minimierungsalgorithmus zu lösen, funktionierte zwar in den meisten Situationen, erwies sich dann jedoch in der Gesamtheit als nicht immer zuverlässig. 
 \\
 Der entsprechende, Ansatz ist weiterhin im Online-Repositorium dokumentiert und kann unter \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/DEPRECATED--reduced_golden_section.py}{diesem Link} eingesehen werden.
 \\
@@ -71,7 +71,7 @@ Im ersten Quadranten ist in der Skizze das relevante Kreissegment
 $P_K\!\left(\begin{smallmatrix} x = r \cdot \cos(\varphi) \\[2pt] y = r \cdot \sin(\varphi) \end{smallmatrix}\right)$ 
 gelb hervorgehoben. Es beschreibt die Menge aller möglichen Kollisionspunkte zwischen Kugel und Gegengewicht. Treffen Kugel und Kranarm außerhalb dieses Segments aufeinander, so würde der daraus resultierende Geschwindigkeitsvektor der Kugel in eine Richtung zeigen, in der ein Eintauchen ins Wasser ausgeschlossen wäre. Daher werden ausschließlich Lösungen innerhalb dieses Segments betrachtet.
 \\
-Der Winkel $\varphi$ beschreibt die Neigung der Strecke vom Ursprung bis zu einem Punkt auf dem Kreissegment. Er kann genutzt werden um Positionen auf dem Kreis zu beschreiben und existiert daher für den Schnittpunkt der Kugel mit dem Kreis und auch für die aktuelle Position des Gegengewichts. Diese Gemeinsamkeit ist später für den Vergleich essentiell.
+Der Winkel $\varphi$ beschreibt die Neigung der Strecke vom Ursprung bis zu einem Punkt auf dem Kreissegment. Er kann genutzt werden um, Positionen auf dem Kreis zu beschreiben und existiert daher für den Schnittpunkt der Kugel mit dem Kreis und auch für die aktuelle Position des Gegengewichts. Diese Gemeinsamkeit ist später für den Vergleich essentiell.
 \\
 Die Kugel bewegt sich geradlinig vom Punkt $U$ aus, wobei ihre Bewegungsrichtung durch den Horizontalwinkel $\vartheta$ beschrieben wird. Die Strecke zwischen dem Startpunkt $U$ und dem Kollisionspunkt $P$ wird mit $h$ bezeichnet. Für $\vartheta = 0$ ergibt sich $h = u + r$, während für den maximalen Einschlagswinkel 
 $\vartheta_{\text{max}} = \arctan\!\left(\tfrac{r}{u}\right)$ 
@@ -118,7 +118,7 @@ Im nächsten Schritt wird die trigonometrische Identität angewandt:
 	\vspace{-6pt}
 \end{wrapfigure}
 $\displaystyle u^2+2\cdot s\cdot u\cdot \cos(\vartheta)+s^2 =r^2$\\
-Anschließend bereiten wir die Gleichung auf die Mitternachtsformel vor. Wir sortieren die Terme nach Potenz und multiplizieren sie mit $\tfrac{1}{2}$ um später den Nenner der Mitternachtsformel streichen zu können:\\
+Anschließend bereiten wir die Gleichung auf die Mitternachtsformel vor. Wir sortieren die Terme nach Potenz und multiplizieren sie mit $\tfrac{1}{2}$, um später den Nenner der Mitternachtsformel streichen zu können:\\
 $\displaystyle s^2+2\cdot s\cdot u\cdot \cos(\vartheta)+u^2 =r^2$\\
 $\displaystyle s^2+2\cdot s\cdot u\cdot \cos(\vartheta)+u^2-r^2=0$\\
 $\displaystyle \frac{1}{2}\cdot s^2+s\cdot u\cdot \cos(\vartheta)+\frac{1}{2}\cdot (u^2-r^2)=0$\\
@@ -186,7 +186,7 @@ Die Winkel $\varphi_{Kugel}$ und $\varphi_{Gewicht}$ verlaufen über die Zeit ge
 \\
 Es kann also vorkommen, dass die Winkel zu einem Zeitpunkt $T$ identisch sind. Dies würde bedeuten, dass unter diesen Eingangsbedingungen eine Kollision möglich ist. Aus dem Äquivalenzzeitpunkt lässt sich anschließend auf den erforderlichen Startwinkel $\vartheta$ schließen. 
 \\
-Wenn sich die beiden $\varphi$ zeitabhängig verändern, zu einem gemeinsamen Zeitpunkt jedoch denselben Wert annehmen, ergibt ihre Differenz null: 
+Wenn sich die beiden $\varphi$ zeitabhängig verändern, zu einem gemeinsamen Zeitpunkt jedoch denselben Wert annehmen, ergibt ihre Differenz Null: 
 \\
 $\Delta(T) = \varphi_{Gewicht}(T) - \varphi_{Kugel}(\vartheta(T)) \; \overset{!}{=} \; 0$ 
 \\
@@ -200,7 +200,7 @@ Berücksichtigt man bei der Dynamik des Kranarms eine zeitliche Verzögerung und
 }_{\varphi_{Kugel}}
 \qquad mit \; \vartheta := \arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)
 \]
-Der \textit{mod $2 \pi$} Operator normiert die Kranwinkel nach vollständigen Umdrehungen auf $\leq 360\,^{\circ}$, das tiefgestellte Plus ist die \enquote{Positivteil-Notation} und agiert wie die $max(x,y)$ Funktion. Solange $T < T_{\text{offset}}$ hat die Rotation noch nicht begonnen, dieser Teilterm ergibt null, und die Funktion gibt nur den ursprünglichen Startwinkel zurück. 
+Der \textit{mod $2 \pi$} Operator normiert die Kranwinkel nach vollständigen Umdrehungen auf $\leq 360\,^{\circ}$, das tiefgestellte Plus ist die \enquote{Positivteil-Notation} und agiert wie die $max(x,y)$ Funktion. Solange $T < T_{\text{offset}}$, hat die Rotation noch nicht begonnen, dieser Teilterm ergibt Null, und die Funktion gibt nur den ursprünglichen Startwinkel zurück. 
 \\
 Analytisch kann für diese Gleichung, wie oben bereits beschrieben, keine Nullstelle errechnet werden. Daher habe ich in \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py}{Python ein Hybridverfahren} zum numerischen Lösen diese Nullstellenproblems geschrieben\footnote{Eine dadurch entstandene Animation ist auch \hyperref[https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/kugel_kran_animation.gif]{online zu finden}}. %TODO
 \\
@@ -217,10 +217,10 @@ Für die Anwendung wird jedoch die Ableitung der Funktion benötigt.
 Diese kann aber ebenfalls numerisch, wie bei mir über die \textit{finite zentrale Differentiation}\parencite{FiniteDifferenzWiki} bestimmt werden. 
 Dabei darf der Startwert allerdings nicht in einem Bereich mit sehr geringer oder gar keiner Steigung liegen, da dies zu übermäßig großen oder nicht definierten Schritten führen kann. 
 Zugleich muss der Startwert aber in der Nähe der tatsächlichen Nullstelle gewählt werden, um Konvergenz überhaupt zu ermöglichen. 
-Im Allgemeinen kann das Verfahren auch Divergieren und für abschnittsweise definierte Funktionen wie bei uns nur eingeschränkt geeignet. So kann es vorkommen, dass der nächste Näherungswert außerhalb des gültigen Intervalls liegt und das Verfahren fehlschlägt.
+Im Allgemeinen kann das Verfahren auch Divergieren, und ist für abschnittsweise definierte Funktionen wie bei uns nur eingeschränkt geeignet. So kann es vorkommen, dass der nächste Näherungswert außerhalb des gültigen Intervalls liegt und das Verfahren fehlschlägt.
 \\
 Aus diesen Gründen wird im Fehlerfall auf die Bisektionsmethode\parencite{BisektionWiki} zurückgegriffen. 
-Dieses Verfahren ist zwar deutlich langsamer, konvergiert jedoch garantiert, sofern im betrachteten Intervall ein Vorzeichenwechsel der Funktion vorliegt. 
+Dieses Verfahren ist zwar deutlich langsamer, konvergiert jedoch mit Sicherheit, sofern im betrachteten Intervall ein Vorzeichenwechsel der Funktion vorliegt. 
 Hierbei wird das Intervall wiederholt halbiert und stets diejenige Hälfte beibehalten, in der der Vorzeichenwechsel auftritt. 
 Die Methode benötigt keine Ableitung und funktioniert auch bei ungünstigen Startwerten zuverlässig. 
 \\
@@ -259,13 +259,13 @@ Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem, sowieso b
 \end{wrapfigure}
 In \hyperref[fig:05_sketch_collision]{Abbildung~\ref*{fig:05_sketch_collision}} sieht man die in der Kollision beteiligten Vektoren. Der Kugel $\vec{v_k}$ zeigt in die Richtung des vorhin berechneten Winkels $\vartheta$. Da die genaue Geschwindigkeit aber parametrisiert bleiben soll, besteht $\vec{v_k}$ aus dem Einheitsvektor in Richtung $\vartheta$ mit Berücksichtigung des rotierten Bezugsystems um $\beta$, also $e_{\vec{v_k}} = \left( \begin{smallmatrix} x = \cos(\vartheta-\beta) \\ y = \sin(\vartheta-\beta) \end{smallmatrix} \right)$, mit der Gewichtung $v_{Kugel}$ als Geschwindigkeitsskalar: $\vec{v_k} = e_{\vec{v_k}} \cdot |v_{Kugel}|$.
 \\
-Die Zusammensetzung des momentanten Bahngeschwindigkeitsvektors folgt ähnlichem System. Dabei muss beachtet werden, dass der Bahngeschwindigkeitsvektor allerdings senkrecht auf den Arm steht und daher zusätzlich $90\,^{\circ}$ mit dem momentanten Armwinkel $\varphi$ verrechnet werden müssen: $e_{\vec{v_b}} = \left( \begin{smallmatrix} x = \cos(\varphi+90\,^{\circ}-\beta) \\ y = \sin(\varphi+90\,^{\circ}-\beta) \end{smallmatrix} \right)$
+Die Zusammensetzung des momentanten Bahngeschwindigkeitsvektors folgt einem ähnlichem System. Dabei muss beachtet werden, dass der Bahngeschwindigkeitsvektor allerdings senkrecht auf den Arm steht und daher zusätzlich $90\,^{\circ}$ mit dem momentanten Armwinkel $\varphi$ verrechnet werden müssen: $e_{\vec{v_b}} = \left( \begin{smallmatrix} x = \cos(\varphi+90\,^{\circ}-\beta) \\ y = \sin(\varphi+90\,^{\circ}-\beta) \end{smallmatrix} \right)$
 \\
 \\
 Da allerdings wieder das Modell des eindimensionalen teilelastischen Stoßes angewandt werden soll, können die Vektoren in dieser Konfiguration noch nicht miteinander verrechnet werden. Es wechselwirken bei der Kollision nur die jeweils Antiparallelen Geschwindigkeitsvektoren. 
 
 \subsubsection{Orthogonale Projektion}
-Der Kugelvektor $\vec{v_k}$ soll also relativ zum Bahnvektor $\vec{v_b}$ in eine tangentiale Komponente $\vec{v_{k,t}} \; \hat{=} \;  \vec{v_{kp}}\parallel \vec{v_b}$, die parallel verläuft, und in eine Normale, die orthogonal zur Bahn verläuft $\vec{v_{k,n}} \; \hat{=}\; \vec{v_{ko}}\bot \vec{v_b}$, aufgespalten werden:
+Der Kugelvektor $\vec{v_k}$ soll also relativ zum Bahnvektor $\vec{v_b}$ in eine tangentiale Komponente $\vec{v_{k,t}} \; \hat{=} \;  \vec{v_{kp}}\parallel \vec{v_b}$, die parallel verläuft, und in eine Normale, die orthogonal zur Bahn verläuft, $\vec{v_{k,n}} \; \hat{=}\; \vec{v_{ko}}\bot \vec{v_b}$, aufgespalten werden:
 \\
 Da die Vektoren $\vec{v_{kp}}$ und $\vec{v_b}$ parallel sind, lassen sie sich über einen hypothetischen Skalar $x$ ineinander überleiten. Ebenso ist das Skalarprodukt aus der orthogonalen Vektorkombination$\vec{v_{ko}}$ $\vec{v_b}$ null:
 \[
@@ -291,7 +291,7 @@ v'_{k,t} = \frac{m_k \cdot v_{k,t} + m_{\text{eff}} \cdot v_b - m_{\text{eff}} \
 v'_{b} = \frac{m_k \cdot v_{k,t} + m_{\text{eff}} \cdot v_b + m_k \cdot (v_{k,t} - v_b) \cdot k}{m_k + m_{\text{eff}}}.
 \]
 Anschließend kann die resultierende Tangentialkomponente der Kugel $\vec{v_{k,t}}'$ wieder mit der unveränderten Normalkomponente $\vec{v_{k,n}}$ addiert werden, um den neuen Geschwindigkeitsvektor $\vec{v_{k}}'$ zu erhalten. Da im Film zu sehen ist, wie das Material des Gegengewichts beim Aufprall zerbröckelt und zusätzliche Energie absorbiert wird, muss hier zusätzlich ein anderer Wert für $k$ gewählt werden. 
-Doch bevor dieses Ergebnis jedoch voreilig als endgültig betrachtet wird, ist Folgendes zu beachten:
+Doch bevor dieses Ergebnis jedoch vorschnell als endgültig betrachtet wird, ist Folgendes zu beachten:
 
 \subsection{Überdrehen der Kugel}
 \begin{wrapfigure}{R}{0.4\textwidth} 

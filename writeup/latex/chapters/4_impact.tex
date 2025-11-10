@@ -152,163 +152,67 @@ v'_{c,t} = \frac{m_c \cdot v_{c,t} - m_{\text{eff}} \cdot (v_{c,t} - v_b) \cdot 
 v'_{b} = \frac{m_c \cdot v_{c,t} + m_c \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}}.
 \]
 
-\subsection{Kraftübertragungsmaxima} %TODO!!
-Um eine Aussage über den Radius $r$ für eine optimale Kraftübertragung zu können muss herausgefunden werden unter welchen Bedingungen die Winkelbeschleunigung 
+\subsection{Kraftübertragungsmaximum} %TODO!!
+Um eine Aussage über den Radius $r$ für eine optimale Kraftübertragung zu können muss herausgefunden werden unter welchen Bedingungen die Winkelgeschwindigkeit maximal wird. 
 
 % Teil I: Definitionen und grundlegende Beziehungen
-Die Winkelgeschwindigkeit $\omega$ des Krans nach dem Stoß ergibt sich aus der Bahngeschwindigkeit am Einschlagspunkt:\\
-I:
+Die Winkelgeschwindigkeit $\omega$ des Krans nach dem Stoß ergibt sich aus der Bahngeschwindigkeit am Einschlagspunkt, die im Stoß beteiligte reduzierte Masse beinhaltet $r$
 \[
-\omega = \frac{v_b'}{r}
+\omega = \frac{v_b'}{r} \qquad m_{eff} = \frac{I}{r^2}
 \]
-
-Dabei ist $v_b'$ die Bahngeschwindigkeit des Krans nach dem Stoß am Radius $r$.
-
-Die effektive Masse beim Stoß hängt vom Trägheitsmoment $I$ des Krans und dem Radius $r$ ab:
+Der Zusammenhang zwischen den Geschwindigkeiten vor und nach dem Stoß über den Stoßkoeffizienten $k$ ist folgendermaßen beschrieben. Da der Kran anfangs ruht fällt $v_b = 0$ weg, des Weiteren kann die Gleichung umgestellt werden, um später $v_{n,c}'$ durch seine Definition zu substituieren
 \[
-m_{eff} = \frac{I}{r^2}
+\left(v_{n,c} - v_b\right) \cdot k = v_b' - v_{n,c}' \qquad v_{n,c} \cdot k = v_b'-v_{n,c}' \qquad v_{n,c}' = v_b'- v_{n,c} \cdot k
 \]
-
-% Stoßgleichungen
-Beim teilelastischen Stoß gelten zwei grundlegende Beziehungen. Die erste beschreibt den Zusammenhang zwischen den Geschwindigkeiten vor und nach dem Stoß über den Stoßkoeffizienten $k$:
+Durch die Beziehung der Impulserhaltung beim Stoß ergibt sich folgendes. $v_b = 0$ fällt wieder weg, anschließend kann $v_{n,c}'$ eingesetzt werden:
 \[
-\left(v_{n,c} - v_b\right) \cdot k = v_b' - v_{n,c}'
+v_{n,c} \cdot m_c + v_b \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{n,c} \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{n,c} \cdot m_c =\left(v_b'- v_{n,c} \cdot k \right)  \cdot m_c + v_b' \cdot m_{eff}
 \]
-
-Da der Kran anfangs ruht, gilt $v_b = 0$. Die Gleichung vereinfacht sich zu:
+Durch Anschließendes Ausmultiplizieren und $v_b'$ Ausklammern
 \[
-v_{n,c} \cdot k = v_b'-v_{n,c}'
+v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot m_c \cdot m_c + v_b' \cdot m_{eff} \qquad v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot \left( m_c + m_{eff}\right)
 \]
-
-Da wir uns nicht für die resultierende Geschwindigkeit des Autos interessieren, kann diese Gleichung nach ihr umgestellt, und $v_{n,c}'$ später durch ihre alternative Darstellung ersetzt werden \\
-II:
+$v_{n,c} \cdot k \cdot m_c$ Addieren, $m_c$ Ausklammern
 \[
-v_{n,c}' = v_b'- v_{n,c} \cdot k
+v_{n,c} \cdot m_c \; + \; v_{n,c} \cdot k \cdot m_c = v_b'\cdot \left( m_c + m_{eff}\right) \qquad v_{n,c} \cdot m_c \cdot \left(1+k\right) = v_b'\cdot \left( m_c + m_{eff}\right)
 \]
-
-
-% Teil II: Impulserhaltung
-Die zweite fundamentale Beziehung ist die Impulserhaltung beim Stoß. Der Gesamtimpuls vor dem Stoß muss gleich dem Gesamtimpuls nach dem Stoß sein:
+Auflösen nach $v_b'$, anschließend kann $m_{eff} = \frac{I}{r^2}$ eingesetzt werden, um die Abhängigkeit des Radius $r$ einzuführen
 \[
-v_{n,c} \cdot m_c + v_b \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff}
+\frac{v_{n,c} \cdot m_c \cdot \left(1+k\right)}{ m_c + m_{eff}} = v_b' \qquad v_b' = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
 \]
-
-Mit $v_b = 0$ wird daraus:\\
-III:
+Mit $v_b' = \omega\cdot r$ ergibt sich:
 \[
-v_{n,c} \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff}
+\omega\cdot r = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}} \qquad \omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c + \frac{I}{r^2}}\cdot \frac{1}{r}
 \]
-
-II in III einsetzen:
-Wir setzen nun die Beziehung für $v_{n,c}'$ aus der ersten Gleichung in die Impulserhaltung ein:
-\[
-v_{n,c} \cdot m_c =\left(v_b'- v_{n,c} \cdot k \right)  \cdot m_c + v_b' \cdot m_{eff}
-\]
-
 Ausmultiplizieren:
-\[
-v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot m_c \cdot m_c + v_b' \cdot m_{eff}
-\]
-$v_b'$ Ausklammern
-
-\[
-v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot \left( m_c + m_{eff}\right)
-\]
-
-$v_{n,c} \cdot k \cdot m_c$ Addieren
-\[
-v_{n,c} \cdot m_c \; + \; v_{n,c} \cdot k \cdot m_c = v_b'\cdot \left( m_c + m_{eff}\right)
-\]
-
-$m_c$ Ausklammern
-\[
-v_{n,c} \cdot m_c \cdot \left(1+k\right) = v_b'\cdot \left( m_c + m_{eff}\right)
-\]
-Auflösen nach $v_b'$:
-\[
-\frac{v_{n,c} \cdot m_c \cdot \left(1+k\right)}{ m_c + m_{eff}} = v_b'
-\]
-
-I einsetzen 
-% Einsetzen von m_eff
-Mit $m_{eff} = \frac{I}{r^2}$ ergibt sich:
-\[
-v_b' = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
-\]
-
-Mit $v_b' = \omega\cdot r$ ergibt sich:
-\[
-\omega\cdot r = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
-\]
-
-Mit $v_b' = \omega\cdot r$ ergibt sich:
-\[
-\omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c + \frac{I}{r^2}}\cdot \frac{1}{r}
-\]
-
-Schrittweise Ausmultiplizieren:
 \[
 \omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c \cdot r^2 + I}\cdot \frac{r^2}{r} \qquad = \frac{v_{n,c} \cdot m_c \cdot (1 + k)\cdot r}{m_c \cdot r^2 + I}
 \]
-
-Um optimale Einschlagsposition zu finden, bei der die Winkelgeschwindigkeit maximal wird, $\omega$ nach unserer Gesuchten Größe $r$ ableitebn und setzen die Ableitung gleich null(Extremum finden):
+Für optimale Einschlagsposition Winkelgeschwindigkeit maximieren: $\omega$ nach unserer gesuchten Größe $r$ ableiten und Nullstelle finden:
 \[
-\frac{d\omega}{dr} = 0
+\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (m_c \cdot r^2 + I) - v_{n,c} \cdot m_c \cdot (1 + k) \cdot r \cdot 2 \cdot m_c \cdot r}{(m_c \cdot r^2 + I)^2} \; \overset{!}{=} \; 0
 \]
-
-Für die Funktion $\omega(r) = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot r}{m_c \cdot r^2 + I}$ verwenden wir die Quotientenregel:
-\[
-\frac{d}{dr}\left(\frac{u}{v}\right) = \frac{u' \cdot v - u \cdot v'}{v^2}
-\]
-
-\[
-\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (m_c \cdot r^2 + I) - v_{n,c} \cdot m_c \cdot (1 + k) \cdot r \cdot 2 \cdot m_c \cdot r}{(m_c \cdot r^2 + I)^2}
-\]
-
-Den gemeinsamen Faktor $v_{n,c} \cdot m_c \cdot (1 + k)$ im Zähler ausklammern:
+Faktor $v_{n,c} \cdot m_c \cdot (1 + k)$ ausklammern:
 \[
 \frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot \left[(m_c \cdot r^2 + I) - r \cdot 2 \cdot m_c \cdot r\right]}{(m_c \cdot r^2 + I)^2}
 \]
-
-Die Klammer im Zähler vereinfachen:
+Und Zähler vereinfachen:
 \[
 (m_c \cdot r^2 + I) - 2 \cdot m_c \cdot r^2 = m_c \cdot r^2 + I - 2 \cdot m_c \cdot r^2 = I - m_c \cdot r^2
 \]
-
 Somit:
 \[
 \frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (I - m_c \cdot r^2)}{(m_c \cdot r^2 + I)^2}
 \]
-
-% Nullstellen bestimmen
-Für ein Extremum muss gelten:
+Für ein Extremum muss die Ableitung 0 ergeben, es wird nach einer Zählernullstelle gesucht: 
 \[
-\frac{d\omega}{dr} = 0
+\frac{d\omega}{dr} = 0 \qquad \underbrace{v_{n,c} \cdot m_c \cdot (1 + k)}_{>0} \cdot (I - m_c \cdot r^2) = 0
 \]
-
-Dafür muss eine Zählernullstelle gefunden werden der Nenner $(m_c \cdot r^2 + I)^2$ immer positiv ist und der Vorfaktor $v_{n,c} \cdot m_c \cdot (1 + k)$ ebenfalls nicht null ist, muss der Zählerterm null werden:
-\[
-\underbrace{v_{n,c} \cdot m_c \cdot (1 + k)}_{>0} \cdot (I - m_c \cdot r^2) = 0
-\]
-
 Da $v_{n,c} \cdot m_c \cdot (1 + k) > 0$, folgt:
 \[
-I - m_c \cdot r^2 \overset{!}{=} 0
+I - m_c \cdot r^2 \overset{!}{=} 0 \qquad I = m_c \cdot r^2 \qquad r^2 = \frac{I}{m_c} \qquad r_{opt} = \pm \sqrt{\frac{I}{m_c}}
 \]
 
-Auflösen nach $r$:
-\[
-I = m_c \cdot r^2
-\]
-
-\[
-r^2 = \frac{I}{m_c}
-\]
-
-Der optimale Radius ist somit:
-\[
-r_{opt} = \pm \sqrt{\frac{I}{m_c}}
-\]
 
 \subsection{FEM Analyse}
 cool :DAD:SD:ASDUIAFHwuihQAWEUIFRHWSEUIFASLJDFBN

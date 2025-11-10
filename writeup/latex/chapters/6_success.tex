@@ -53,3 +53,80 @@ Das Skalarprodukt allein liefert jedoch keine Information über die Orientierung
 wobei die Signum-Funktion das Vorzeichen des Kreuzprodukts liefert und somit die Drehrichtung kodiert. Für ein erfolgreiches Eintauchen muss $\eta \geq 0$ gelten. Theoretisch existiert für die Orientierung auch eine obere Grenze, praktisch ist diese jedoch irrelevant, da derartige Werte unter realistischen Bedingungen nicht erreicht werden können.
 
 \fi
+
+\subsection{Beispielrechnung}
+\subsubsection{Sequenz 1}
+Parameter für \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}}: \\
+$x$, $y$, $b$, $\varphi$, $\sigma$ \\
+Kontrollmechanismus: $\sigma$ zwischen $\beta$ und $\beta + \delta$ 
+\\
+Berechnungen:
+$h=\sqrt{x^2+y^2}$.\\
+$\alpha=\arccos(\frac{h^2+y^2-x^2}{2\cdot h\cdot y})$\\
+$\beta = 180\degree-90\degree-\alpha$\\
+$\gamma=90\degree-\varphi$\\
+$\varepsilon=180\degree-\alpha-\gamma$\\
+$u=\sqrt{h^2+b^2-2\cdot h \cdot b\sin(\varepsilon)}$\\
+$\kappa=\arcsin(\frac{\sin(\varepsilon)}{u}\cdot h)$\\
+$\delta=180\degree-\varepsilon-\kappa$\\
+$\tau=180\degree-\sigma-\varepsilon$\\
+$t=\frac{h}{\sin(\tau)}\cdot\sin(\varepsilon)$\\ 
+$r=\frac{h}{\sin(\tau)}\cdot\sin(\sigma)$
+
+\subsubsection{Sequenz 2}
+Parameter für \hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} :\\
+$x$ mit $x=t$ aus Sequenz 1, $y$, $y(t(x_{skizze}))=y_{skizze}\pm p_{\text{tolerance}}$
+Für alle 3 Fälle gültig:
+\[
+y(t) = v_{0,y} \cdot t - \frac{1}{2} \cdot g \cdot t^2,
+\quad
+v_{0,x} = v_0 \cdot \cos(\alpha),
+\quad
+v_{0,y} = v_0 \cdot \sin(\alpha)
+\quad
+v_y(t) = \frac{dy}{dt} = v_{0,y} - g \cdot t
+\]
+Unbeschleunigt:
+\[
+x(t) = v_{0,x} \cdot t \qquad v_x(t) = v_{0,x} \qquad t(x) = \frac{x}{v_{0,x}} \qquad y(x) = -\frac{g}{2 \cdot {v_{0,x}}^{2}} \cdot x^{2} + \tan(\alpha) \cdot x
+\]
+Beschleunigt
+\[
+x(t) = v_{0,x} \cdot t + \frac{1}{2} \cdot a_x \cdot t^2 \quad v_x(t) = v_{0,x} + a_x \cdot t \qquad t(x) = \frac{-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}}{a_x}
+\]
+\[
+y(x) = \frac{v_{0,y}}{a_x} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)
+- \frac{g}{2 \cdot a_x^2} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_x \cdot x}\right)^2
+\]
+Gebremst:
+\[
+x(t) = \frac{1}{q} \cdot \ln\!\left(q \cdot v_{0,x} \cdot t + 1 \right) \qquad \text{wobei} \; q := \frac{A \cdot \rho \cdot c_w}{2 \cdot m} \; mit \; \begin{smallmatrix} A:\; 2,38 \rightarrow 5,46 \\[2pt] \rho:\; 0,29 \rightarrow 1,24 \end{smallmatrix}
+\]
+\[
+v_x(t) = \frac{v_{0,x}}{q \cdot v_{0,x} \cdot t + 1} \qquad t(x) = \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}} \qquad y(x) = v_{0,y} \cdot \frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}} 
+- \frac{1}{2} \cdot g \cdot \left(\frac{e^{q \cdot x} - 1}{q \cdot v_{0,x}}\right)^2
+\]
+\subsection{Sequenz 3}
+\[
+I \; = \; \frac{m}{l} \cdot\frac{1}{12} \cdot  l^3 \quad = \quad \frac{1}{12} \cdot m \cdot l^2
+\]
+$\displaystyle = \frac{m}{3\cdot l} \cdot \left(\left(l+l_0\right)^3 - \left(l_0\right)^3 \right)$
+\[
+v'_{c,t} = \frac{m_c \cdot v_{c,t} - m_{\text{eff}} \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}},
+\qquad
+v'_{b} = \frac{m_c \cdot v_{c,t} + m_c \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\text{eff}}}.
+\]
+\[
+r_{opt} = \pm \sqrt{\frac{I}{m_c}}
+\]
+\subsection{Sequenz 4}
+Parameter aus \hyperref[fig:05_sketch_rotated]{Abbildung~\ref*{fig:05_sketch_rotated}}:\\
+$\varphi$, $\vec{v_k}$
+\[
+\vec{v_{kp}} = \frac{\vec{v_b} \circ \vec{v_k}}{|\vec{v_b}|^2} \cdot \vec{v_b} \qquad 	\vec{v_{ko}} = \vec{v_k} - \vec{v_{kp}}
+\]
+$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3}\left( \rho_i \cdot \frac{r_i^5}{5} \;+\; \rho_a \cdot \frac{R_a^5 - r_i^5}{5} \right)\;=\; \frac{8\pi}{15} \left( \rho_i \cdot r_i^5 \;+\; \rho_a \cdot (R_a^5 - r_i^5)\right)$
+\\[8pt]
+\[
+v(t_{\text{end}}) \quad = \quad v_0 + \frac{\Delta_0 \cdot I}{m \cdot r_k^2 + I}
+\]

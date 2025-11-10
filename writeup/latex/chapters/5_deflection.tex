@@ -56,7 +56,7 @@ Für die nachfolgenden Berechnungen wird das Bezugssystem angepasst, um die geom
 		textfont=footnotesize,
 		skip=0pt
 	}
-	\caption{Detaillierte Skizze des transformierten Systems aus Sequenz 4 in Draufsicht}
+	\caption{Detaillierte Skizze des transformierten Systems in Draufsicht aus Sequenz 4}
 	\label{fig:05_sketch_rotated}
 	%\vspace{-10pt}
 \end{wrapfigure}
@@ -239,65 +239,6 @@ Einzig ihre etwas langsamere, lineare Konvergenz macht sie in unserem, sowieso b
 %\underbrace{\arctan\left(\frac{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \sin(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)}\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right) + u}\right)}_{\varphi_{Kugel}}
 
 %\Delta = \underbrace{\bigl[\varphi_0 + \omega_{\text{Kran}}\,(T - T_{\text{offset}})_+\bigr] \bmod 2\pi}_{\varphi_{Gewicht}} - \underbrace{\varphi(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)) = \arctan\left(\frac{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))\cdot \sin(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))}{-u\cdot \cos(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right))+\sqrt{r^2 - u^2 \cdot \sin^2(\arccos\left(\frac{u^2 + T^2 v^2 - r^2}{2 \cdot u\cdot T v}\right)))\cdot \cos(\vartheta) + u}\right)}_{\varphi_{Kugel}}
-\subsection{Massenträgheitsmoment der Kugel}
-\begin{wrapfigure}{r}{0.2\textwidth} %L
-	\centering
-	\includegraphics[width=0.28\textwidth]{resources/seq5/06_sketch-density.png}
-	\vspace*{-5mm}
-	\begin{flushright}
-		{\scriptsize Eigenkr.; Excalidraw}
-	\end{flushright}
-	
-	\captionsetup{
-		labelfont=bf,
-		textfont=footnotesize,
-		skip=0pt
-	}
-	\caption{Querschnitt der Dichteschichten der Kugelbombe aus Sequenz 4}
-	\label{fig:05_sketch_density}
-	%\vspace{-10pt}
-\end{wrapfigure}
-Da die Kugelbombe im Laufe des Films als \enquote{DM-79 sub-nautical neutron mine}\parencite{fastXwiki} bezeichnet wird, liegt die Annahme nahe, dass die Kugel keine homogene Dichte besitzt, sondern aus mehreren Schichten besteht. 
-\\
-Die Schichtstruktur ist in \hyperref[fig:05_sketch_density]{Abbildung~\ref*{fig:05_sketch_density}} dargestellt. Der Querschnitt zeigt die innere Hülle 1 vom Zentrum bis zum Radius $r_i$, deren Volumen eine Dichte von $\rho_i$ aufweist. Die äußere Schale erstreckt sich von $r_i$ bis $R_a$ und besitzt eine Dichte von $\rho_a$. 
-\\
-Zur Berechnung des Trägheitsmoments müssen die Sphären in kleine Masseelemente zerlegt und unter Berücksichtigung ihres Abstands vom Zentrum sowie der Dichte gewichtet werden. Dabei gilt, je näher sich eine Masse an der Rotationsachse befindet, desto geringer ist ihr Beitrag zum Trägheitsmoment. Dies führt zu
-\[
-I \;=\; \int r_\perp^{\,2}\, dm \;\Rightarrow\; \int (r \cdot \sin(\theta))^2\, \rho(r)\, dV
-\]
-\\
-Um jeden Punkt innerhalb der Kugel beschreiben zu können, wird das Volumenelement \(dV = r^2 \sin(\theta)\, dr\, d\theta\, d\varphi\) benötigt. Es beschreibt in Kugelkoordinaten das infinitesimale Raumstück, das durch kleine Änderungen von Radius, Polarwinkel und Azimutwinkel aufgespannt wird. Durch Ausführung des dreifachen Volumenintegrals über die entsprechenden Integrationsgrenzen erhält man schließlich das Volumen der Kugel.
-\\
-\begin{wrapfigure}{R}{0.4\textwidth} %TODO!!!!
-	\centering
-	\includegraphics[width=0.38\textwidth]{resources/seq5/05_sketch-sphere.png}
-	\vspace*{-5mm}
-	\begin{flushright}
-		{\scriptsize Nach \parencite{nolting_fig_sphere}; Gezeichnet in Excalidraw}
-	\end{flushright}
-	
-	\captionsetup{
-		labelfont=bf,
-		textfont=footnotesize,
-		skip=0pt
-	}
-	\caption{Basisvektoren der Kugelkoordinaten für Sequenz 4}
-	\label{fig:05_sketch_sphere}
-	%\vspace{-10pt}
-\end{wrapfigure}
-$\displaystyle I \;=\; \int \rho(r) \cdot (r \cdot \sin(\theta))^2 \cdot r^2 \cdot \sin(\theta)\cdot  \, dr \, d\theta \, d\varphi$
-\\[8pt]
-$\displaystyle I \;=\; \int \rho(r) \cdot r^4 \cdot \sin^3(\theta) \cdot \, dr \, d\theta \, d\varphi$
-\\[8pt]
-$\displaystyle I \;=\; \int \rho(r) \cdot r^4\cdot \underbrace{\left(\int_0^{\pi} \sin^3(\theta)\cdot  \, d\theta\right)}_{\frac{4}{3}} \cdot \underbrace{\left(\int_0^{2\pi} d\varphi\right)}_{2\pi} \, dr $
-\\[8pt]
-$\displaystyle \Rightarrow\quad I \;=\; \frac{8\pi}{3} \cdot \int \rho(r) \cdot r^4\cdot \, dr$
-\\[8pt]
-Da $\rho=const.$ für jede der beiden Schichten kann $\rho$ vor das Integral gezogen werden. Außerdem dürfen die Trägheitsmomente der beiden Kugelhüllen wie in Sequenz 3 bereits beschrieben, direkt addiert werden\parencite{brenneke_schuster_ges-traegheit}, daraus folgt diese Darstellung: 
-$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3} \cdot\left(\rho_i \int_{0}^{r_i} \cdot \; r^4\cdot \, dr \; + \; \rho_a \cdot \int_{r_i}^{R_a}  \cdot \; r^4\cdot \, dr \right)$
-\\[8pt]
-$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3}\left( \rho_i \cdot \frac{r_i^5}{5} \;+\; \rho_a \cdot \frac{R_a^5 - r_i^5}{5} \right)\;=\; \frac{8\pi}{15} \left( \rho_i \cdot r_i^5 \;+\; \rho_a \cdot (R_a^5 - r_i^5)\right)$
-\\[8pt]
 
 \subsection{Kollision Kugel mit Gegengewicht}
 \begin{wrapfigure}{R}{0.4\textwidth} 
@@ -313,7 +254,7 @@ $\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3}\left( \rho_i \cdot \frac{r_i^
 		textfont=footnotesize,
 		skip=0pt
 	}
-	\caption{Skizze der Kollisionsvektoren aus Sequenz 5}
+	\caption{Skizze der Kollisionsvektoren aus Sequenz 4}
 	\label{fig:05_sketch_collision}
 	%\vspace{-10pt}
 \end{wrapfigure}
@@ -344,6 +285,14 @@ Schließlich:
 	\vec{v_{kp}} = \frac{\vec{v_b} \circ \vec{v_k}}{|\vec{v_b}|^2} \cdot \vec{v_b} \qquad 	\vec{v_{ko}} = \vec{v_k} - \vec{v_{kp}}
 \]
 \subsubsection{Resultierende Geschwindigkeiten}
+Die berechnete Parallelkomponente kann nun in die bereits zuvor verwendete Formel für den teilelastischen, zentrischen Stoß zwischen Fahrzeug und Kranarm eingesetzt werden. Alle fahrzeugspezifischen Größen wurden dabei durch die entsprechenden Parameter der Kugel ersetzt. Daraus ergibt sich:
+\[
+v'_{k,t} = \frac{m_k \cdot v_{k,t} + m_{\text{eff}} \cdot v_b - m_{\text{eff}} \cdot (v_{k,t} - v_b) \cdot k}{m_k + m_{\text{eff}}},
+\quad
+v'_{b} = \frac{m_k \cdot v_{k,t} + m_{\text{eff}} \cdot v_b + m_k \cdot (v_{k,t} - v_b) \cdot k}{m_k + m_{\text{eff}}}.
+\]
+Anschließend kann die resultierende Tangentialkomponente der Kugel $\vec{v_{k,t}}'$ wieder mit der unveränderten Normalkomponente $\vec{v_{k,n}}$ addiert werden, um den neuen Geschwindigkeitsvektor $\vec{v_{k}}'$ zu erhalten. Da im Film zu sehen ist, wie das Material des Gegengewichts beim Aufprall zerbröckelt und zusätzliche Energie absorbiert wird, muss hier zusätzlich ein anderer Wert für $k$ gewählt werden. 
+Doch bevor dieses Ergebnis jedoch voreilig als endgültig betrachtet wird, ist Folgendes zu beachten:
 
 \subsection{Überdrehen der Kugel}
 \begin{wrapfigure}{R}{0.4\textwidth} 
@@ -359,17 +308,78 @@ Schließlich:
 		textfont=footnotesize,
 		skip=0pt
 	}
-	\caption{Skizze der kinematischen Differenz nach der Kollision in Sequenz 5}
+	\caption{Skizze der kinematischen Differenz nach der Kollision in Sequenz 4}
 	\label{fig:05_sketch_difference}
 	%\vspace{-10pt}
 \end{wrapfigure}
 Während des ursprünglichen Rollvorgangs waren die translatorische Bewegungsrichtung und die rotatorische Bewegung der Kugel kinematisch miteinander gekoppelt. Durch den Stoß ändert sich diese Kopplung jedoch. Der tangentiale Geschwindigkeitsanteil der Kugel \(\vec{v_{k,t}}\) wird durch die Kollision reduziert, während der orthogonale Anteil \(\vec{v_{k,n}}\) unverändert bleibt. Da das verwendete Kontaktmodell den Stoß als reibungslos beschreibt und somit keine direkte Kopplung zwischen translatorischer und rotatorischer Bewegung berücksichtigt, stimmen diese beiden Bewegungsanteile nach der Kollision, weder aus Sicht des Betrags, noch aus Sicht der Richtung überein. 
 \\
-Infolgedessen ist die Rotationsgeschwindigkeit der Kugel zunächst auf eine Richtung und ein Energieniveau angepasst, die nicht mehr mit der tatsächlichen Translationsbewegung korrespondieren. Die Kugel „überdreht“ daher unmittelbar nach der Kollision.
+Infolgedessen ist die Rotationsgeschwindigkeit der Kugel zunächst auf eine Richtung und ein Energieniveau angepasst, die nicht mehr mit der tatsächlichen Translationsbewegung korrespondieren. Die Kugel \enquote{überdreht} daher unmittelbar nach der Kollision.
 \\
 Dieser Effekt führt zu einem kurzfristigen Gleitvorgang anstelle des reinen Rollens. In dieser Phase wirkt die Gleitreibung als ausgleichender Mechanismus zwischen Rotations- und Translationsenergie. Sie bewirkt, dass die translatorische Geschwindigkeit zunimmt, während die Rotationsgeschwindigkeit abnimmt, bis sich beide Bewegungsformen wieder angeglichen haben und sich im Rollzustand befinden.
 In \hyperref[fig:05_sketch_difference]{Abbildung~\ref*{fig:05_sketch_difference}} ist dies Phänomen versinnbildlichend durch den grünen Pfeil dargestellt.
 \\
+\subsubsection{Massenträgheitsmoment der Kugel}
+\begin{wrapfigure}{r}{0.2\textwidth} %L
+	\centering
+	\includegraphics[width=0.28\textwidth]{resources/seq5/06_sketch-density.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkr.; Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Querschnitt der Dichteschichten der Kugelbombe aus Sequenz 4}
+	\label{fig:05_sketch_density}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Um die in der Rotation gespeicherte Energie zu bestimmen, ist abermals das Massenträgheitsmoment zu berechnen.
+\\
+Da die Kugelbombe im Laufe des Films als \enquote{DM-79 sub-nautical neutron mine}\parencite{fastXwiki} bezeichnet wird, liegt die Annahme nahe, dass die Kugel keine homogene Dichte besitzt, sondern aus mehreren Schichten besteht. 
+\\
+Die Schichtstruktur ist in \hyperref[fig:05_sketch_density]{Abbildung~\ref*{fig:05_sketch_density}} dargestellt. Der Querschnitt zeigt die innere Hülle 1 vom Zentrum bis zum Radius $r_i$, deren Volumen eine Dichte von $\rho_i$ aufweist. Die äußere Schale erstreckt sich von $r_i$ bis $R_a$ und besitzt eine Dichte von $\rho_a$. 
+\\
+Zur Berechnung des Trägheitsmoments müssen die Sphären in kleine Masseelemente zerlegt und unter Berücksichtigung ihres Abstands vom Zentrum sowie der Dichte gewichtet werden. Dabei gilt, je näher sich eine Masse an der Rotationsachse befindet, desto geringer ist ihr Beitrag zum Trägheitsmoment. Dies führt zu
+\[
+I \;=\; \int r_\perp^{\,2}\, dm \;\Rightarrow\; \int (r \cdot \sin(\theta))^2\, \rho(r)\, dV
+\]
+\begin{wrapfigure}{l}{0.4\textwidth} %TODO!!!!
+	\centering
+	\includegraphics[width=0.38\textwidth]{resources/seq5/05_sketch-sphere.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Nach \parencite{nolting_fig_sphere}; Gezeichnet in Excalidraw}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Basisvektoren der Kugelkoordinaten für Sequenz 4}
+	\label{fig:05_sketch_sphere}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Um jeden Punkt innerhalb der Kugel beschreiben zu können, wird das Volumenelement \(dV = r^2 \sin(\theta)\, dr\, d\theta\, d\varphi\) benötigt. Es beschreibt in Kugelkoordinaten das infinitesimale Raumstück, das durch kleine Änderungen von Radius, Polarwinkel und Azimutwinkel aufgespannt wird. Durch Ausführung des dreifachen Volumenintegrals über die entsprechenden Integrationsgrenzen erhält man schließlich das Volumen der Kugel.
+\\
+$\displaystyle I \;=\; \int \rho(r) \cdot (r \cdot \sin(\theta))^2 \cdot r^2 \cdot \sin(\theta)\cdot  \, dr \, d\theta \, d\varphi$
+\\[8pt]
+$\displaystyle I \;=\; \int \rho(r) \cdot r^4 \cdot \sin^3(\theta) \cdot \, dr \, d\theta \, d\varphi$
+\\[8pt]
+$\displaystyle I \;=\; \int \rho(r) \cdot r^4\cdot \underbrace{\left(\int_0^{\pi} \sin^3(\theta)\cdot  \, d\theta\right)}_{\frac{4}{3}} \cdot \underbrace{\left(\int_0^{2\pi} d\varphi\right)}_{2\pi} \, dr $
+\\[8pt]
+$\displaystyle \Rightarrow\quad I \;=\; \frac{8\pi}{3} \cdot \int \rho(r) \cdot r^4\cdot \, dr$
+\\[8pt]
+Da $\rho=const.$ für jede der beiden Schichten kann $\rho$ vor das Integral gezogen werden. Außerdem dürfen die Trägheitsmomente der beiden Kugelhüllen wie in Sequenz 3 bereits beschrieben, direkt addiert werden\parencite{brenneke_schuster_ges-traegheit}, daraus folgt diese Darstellung: 
+$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3} \cdot\left(\rho_i \int_{0}^{r_i} \cdot \; r^4\cdot \, dr \; + \; \rho_a \cdot \int_{r_i}^{R_a}  \cdot \; r^4\cdot \, dr \right)$
+\\[8pt]
+$\displaystyle I_\text{Kugel} \;=\; \frac{8\pi}{3}\left( \rho_i \cdot \frac{r_i^5}{5} \;+\; \rho_a \cdot \frac{R_a^5 - r_i^5}{5} \right)\;=\; \frac{8\pi}{15} \left( \rho_i \cdot r_i^5 \;+\; \rho_a \cdot (R_a^5 - r_i^5)\right)$
+\\[8pt]
+
 \subsubsection{Angleichen der Geschwindigkeiten}
 Um die kinematische Kopplung zwischen Rotation und Translation nach dem Stoß wiederherzustellen, muss das Überdrehen durch Gleitreibung ausgeglichen werden. Im Folgenden wird das Lösungsverfahren für diesen Angleichungsprozess hergeleitet.
 \\
@@ -415,5 +425,9 @@ Analog ergibt sich für die Rotationsgeschwindigkeit:
 \omega(t_{\text{end}}) = \omega_0 - \frac{F_r \cdot r_k}{I} \cdot t_{\text{end}} \quad = \quad \omega_0 - \frac{F_r \cdot r_k}{I} \cdot \frac{\Delta_0 \cdot I \cdot m}{F_r \cdot (m \cdot r_k^2 + I)} \quad = \quad \omega_0 - \frac{\Delta_0 \cdot m \cdot r_k}{m \cdot r_k^2 + I}
 \]
 Diese finalen Geschwindigkeiten erfüllen die Rollbedingung $v(t_{\text{end}}) = \omega(t_{\text{end}}) \cdot r_k$ und beschreiben den Zustand der Kugel nach vollständiger Angleichung. Die finale Geschwindigkeit liegt also logischerweise zwischen der anfänglichen Translationsgeschwindigkeit $v_0$ und der anfänglichen Bahngeschwindigkeit $\omega_0 \cdot r_k$.
+\\
+Abschließend kann der neue resultierende translatorische Teilvektor angegeben werden, der während der Angleichung entsteht. Bisher wurde ausschließlich mit Beträgen gearbeitet, nun wird dem Vektor auf einmal ein Winkel verliehen. Die Annahme, dass sich bei Winkeln dieser Größenordnung die Richtungen der Vektoren isoliert betrachten und die Beträge separat berechnen lassen, stellt selbstverständlich eine Näherung dar. Zudem ist nochmals zu betonen, dass, abgesehen von dieser kurzen Teilsequenz, sämtliche andere Reibungsprozesse vernachlässigt wurden. In diesem Fall wird die Angleichungsdauer außerdem als instantan approximiert, da das Zeitfenster der Geschwindigkeitsänderung von solch kurzer Dauer in keinem Verhältnis zu den Zeitperioden der restlichen Abläufen steht.
+\\
+Der Vektor $\vec{v_r}$ zeigt in Richtung der ursprünglichen Bahn mit dem Startwinkel $\vartheta$. Aufgrund des rotierten Koordinatensystems gilt daher: $e_{\vec{v_r}} = \left( \begin{smallmatrix} x = \cos(\vartheta-\beta) \\ y = \sin(\vartheta-\beta) \end{smallmatrix} \right)$. Der Betrag von $\vec{v_r}$ ergibt sich aus der Differenz zwischen $v_0$ und $v_{\text{end}}$, sodass gilt: $\vec{v_r} = e_{\vec{v_r}} \cdot |v_{\text{end}} - v_0|$.
 \\
 Zur Herleitung dieser Gleichungen habe ich unter anderem GeoGebra verwendet. In diesem Workspace\footnote{\url{https://www.geogebra.org/calculator/yqckwfjk}} befinden sich beispielsweise auch abgewandelte Signumfunktionen für eine vollständig algebraische Definition der Funktionen für den eigentlich nicht differenzierbaren Geschwindigkeitsverlauf mit linearer Zu- bzw. Abnahme bis zum abrupten Übergang zu einem konstanten Wert bei der Angleichung im Zeitpunkt $t_{\text{end}}$. 

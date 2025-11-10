@@ -930,7 +930,7 @@ plt.show()
 # ANIMATION
 # ============================================================================
 
-save_animation=True
+save_animation=False
 
 fig_anim, ax_anim = plt.subplots(figsize=(10, 10))
 

@@ -8,7 +8,7 @@ Nun da der Fokus von der XY- auf die XZ-Ebene rückt, verläuft die Bewegungsbah
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.48\textwidth]{resources/seq3/sketch.png}
-	\vspace*{-10mm}
+	\vspace*{-5mm}
 	\begin{flushright}
 		{\scriptsize Eigenkreation; Gezeichnet in Excalidraw}
 	\end{flushright}
@@ -29,7 +29,8 @@ Die in \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angl
 Der Parameter $x$ wird also mit dem Wert von $t$ aus den Berechnungen der vorherigen Sequenz besetzt.
 Der Wert für $y$ muss allerdings genau wie $x_r$ und $y_r$ für die Berechnungen dieser Sequenz neu geschätzt werden. %bleibt damit eine Unbekannte
 $h$ Ist die direkte Strecke zwischen Rampenende und Kollisionspunkt am Ausleger.
-Da die Flugbahn nur x-Richtung auf der XY-Ebene geradlinig verläuft, und nicht auch noch in y-Richtung in der XZ-Ebene\footnote{Man bemerke die Folgen meiner schlechten Namenswahl; Scheint aber unumgänglich zu sein wenn ein dreidimensionales Problem auf eine zweidimensionale Ebene, mit konventionellen Standardbeschriftungen reduziert werden, die dann von Kontext zu Kontext für unterschiedliche reduzierte Dimensionen stehen}, wird Dom sich nie direkt auf $h$ bewegen. Viel mehr suchen wir eine parabelähnliche Kurve\footnote{Gestauchte Parabel, Gedankengang erklären} die sich genau über die beiden Enden von $h$ spannt. 
+Da die Flugbahn nur x-Richtung auf der XY-Ebene geradlinig verläuft, und nicht auch noch in y-Richtung in der XZ-Ebene
+\footnote{Man möge mir die terminologische Inkonsistenz nachsehen. Dieselben Buchstaben für wechselnde Ebenenbezüge zu verwenden, scheint unvermeidbar wenn man Raum auf Fläche zwingt}, wird Dom sich nie direkt auf $h$ bewegen. Viel mehr suchen wir eine parabelähnliche Kurve die sich genau über die beiden Enden von $h$ spannt. 
 Aus diesen Gründen dient $h$ nur zur groben Veranschaulichung und hat für die weiteren Rechnungen keine Relevanz. 
 
 \subsection{Schiefer Wurf}
@@ -65,11 +66,11 @@ Gemäß eben genannten Aussagen, muss nun $x(t)$ umgekehrt, bzw. nach $t$ aufgel
 $y(x) = v_{0,y}\cdot\tfrac{x}{v_{0,x}} - \tfrac{1}{2}\cdot g \left( \tfrac{x}{v_{0,x}} \right)^2 
 = \tfrac{v_{0,y}}{v_{0,x}}\cdot x - \tfrac{g}{2\cdot{v_{0,x}}^{2}}\cdot x^{2}$. 
 Da $\tfrac{v_{0,y}}{v_{0,x}} = \tfrac{v_{0}\cdot\sin(\alpha)}{v_{0}\cdot\cos(\alpha)} = \tan(\alpha)$ gilt, 
-kann die Bahnkurve auch als 
+sieht die finale Form der Bahnkurvenfunktion so aus: 
 \[
 y(x) = -\frac{g}{2\cdot{v_{0,x}}^{2}}\cdot x^{2} + \tan(\alpha)\cdot x
 \]
-geschrieben werden.
+
 
 \subsection{Einfluss des Lachgaseinspritzsystems}
 An dieser Stelle kommt auch das aus den Filmen hinlänglich bekannte \enquote{NOS-System}(engl. \textit{Nitrous Oxide}, deutsch: Stickoxid) zum Einsatz. Während eine Lachgaseinspritzung in der Realität lediglich den Sauerstoffanteil im Brennraum erhöht und somit eine temporäre Leistungssteigerung des Motors bewirkt\parencite{NosWiki}, scheint das filmische Pendant einer gänzlich anderen Physik zu gehorchen. Dort äußert sich der Effekt in leuchtend blauen Flammen, plötzlicher Schubkraft und einer augenscheinlich vervielfachten Traktion, eine Darstellung, die eher an eine nachträglich montierte Turbine als an einen chemisch effizienteren Oxidationsprozess im Hubraum erinnert.  
@@ -150,8 +151,32 @@ y(x) = \frac{v_{0,y}}{a_x} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_
 
 
 \subsection{Einfluss der Aerodynamik}
-Den Gegenspieler zu dieser beinahe magischen \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. 
-%TODO
+Den Gegenspieler zu der beinahe „magischen“ \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. Um zu untersuchen, wie stark Dom die Aerodynamik seines Fahrzeugs beeinflussen kann, habe ich nach einem 3D-Modell des im Film verwendeten Dodge Charger SRT Hellcat gesucht und bin auf \href{https://sketchfab.com/3d-models/dodge-charger-srt-hellcat-high-quality-b222b6cb1d2c485293546b4157f48ecf}{dieses Modell bei Sketchfab} gestoßen. Da es nicht in einzelne Komponenten unterteilt war, habe ich in Blender Türen und Kofferraum herausgelöst und das Modell für die Visualisierung gerendert.  
+\\
+Wie sich dann leider beim Meshen herausstellte wies das Modell mehrere 10.000 Oberflächenfehler auf und war nicht geschlossen. In einem langwierigen Prozess habe ich manuell Vertices angepasst, um ein \emph{manifold} Modell zu erhalten, das sich mit OpenFOAM weiter verarbeiten ließ. OpenFOAM ist ein mächtiges Open-Source-Tool für Strömungssimulationen, das allerdings ausschließlich unter Linux über die Kommandozeile arbeitet. Das Programm arbeitet über sogenannte \emph{Cases}, anstatt Dateien direkt zu verwenden, müssen komplexe Ordnerstrukturen mit etlichen Konfigurationsdateien angelegt werden. Jeder physikalische Parameter sowie sämtliche Solver- und Post-Processing-Konfigurationen müssen selbst nachgeschlagen und definiert werden, da das Programm absolut keine Annahmen tätigt. Zunächst werden der virtuelle Windkanal und die Inlet-Bedingungen über die Konsole eingerichtet, anschließend kann die STL-Datei in ein für OpenFoam nutzbares Mesh konvertiert werden. Ein Beispiel dieses \emph{snappyHexMesh}-Prozesses am Autoquerschnitt während der Verfeinerung ist in \hyperref[fig:cfdCollage]{Abbildung~\ref*{fig:cfdCollage}} dargestellt. Bevor dann aber die ca 6 stündige Simulation gestartet werden kann, muss noch die Frontalfläche angegeben werden, dies gestaltete sich unerwartet schwierig, die Python-Bibliothek \href{https://github.com/nathanrooy/p-area}{pArea} bietet allerdings eine Lösung. Ein richtiger Wert ist dabei trivial. Im ersten Durchlauf habe ich die für das Auto korrekte Oberfläche angegeben, das Mesh dann allerdings ausversehen um 200\% skaliert. Dabei kam ein völlig unbrauchbarer $c_w$ Wert von 3 heraus. Da OpenFOAM nur begrenzte Analysefunktionen bietet, erfolgt das Post-Processing mit ParaView, das auf die Ordnerstruktur zugreift und die (bei mir mehr als 20GB) Rohdaten ausliest um nach Anweisung Stromlinien, Vektorfelder oder Druckverteilungen zu visualisieren. In den gezeigten Ausschnitten ist die Fahrzeugoberfläche nach lokalem Druck kodiert, Vektorfelder nach Geschwindigkeit. Schnitte durch den virtuellen Luftraum ermöglichen die Projektion der Luftströmung auf Flächen. ParaView bietet dabei auch die Möglichkeit Animationen zu programmieren, ich habe mich daran versucht und welche im Online-Repositorium hinterlegt \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_opened.mp4}} \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_closed.mp4}}.  
+\\
+Der Durchlauf mit geschlossenem Fahrzeugmodell liefert einen \(c_w\)-Wert von 0,29 bei einer Windgeschwindigkeit von 33~m/s und einer Frontalfläche von 2,38~m\(^2\), leicht unter den Referenzwerten\footnote{\url{https://www.hellcat.org/threads/drag-coefficient-of-hellcat.6277/}}, wahrscheinlich da ich die Turbulenzen rotierender Reifen nicht berücksichtige. Beim vollständig geöffneten Fahrzeugmodell ergibt sich bei einer Frontalfläche von 5,46~m\(^2\) ebenfalls ein \(c_w\)-Wert von 1,24.
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{resources/seq3/cheapCFDcollage.png}
+	\vspace{2mm}
+	{\scriptsize
+		\textcopyright\ Eigenkreation; 
+		Gerendert in Blender \textsuperscript{\tiny\textregistered}, 
+		Simuliert in OpenFoam \textsuperscript{\tiny\textregistered}, 
+		PostProcessing in ParaView \textsuperscript{\tiny\textregistered}
+	}
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=2pt
+	}
+	\caption{Einige Rendering und PostProcessing Resultate aus dem Blender-OpenFoam-ParaView Workflow}
+	\label{fig:cfdCollage}
+\end{figure}
 
 \subsubsection{Gebremste Flugkurve des Autos}
 Der Luftwiderstand kann grundsätzlich als lineare oder quadratische Funktion der Geschwindigkeit modelliert werden. 

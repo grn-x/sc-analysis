@@ -319,6 +319,41 @@ Dieser Effekt führt zu einem kurzfristigen Gleitvorgang anstelle des reinen Rol
 In \hyperref[fig:05_sketch_difference]{Abbildung~\ref*{fig:05_sketch_difference}} ist dies Phänomen versinnbildlichend durch den grünen Pfeil dargestellt.
 \\
 \subsubsection{Massenträgheitsmoment der Kugel}
+\begin{figure}[h!]
+	\centering
+	% linke Grafik
+	\begin{subfigure}[b]{0.65\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{resources/seq5/05_sketch-sphere.png}
+		\captionsetup{
+			labelfont=bf,
+			textfont=footnotesize,
+			skip=0pt
+		}
+		\caption{Basisvektoren der Kugelkoordinaten für Sequenz 4}
+		\label{fig:05_sketch_sphere}
+		%\vspace*{-2mm}
+		{\scriptsize Nach \parencite{nolting_fig_sphere}; Gezeichnet in Excalidraw}
+	\end{subfigure}
+	\hfill
+	% rechte Grafik
+	\begin{subfigure}[b]{0.25\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{resources/seq5/06_sketch-density.png}
+		\captionsetup{
+			labelfont=bf,
+			textfont=footnotesize,
+			skip=0pt
+		}
+		\caption{Querschnitt der Dichteschichten der Kugelbombe aus Sequenz 4}
+		\label{fig:05_sketch_density}
+		%\vspace*{-2mm}
+		{\scriptsize Eigenkr.; Excalidraw}
+	\end{subfigure}
+	\caption{Darstellungen zur Berechnung des Massenträgheitsmoments der Kugelbombe}
+	\label{fig:05_combined}
+\end{figure}
+\iffalse
 \begin{wrapfigure}{r}{0.2\textwidth} %L
 	\centering
 	\includegraphics[width=0.28\textwidth]{resources/seq5/06_sketch-density.png}
@@ -333,9 +368,10 @@ In \hyperref[fig:05_sketch_difference]{Abbildung~\ref*{fig:05_sketch_difference}
 		skip=0pt
 	}
 	\caption{Querschnitt der Dichteschichten der Kugelbombe aus Sequenz 4}
-	\label{fig:05_sketch_density}
+	\label{fig:05_sketch_density_}
 	%\vspace{-10pt}
 \end{wrapfigure}
+\fi
 Um die in der Rotation gespeicherte Energie zu bestimmen, ist abermals das Massenträgheitsmoment zu berechnen.
 \\
 Da die Kugelbombe im Laufe des Films als \enquote{DM-79 sub-nautical neutron mine}\parencite{fastXwiki} bezeichnet wird, liegt die Annahme nahe, dass die Kugel keine homogene Dichte besitzt, sondern aus mehreren Schichten besteht. 
@@ -346,6 +382,7 @@ Zur Berechnung des Trägheitsmoments müssen die Sphären in kleine Masseelement
 \[
 I \;=\; \int r_\perp^{\,2}\, dm \;\Rightarrow\; \int (r \cdot \sin(\theta))^2\, \rho(r)\, dV
 \]
+\iffalse
 \begin{wrapfigure}{l}{0.4\textwidth} %TODO!!!!
 	\centering
 	\includegraphics[width=0.38\textwidth]{resources/seq5/05_sketch-sphere.png}
@@ -360,9 +397,10 @@ I \;=\; \int r_\perp^{\,2}\, dm \;\Rightarrow\; \int (r \cdot \sin(\theta))^2\, 
 		skip=0pt
 	}
 	\caption{Basisvektoren der Kugelkoordinaten für Sequenz 4}
-	\label{fig:05_sketch_sphere}
+	\label{fig:05_sketch_sphere_}
 	%\vspace{-10pt}
 \end{wrapfigure}
+\fi
 Um jeden Punkt innerhalb der Kugel beschreiben zu können, wird das Volumenelement \(dV = r^2 \sin(\theta)\, dr\, d\theta\, d\varphi\) benötigt. Es beschreibt in Kugelkoordinaten das infinitesimale Raumstück, das durch kleine Änderungen von Radius, Polarwinkel und Azimutwinkel aufgespannt wird. Durch Ausführung des dreifachen Volumenintegrals über die entsprechenden Integrationsgrenzen erhält man schließlich das Volumen der Kugel.
 \\
 $\displaystyle I \;=\; \int \rho(r) \cdot (r \cdot \sin(\theta))^2 \cdot r^2 \cdot \sin(\theta)\cdot  \, dr \, d\theta \, d\varphi$

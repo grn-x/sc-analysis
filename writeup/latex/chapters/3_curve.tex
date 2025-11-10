@@ -2,8 +2,8 @@
 Auch in diesem Fall wird die Darstellung auf einen zweidimensionalen Sachverhalt reduziert.
 Im vorherigen Kapitel wurde die Situation in der XY-Draufsicht analysiert.
 Die folgende Untersuchung betrachtet nun die XZ-Seitenansicht.
-Es soll bestimmt werden bei welchen Kombinationen aus Abfahrtswinkel und Geschwindigkeit eine Kollision mit dem Kranarm möglich ist.
-Nun da der Fokus von der XY- auf die XZ-Ebene rückt, verläuft die Bewegungsbahn nicht geradlinig mehr, sondern folgt einer parabolischen Flugkurve.
+Es soll bestimmt werden, bei welchen Kombinationen aus Abfahrtswinkel und Geschwindigkeit eine Kollision mit dem Kranarm möglich ist.
+Nun da der Fokus von der XY- auf die XZ-Ebene rückt, verläuft die Bewegungsbahn nicht mehr geradlinig, sondern folgt einer parabolischen Flugkurve.
 %\newpage %TODO
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
@@ -22,15 +22,15 @@ Nun da der Fokus von der XY- auf die XZ-Ebene rückt, verläuft die Bewegungsbah
 	\label{fig:03_xz-angle_sketch}
 	%\vspace{-10pt}
 \end{wrapfigure}
-\hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} zeigt die für diese Vorgang bedeutsamen Variablen. 
+\hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} zeigt die für diesen Vorgang bedeutsamen Variablen. 
 Die Rampenlänge und -höhe werden auf den Abschusswinkel $\alpha$ reduziert, mit 
 $\alpha=\arctan(\frac{y_r}{x_r})$\\
 Die in \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angle_sketch-detailed}} dargestellte Strecke $t$, die das Auto in der reduzierten Draufsicht bis zur Kollision mit dem Ausleger zurücklegen muss, ist hier in \hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} in Form der Strecke $x$ wiederzufinden.
 Der Parameter $x$ wird also mit dem Wert von $t$ aus den Berechnungen der vorherigen Sequenz besetzt.
 Der Wert für $y$ muss allerdings genau wie $x_r$ und $y_r$ für die Berechnungen dieser Sequenz neu geschätzt werden. %bleibt damit eine Unbekannte
-$h$ Ist die direkte Strecke zwischen Rampenende und Kollisionspunkt am Ausleger.
-Da die Flugbahn nur x-Richtung auf der XY-Ebene geradlinig verläuft, und nicht auch noch in y-Richtung in der XZ-Ebene
-\footnote{Man möge mir die terminologische Inkonsistenz nachsehen. Dieselben Buchstaben für wechselnde Ebenenbezüge zu verwenden, scheint unvermeidbar wenn man Raum auf Fläche zwingt}, wird Dom sich nie direkt auf $h$ bewegen. Viel mehr suchen wir eine parabelähnliche Kurve die sich genau über die beiden Enden von $h$ spannt. 
+$h$ ist die direkte Strecke zwischen Rampenende und Kollisionspunkt am Ausleger.
+Da die Flugbahn nur in x-Richtung auf der XY-Ebene geradlinig verläuft, und nicht auch noch in y-Richtung in der XZ-Ebene
+\footnote{Man möge mir die terminologische Inkonsistenz nachsehen. Dieselben Buchstaben für wechselnde Ebenenbezüge zu verwenden, scheint unvermeidbar wenn man Raum auf Fläche zwingt}, wird Dom sich nie direkt auf $h$ bewegen. Viel mehr suchen wir eine parabelähnliche Kurve, die sich genau über die beiden Enden von $h$ spannt. 
 Aus diesen Gründen dient $h$ nur zur groben Veranschaulichung und hat für die weiteren Rechnungen keine Relevanz. 
 
 \subsection{Schiefer Wurf}
@@ -40,9 +40,9 @@ Das physikalische Modell eines Wurfes erlaubt die Entkopplung der x- und y-Kompo
 Unter widerstandsfreien Bedingungen enthält die Funktion $x(t)$ das grundlegende Zeit-Ort-Gesetz\parencite{WegZeitGesetzWiki}, das lediglich um einen Koeffizienten für die Berücksichtigung des Startwinkels erweitert ist. 
 Dieser Koeffizient ist nötig, da wir nur den gesamten Betrag der Abschussgeschwindigkeit kennen. Durch den Winkel $\alpha$ können dann der x- und y-Betrag aus der gesamt Geschwindigkeit isoliert werden. 
 \\
-Die $y(t)$ Funktion verhält sich ähnlich. Als Startgeschwindigkeit wird nun allerdings die Komponente senkrecht und nicht parallel zum Boden benutzt. Um die Erdbeschleunigung zu berücksichtigen wird $\frac{1}{2}\cdot g \cdot t^2$ abgezogen.
+Die $y(t)$ Funktion verhält sich ähnlich. Als Startgeschwindigkeit wird nun allerdings die Komponente senkrecht und nicht parallel zum Boden benutzt. Um die Erdbeschleunigung zu berücksichtigen, wird $\frac{1}{2}\cdot g \cdot t^2$ abgezogen.
 \\
-Aus der allgemeinen Startgeschwindigkeit $v_0$ in Kombination mit dem Abschusswinkel $\alpha$ folgen die horizontale und vertikale Komponente für jeweiligen x-bzw. y-Term mit: \\
+Aus der allgemeinen Startgeschwindigkeit $v_0$ in Kombination mit dem Abschusswinkel $\alpha$ folgen die horizontale und vertikale Komponente für jeweiligen x-bzw. y-Term mit \\
 $v_{0,x} = v_0\cdot\cos(\alpha)$ und
 $v_{0,y} = v_0\cdot\sin(\alpha)$
 \\Daraus ergibt sich:
@@ -55,10 +55,10 @@ Nebenbei kann man in dieser Darstellung ganz einfach qualitative Aussagen über 
 \\
 \subsubsection{Untersuchungsgegenstand und Bahnkurve}
 Das Extremum der Parabel ist in diesem Kontext allerdings irrelevant. Für die Überprüfung des Realismusgrades der Sequenz ist entscheidend, dass bzw. ob es einen eindeutigen Zeitpunkt $t$ gibt, zu dem die Funktion $x(t)$ exakt den in \hyperref[fig:03_xz-angle_sketch]{Abbildung~\ref*{fig:03_xz-angle_sketch}} dargestellten Abstand $x$ annimmt und gleichzeitig die Funktion $y(t)$ den entsprechenden Wert $y$ aus der Skizze erreicht.
-Anstatt dieses Problem numerisch über beispielsweise die Methode der kleinsten Schritte zu lösen, bietet es sich hier an $t$ aus beiden Teilgleichungen zu eliminieren und diese dann in Abhängigkeit von sich selbst anzugeben. \\
-Um die jeweils beiden zeitabhängigen Komponenten auf eine gemeinsame Domäne zu vereinen und eine ortsbasierte Bahnkurve zu konstruieren, muss zuerst die Funktion $x(t)$ zu $t(x)$ umgekehrt werden um. Dadurch können die Funktionen $y(t)$ und $t(x)$ zu $y(t(x))$ bzw. $y(x)$ verkettet werden. Es fällt auf, dass die Höhe $y$ nun nicht mehr als Wert der Zeit, sondern als Wert der Strecke $x$ definiert ist. Die resultierende Funktion ist jetzt kein Zeit-Ort Konstrukt mehr, sondern eine rein geometrische Darstellung der Bahnkurve.
+Anstatt dieses Problem numerisch über beispielsweise die Methode der kleinsten Schritte zu lösen, bietet es sich hier an, $t$ aus beiden Teilgleichungen zu eliminieren und diese dann in Abhängigkeit von sich selbst anzugeben. \\
+Um die jeweils beiden zeitabhängigen Komponenten auf eine gemeinsame Domäne zu vereinen und eine ortsbasierte Bahnkurve zu konstruieren, muss zuerst die Funktion $x(t)$ zu $t(x)$ umgekehrt werden. Dadurch können die Funktionen $y(t)$ und $t(x)$ zu $y(t(x))$ bzw. $y(x)$ verkettet werden. Es fällt auf, dass die Höhe $y$ nun nicht mehr als Wert der Zeit, sondern als Wert der Strecke $x$ definiert ist. Die resultierende Funktion ist jetzt kein Zeit-Ort Konstrukt mehr, sondern eine rein geometrische Darstellung der Bahnkurve.
 \\
-Um eine Kollision nachzuweisen gilt es nun eine realistische Kombination aus Eingangsvariablen zu finden, für die die beiden Seiten der Gleichung $y(t(x_{skizze}))=y_{skizze}$ äquivalent sind. Bei diesem Modell wird von punktförmigen Objekten ausgegangen, das ein Erfüllen dieser Bedingung kaum möglich und ist auch genauso wenig realistisch. Daher sollte eher $y(t(x_{skizze}))=y_{skizze}\pm 0,5$ angestrebt werden 
+Um eine Kollision nachzuweisen, gilt es nun, eine realistische Kombination aus Eingangsvariablen zu finden, für die die beiden Seiten der Gleichung $y(t(x_{skizze}))=y_{skizze}$ äquivalent sind. Bei diesem Modell wird von punktförmigen Objekten ausgegangen, das ein Erfüllen dieser Bedingung kaum möglich und ist auch genauso wenig realistisch. Daher sollte eher $y(t(x_{skizze}))=y_{skizze}\pm 0,5$ angestrebt werden.
 
 
 \subsection{Unbeschleunigte Flugkurve des Autos}
@@ -97,7 +97,7 @@ Im Sinne der filmischen Authentizität, werde ich die Wirkung von NOS als unmitt
 \end{wrapfigure}
 \label{sec:unbeschleunigt_neigungswinkel}
 Diese nicht auf Traktion beruhende Form der Kraftübertragung ermöglicht es dem Fahrzeug, selbst während der Flugphase eine zusätzliche Geschwindigkeitserhöhung zu erfahren. Zur Vereinfachung wird dieser Effekt ausschließlich auf die horizontale Komponente angewandt. Diese Annäherung entspricht offensichtlich nicht der Realität.\\
-Betrachtet man die Dynamik genauer, fällt auf, dass bei sich die Fahrzeugneigung nach dem Überfahren der Rampe tatsächlich kontinuierlich ändert.
+Betrachtet man die Dynamik genauer, fällt auf, dass sich die Fahrzeugneigung nach dem Überfahren der Rampe tatsächlich kontinuierlich ändert.
 Daraus ergibt sich eine zeitabhängige Beschleunigungsrichtung. 
 Intuitiv scheint es so, als ob der Fahrzeugwinkel mit der jeweils momentanen Steigung der $y(t)$ korreliert. \\
 Diese Verhältnismäßigkeiten weiter zu untersuchen und korrekt zu berücksichtigen würden leider mein zeitliches Budget übersteigen, und müssen, so weh es mir tut, durch die genannte Maßnahmen approximiert werden. %TODO
@@ -110,7 +110,7 @@ Daraus folgt:
 x(t) = v_{0,x} \cdot t + \frac{1}{2} \cdot a_x \cdot t^2 \qquad \text{und} \qquad
 y(t) = v_{0,y} \cdot t - \frac{1}{2} \cdot g \cdot t^2
 \]
-Wie zuvor muss nun die Funktion $x(t)$ umgekehrt und in $y(t)$ eingesetzt werden.
+Wie zuvor, muss nun die Funktion $x(t)$ umgekehrt und in $y(t)$ eingesetzt werden.
 % Umstellung der x(t)-Gleichung %Subtraktion von $x$ auf beiden Seiten:
 Um $x(t)$ nach $t$ aufzulösen, bringen wir zunächst alle Terme auf eine Seite:
 \[
@@ -151,11 +151,11 @@ y(x) = \frac{v_{0,y}}{a_x} \cdot \left(-v_{0,x} + \sqrt{{v_{0,x}}^2 + 2 \cdot a_
 
 
 \subsection{Einfluss der Aerodynamik}
-Den Gegenspieler zu der beinahe „magischen“ \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. Um zu untersuchen, wie stark Dom die Aerodynamik seines Fahrzeugs beeinflussen kann, habe ich nach einem 3D-Modell des im Film verwendeten Dodge Charger SRT Hellcat gesucht und bin auf \href{https://sketchfab.com/3d-models/dodge-charger-srt-hellcat-high-quality-b222b6cb1d2c485293546b4157f48ecf}{dieses Modell bei Sketchfab} gestoßen. Da es nicht in einzelne Komponenten unterteilt war, habe ich in Blender Türen und Kofferraum herausgelöst und das Modell für die Visualisierung gerendert.  
+Den Gegenspieler zu der beinahe „magischen“ \enquote{Nitro-Beschleunigung} bildet die Bremswirkung des Luftwiderstands. Um zu untersuchen, wie stark Dom die Aerodynamik seines Fahrzeugs beeinflussen kann, habe ich nach einem 3D-Modell des im Film verwendeten Dodge Charger SRT Hellcat gesucht und bin auf \href{https://sketchfab.com/3d-models/dodge-charger-srt-hellcat-high-quality-b222b6cb1d2c485293546b4157f48ecf}{dieses Modell bei Sketchfab} gestoßen. Da es nicht in einzelne Komponenten unterteilt war, habe ich in \href{https://www.blender.org/about/}{Blender} Türen und Kofferraum herausgelöst und das Modell für die Visualisierung gerendert.  
 \\
-Wie sich dann leider beim Meshen herausstellte wies das Modell mehrere 10.000 Oberflächenfehler auf und war nicht vollständig geschlossen. In einem langwierigen Prozess habe ich manuell Vertices angepasst, um ein \emph{manifold} Modell zu erhalten, das sich mit OpenFOAM weiter verarbeiten ließ. OpenFOAM ist ein mächtiges Open-Source-Tool für Strömungssimulationen, das allerdings ausschließlich unter Linux über die Kommandozeile arbeitet. Das Programm arbeitet über sogenannte \emph{Cases}, anstatt Dateien direkt zu verwenden, müssen komplexe Ordnerstrukturen mit etlichen Konfigurationsdateien angelegt werden. Jeder physikalische Parameter sowie sämtliche Solver- und Post-Processing-Konfigurationen müssen selbst nachgeschlagen und definiert werden, da das Programm absolut keine Annahmen tätigt. Zunächst werden der virtuelle Windkanal und die Inlet-Bedingungen über die Konsole eingerichtet, anschließend kann die STL-Datei in ein für OpenFoam nutzbares Mesh konvertiert werden. Ein Beispiel dieses \emph{snappyHexMesh}-Prozesses am Autoquerschnitt während der Verfeinerung ist in \hyperref[fig:cfdCollage]{Abbildung~\ref*{fig:cfdCollage}} dargestellt. Bevor dann aber die ca 6 stündige Simulation gestartet werden kann, muss noch die Frontalfläche angegeben werden, dies gestaltete sich unerwartet schwierig, die Python-Bibliothek \href{https://github.com/nathanrooy/p-area}{pArea} bietet allerdings eine Lösung. Ein richtiger Wert ist dabei trivial. Im ersten Durchlauf habe ich die für das Auto korrekte Oberfläche angegeben, das Mesh dann allerdings ausversehen um 200\% skaliert. Dabei kam ein völlig unbrauchbarer $c_w$ Wert von 3.x heraus. Da OpenFOAM keine Analysefunktionen bietet, erfolgt das Post-Processing mit ParaView, das auf die Ordnerstruktur zugreift und die (bei mir mehr als 20GB) Rohdaten ausliest um nach Anweisung Stromlinien, Vektorfelder oder Druckverteilungen zu visualisieren. In den gezeigten Ausschnitten ist die Fahrzeugoberfläche nach lokalem Druck kodiert, Vektorfelder nach Geschwindigkeit. Schnitte durch den virtuellen Luftraum ermöglichen die Projektion der Luftströmung auf Flächen. ParaView bietet dabei auch die Möglichkeit Animationen zu programmieren, ich habe mich daran versucht und zwei im Online-Repositorium hinterlegt \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_opened.mp4}} \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_closed.mp4}}.  
+Wie sich dann leider beim \emph{Meshen} herausstellte, wies das Modell mehrere 10.000 Oberflächenfehler auf und war nicht vollständig geschlossen. In einem langwierigen Prozess habe ich manuell Vertices angepasst, um ein \emph{manifold} Modell zu erhalten, das sich mit OpenFOAM weiter verarbeiten ließ. OpenFOAM ist ein mächtiges Open-Source-Tool für Strömungssimulationen, das allerdings ausschließlich unter Linux über die Kommandozeile arbeitet. Das Programm funktioniert über sogenannte \emph{Cases}, anstatt Dateien direkt zu verwenden, müssen komplexe Ordnerstrukturen mit etlichen Konfigurationsdateien angelegt werden. Jeder physikalische Parameter sowie sämtliche Solver- und Post-Processing-Konfigurationen müssen selbst nachgeschlagen und definiert werden, da das Programm absolut keine Annahmen tätigt. Zunächst werden der virtuelle Windkanal und die Inlet-Bedingungen über die Konsole eingerichtet, anschließend kann die STL-Datei in ein für OpenFoam nutzbares Mesh konvertiert werden. Ein Beispiel dieses \emph{snappyHexMesh}-Prozesses am Autoquerschnitt während der Verfeinerung ist in \hyperref[fig:cfdCollage]{Abbildung~\ref*{fig:cfdCollage}} dargestellt. Bevor dann aber die ca 6 stündige Simulation gestartet werden kann, muss noch die Frontalfläche angegeben werden; dies gestaltete sich unerwartet schwierig, die Python-Bibliothek \href{https://github.com/nathanrooy/p-area}{pArea} bietet allerdings eine Lösung. Ein richtiger Wert ist dabei trivial. Im ersten Durchlauf habe ich die für das Auto korrekte Oberfläche angegeben, das Mesh dann allerdings aus Versehen um 200\% skaliert. Dabei kam ein völlig unbrauchbarer $c_w$ Wert von 3.x heraus. Da OpenFOAM keine Analysefunktionen bietet, erfolgt das Post-Processing mit ParaView, das auf die Ordnerstruktur zugreift und die (bei mir mehr als 20GB) Rohdaten ausliest, um nach Anweisung Stromlinien, Vektorfelder oder Druckverteilungen zu visualisieren. In den gezeigten Ausschnitten ist die Fahrzeugoberfläche nach lokalem Druck kodiert, Vektorfelder nach Geschwindigkeit. Schnitte durch den virtuellen Luftraum ermöglichen die Projektion der Luftströmung auf Flächen. ParaView bietet dabei auch die Möglichkeit, Animationen zu programmieren. Ich habe mich daran versucht und zwei im Online-Repositorium hinterlegt \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_opened.mp4}} \footnote{\url{https://github.com/grn-x/sc-analysis/raw/refs/heads/main/scripts/cfd/openFoamCase/renders/anim_closed.mp4}}.  
 \\
-Der Durchlauf mit geschlossenem Fahrzeugmodell liefert einen \(c_w\)-Wert von 0,29 bei einer Windgeschwindigkeit von 33~m/s und einer Frontalfläche von 2,38~m\(^2\), leicht unter den Referenzwerten\footnote{\url{https://www.hellcat.org/threads/drag-coefficient-of-hellcat.6277/}}, wahrscheinlich da ich die Turbulenzen rotierender Reifen nicht berücksichtige. Beim vollständig geöffneten Fahrzeugmodell ergibt sich bei einer Frontalfläche von 5,46~m\(^2\) ein \(c_w\)-Wert von 1,24.
+Der Durchlauf mit geschlossenem Fahrzeugmodell liefert einen \(c_w\)-Wert von 0,29 bei einer Windgeschwindigkeit von 33~m/s und einer Frontalfläche von 2,38~m\(^2\), leicht unter den Referenzwerten\footnote{\url{https://www.hellcat.org/threads/drag-coefficient-of-hellcat.6277/}}, wahrscheinlich aufgrund der nicht berücksichtigten Turbulenzen der Reifen. Beim vollständig geöffneten Fahrzeugmodell ergibt sich bei einer Frontalfläche von 5,46~m\(^2\) ein \(c_w\)-Wert von 1,24.
 
 
 
@@ -203,7 +203,7 @@ Um die unvermeidliche Sünde des numerischen Rechnens noch ein wenig hinauszuzö
 \\
 Die flache Kurve entsteht durch einen sehr kleinen Flugwinkel, was bedeutet, dass die horizontale Geschwindigkeit $v_x$ den größten Teil der Gesamtgeschwindigkeit $v$ ausmacht. Dadurch gilt näherungsweise $v \approx v_x$ und die Kopplung über $v_y$ wird vernachlässigbar. Folglich spielt die vertikale Luftreibung, wie erwähnt, für das Endergebnis nur eine untergeordnete Rolle und wird der Vereinfachung halber außer Acht gelassen
 \\
-Ganz allgemein muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hyperref[sec:unbeschleunigt_neigungswinkel]{beschleunigten Flugkurve}, vernachlässigt werden. Dadurch wird sichergestellt, dass die Frontalfläche $A$ während des Flugverlaufs konstant bleibt.
+Generell muss auch die Kippbewegung des Fahrzeugs, wie schon bei der \hyperref[sec:unbeschleunigt_neigungswinkel]{beschleunigten Flugkurve}, vernachlässigt werden. Dadurch wird sichergestellt, dass die Frontalfläche $A$ während des Flugverlaufs konstant bleibt.
 \\
 %Unter diesen Annahmen reduziert sich die Differentialgleichung für die horizontale Komponente zu einer separierbaren Gleichung:
 \\
@@ -235,13 +235,16 @@ Während die vertikale Bewegung des Objekts in allen Fällen durch die bekannte 
 Fall 1: Konstante Geschwindigkeit$x(t) = v_{0,x} \cdot t$\\
 Der einfachste Fall tritt auf, wenn sich die resultierende horizontale Geschwindigkeit nicht ändert. Realistisch gesehen entspricht dies aber nicht einer tatsächlichen Beschleunigung von 0, sondern einer Situation, in der der durch Doms magische blauen Auspuffflammen bereitgestellte Schub exakt die Luftreibung kompensiert. Infolgedessen bewegt sich das Fahrzeug mit konstanter Geschwindigkeit durch die Luft. Anstatt die Reibungs- und Beschleunigungskomponente, $a_x$ und $F_L$, kompliziert anzugleichen, werden einfach beide ignoriert. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall dem Koordinatenursprung.
 \\
+\\
 Fall 2: Positive Netto-Beschleunigung $x(t) = v_{0,x} \cdot t + \frac{1}{2} a_x \cdot t^2$\\
-In diesem Fall übersteigt die erzeugte Beschleunigung die durch Luftreibung verursachte Bremswirkung. Vereinfachend kann die Luftreibung in der Formel vernachlässigt werden, da beide Optionen in der Gesamtbilanz den selben Bereich abdecken, und so beinahe identisch sind\footnote{Nur beinahe, da Flugkurve wahrscheinlich dennoch kleine Unterschiede aufweisen würde}. Ein großes $a_x$ von dem ein kleineres $F_L$ \enquote{abgezogen} wird, führt zum selben Ergebnis, wie wenn von vornherein ein kleineres $a_x$ gewählt worden wäre. Daher kann die horizontale Bewegung ausschließlich durch $a_x$ beschrieben werden, wobei jedoch zu beachten ist, dass der in der Formel verwendete Beschleunigungswert, dann kleiner als die tatsächliche aufzuwendende Antriebskraft in der filmischen Realität ist. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall der grün markierten Fläche. Je größer $a_x$ wird, desto größer ist auch die positive Geschwindigkeitsänderung.
+In diesem Fall übersteigt die erzeugte Beschleunigung die durch Luftreibung verursachte Bremswirkung. Vereinfachend kann die Luftreibung in der Formel vernachlässigt werden, da beide Optionen in der Gesamtbilanz den selben Bereich abdecken, und so beinahe identisch sind\footnote{Nur beinahe, da Flugkurve wahrscheinlich dennoch kleine Unterschiede aufweisen würde}. Ein großes $a_x$, von dem ein kleineres $F_L$ \enquote{abgezogen} wird, führt zum selben Ergebnis, als wenn von vornherein ein kleineres $a_x$ gewählt worden wäre. Daher kann die horizontale Bewegung ausschließlich durch $a_x$ beschrieben werden, wobei jedoch zu beachten ist, dass der in der Formel verwendete Beschleunigungswert dann kleiner als die tatsächliche aufzuwendende Antriebskraft in der filmischen Realität ist. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall der grün markierten Fläche. Je größer $a_x$ wird, desto größer ist auch die positive Geschwindigkeitsänderung.
 \\
 Auch wenn die Formeln der Fälle 1 und 2 beide die Reibung vernachlässigen, lassen sie sich nicht zu einer einzigen Funktion kombinieren. Das liegt daran, dass in Fall 2 $a_x$ im Nenner der inversen Funktion erscheint. Für $a_x = 0$ wäre die Funktion dann nicht definiert. 
 \\
+\\
 Fall 3: Luftwiderstand ohne Ausgleich $x(t) = \frac{1}{q} \ln\left(q \cdot v_{0,x} \cdot t + 1 \right)$\\
 Das Objekt erfährt Luftreibung, jedoch keine externe positive Beschleunigung die diesen Verlust ausgleichen oder negieren würde. Die Geschwindigkeit nimmt im Verlauf des Flugs ab. Dabei ist zu beachten, dass es keinen Übergang von Fall 1 zu Fall 3 gibt. In der Gesamtgeschwindigkeitsbilanz startet diese Funktion also nicht bei null, sondern mit einem Versatz. Das liegt daran, dass, sobald die Reibungskraft nicht mehr ausgeglichen wird, sie als \enquote{abrupter Sprung} auf das Fahrzeug wirkt. Variierende Parameter wie der cw-Wert in Kombination Querschnittsflächenkonfiguration können die Funktion weiter ins Negative verschieben, jedoch nicht die Lücke zwischen \enquote{-x} und null schließen. In \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} entspricht dieser Fall daher der blauen Fläche im negativen Geschwindigkeits-Änderungsbereich. 
+\\
 \\
 Fall 4 beschreibt die genau diese Situation, in der die Summe der beschleunigenden Kräfte größer null, jedoch kleiner als die Summe der hemmenden Reibungskräfte ist. In diesem Fall müsste eine Funktion $x(t)$ aufgestellt werden, die sowohl die positive Beschleunigung durch das Antriebssystem als auch die verzögernde Wirkung der Reibung berücksichtigt. Für große $a_x$ ist diese Funktion nahezu überflüssig, da der resultierende Effekt $a_x - F_L$ bereits durch Fall 2 und das Benutzen von kleineren, in der Gesamtbilanz äquivalenten $a_x$ Werten, approximiert werden kann. Problematisch ist jedoch der Bereich sehr kleiner $a_x$, bei dem die Netto-Beschleunigung negativ, aber größer als im Fall 3 ist. Dieser Bereich ist in \hyperref[fig:03_qualitativeAcceleration]{Abbildung~\ref*{fig:03_qualitativeAcceleration}} durch den roten Bereich gekennzeichnet und durch die bisherigen Fälle nicht abgedeckt.
 \\
@@ -256,43 +259,43 @@ Doch selbst mit diesen Umformung gelangen wir nicht zu einer allgemein gültigen
 Angesichts der hohen mathematischen Komplexität und des im Verhältnis dazu geringen Zugewinns an physikalischer Genauigkeit wird dieser Fall im Rahmen der vorliegenden Arbeit nicht weiterverfolgt. Er stellt jedoch eine interessante Grundlage für eine zukünftige, realistischere Modellierung dar. Erste Überlegungen und Umformungen sind daher nachfolgend exemplarisch aufgeführt.
 
 
+
+$\displaystyle \frac{dv_x}{dt} = a_x - q \cdot v_x^2$\\[6pt]
+$\displaystyle \frac{dv_x}{a_x - q \cdot v^2} = dt \quad  p := -q$\\[6pt]
+$\displaystyle\frac{dv_x}{a_x + p \cdot v^2} = dt$\\[6pt]
 \begin{wrapfigure}{r}{0.60\textwidth}
 	\vspace{-8pt} % tweak vertical alignment
 	\begin{minipage}{0.59\textwidth}
 		\begin{tcolorbox}[
 			title={Gradshteyn \& Ryzhik, 7.\ Aufl., §2.124},%\parencite{toi_p71}},
-			fonttitle=\bfseries\footnotesize,   
-			fontupper=\footnotesize,            
-			colback=white,
-			colframe=gray!60!black,
-			fonttitle=\bfseries,
-			boxrule=0.4pt
-			]
-			\[
-			\int \frac{dx}{a + bx^2}
-			= \frac{1}{\sqrt{ab}} \arctan\!\left(x\sqrt{\frac{b}{a}}\right),
-			\quad [ab>0]
-			\]
-			\[
-			= \frac{1}{2i\sqrt{ab}}
-			\ln\!\left(\frac{a + xi\sqrt{ab}}{a - xi\sqrt{ab}}\right),
-			\quad [ab<0]
-			\]
-		\end{tcolorbox}
-	\end{minipage}
-	\vspace{-6pt}
+		fonttitle=\bfseries\footnotesize,   
+		fontupper=\footnotesize,            
+		colback=white,
+		colframe=gray!60!black,
+		fonttitle=\bfseries,
+		boxrule=0.4pt
+		]
+		\[
+		\int \frac{dx}{a + bx^2}
+		= \frac{1}{\sqrt{ab}} \arctan\!\left(x\sqrt{\frac{b}{a}}\right),
+		\quad [ab>0]
+		\]
+		\[
+		= \frac{1}{2i\sqrt{ab}}
+		\ln\!\left(\frac{a + xi\sqrt{ab}}{a - xi\sqrt{ab}}\right),
+		\quad [ab<0]
+		\]
+	\end{tcolorbox}
+\end{minipage}
+\vspace{-6pt}
 \end{wrapfigure}
-
-$\displaystyle \frac{dv_x}{dt} = a_x - q \cdot v_x^2$\\[6pt]
-$\displaystyle \frac{dv_x}{a_x - q \cdot v^2} = dt \quad  p := -q$\\[6pt]
-$\displaystyle\frac{dv_x}{a_x + p \cdot v^2} = dt$\\[6pt]
 $\displaystyle \int \frac{dv_x}{a_x - q \cdot v^2} = \int dt$\\[6pt]
 $\displaystyle \qquad \overset{[a_x p >0]}{\Longrightarrow} $\\[8pt]
 $\displaystyle \frac{1}{\sqrt{a_x\cdot p}}\cdot \arctan\!\left(v_x\cdot \sqrt{\frac{p}{a_x}}\right)$\\[10pt]
 $\displaystyle \qquad \overset{[a_x p <0]}{\Longrightarrow} $\\[8pt]
 $\displaystyle \frac{1}{2i\sqrt{a_x\cdot p}}
 \ln\!\left(\frac{a_x + v_x\cdot i\sqrt{a_x \cdot p}}{a_x - v_x\cdot i\sqrt{a_x \cdot b}}\right)$\\[4pt]
-$\displaystyle \int \frac{dv_x}{a_x - q \cdot v^2} 
+$\displaystyle \text{Lösung mit Wolfram Alpha} \int \frac{dv_x}{a_x - q \cdot v^2} 
 = \frac{\tanh^{-1}\!\left(\frac{\sqrt{q}}{\sqrt{a_x}} v_x\right)}{\sqrt{a_x q}} + C$\\
 
 

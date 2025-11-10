@@ -1,6 +1,5 @@
 \section{Dritte Sequenz}
 Nachdem in den ersten beiden Sequenzen die geografischen Gegebenheiten beschrieben und Aussagen über das Eintreten beziehungsweise Ausbleiben einer Kollision getroffen wurden, folgt in diesem Abschnitt nun die Betrachtung der eigentlichen Kraftübertragung im Falle einer Kollision.\\
-
 \begin{wrapfigure}{l}{0.4\textwidth} %L
 	\centering
 	\includegraphics[width=0.38\textwidth]{resources/seq4/00_sketch.png}
@@ -65,7 +64,7 @@ Im Folgenden wird das Eigenträgheitsmoment des Auslegersystems und dann zusätz
 	\label{fig:04_sketch_boom}
 	%\vspace{-10pt}
 \end{wrapfigure}
-Für die Berechnung des Trägheitsmoments muss von der Drehpunkt aus über die gesamte Länge des Körpers integriert werden. Am Drehpunkt selbst gilt $x = 0$ bzw. $r = 0$. Im Falle des symmetrischen Oberschwenkwerks liegt der Drehpunkt in der Mitte der Integrationsachse, sodass von $-\tfrac{l}{2}$ bis $+\tfrac{l}{2}$ integriert werden muss.
+Für die Berechnung des Trägheitsmoments muss von dem Drehpunkt aus über die gesamte Länge des Körpers integriert werden. Am Drehpunkt selbst gilt $x = 0$ bzw. $r = 0$. Im Falle des symmetrischen Oberschwenkwerks liegt der Drehpunkt in der Mitte der Integrationsachse, sodass von $-\tfrac{l}{2}$ bis $+\tfrac{l}{2}$ integriert werden muss.
 \\
 Da die lineare Massendichte $\lambda$ konstant ist, kann sie aus dem Integral herausgezogen werden, und das Trägheitsmoment lässt sich wie folgt darstellen:
 \[
@@ -127,7 +126,7 @@ m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}},
 \]
 wobei $I_{\text{kran}}$ das Trägheitsmoment des Kranarms und $r_{\text{kran}}$ der Abstand zwischen Drehpunkt und Kollisionspunkt ist.
 \\
-Diese Verhältnismäßigkeit lässt sich plausibel herleiten, wenn man die kinetische Energie der Rotation $\tfrac{1}{2} I \omega^2$ mit der translatorischen Bewegungsenergie $\tfrac{1}{2} m_{\text{eff}} v^2$ gleichsetzt und in letzterer das $v$ als Bahngeschwindigkeit behandelt und durch seine Definition\(v = \omega \cdot r\) ersetzt. Daraus folgt $\tfrac{1}{2} I \omega^2 =\tfrac{1}{2} m_{\text{eff}} \cdot (\omega \cdot r)^2$. Im nächsten Schritt werden die Halben gekürzt, und das System durch $(\omega \cdot r)^2$ geteilt um auf $\frac{I \omega^2}{(\omega \cdot r)^2} = m_{\text{eff}}$ zu kommen. Im letzten Schritt können die $\omega^2$ gekürzt werden um die finale Form $m_{\text{eff}} = \frac{I}{r^2}$ zu erhalten. 
+Diese Verhältnismäßigkeit lässt sich plausibel herleiten, wenn man die kinetische Energie der Rotation $\tfrac{1}{2} I \omega^2$ mit der translatorischen Bewegungsenergie $\tfrac{1}{2} m_{\text{eff}} v^2$ gleichsetzt und in letzterer $v$ als Bahngeschwindigkeit behandelt und durch seine Definition\(v = \omega \cdot r\) ersetzt. Daraus folgt $\tfrac{1}{2} I \omega^2 =\tfrac{1}{2} m_{\text{eff}} \cdot (\omega \cdot r)^2$. Im nächsten Schritt werden die Halben gekürzt, und das System durch $(\omega \cdot r)^2$ geteilt, um auf $\frac{I \omega^2}{(\omega \cdot r)^2} = m_{\text{eff}}$ zu kommen. Im letzten Schritt können die $\omega^2$ gekürzt werden um die finale Form $m_{\text{eff}} = \frac{I}{r^2}$ zu erhalten. 
 \\
 Dadurch wird das Trägheitsmoment des gesamten Rotationssystems auf einen Punkt äquivalenter translatorischer Masse reflektiert.
 
@@ -153,48 +152,46 @@ v'_{b} = \frac{m_c \cdot v_{c,t} + m_c \cdot (v_{c,t} - v_b) \cdot k}{m_c + m_{\
 \]
 
 \subsection{Kraftübertragungsmaximum} %TODO!!
-Um eine Aussage über den Radius $r$ für eine optimale Kraftübertragung zu können muss herausgefunden werden unter welchen Bedingungen die Winkelgeschwindigkeit maximal wird. 
-
-% Teil I: Definitionen und grundlegende Beziehungen
-Die Winkelgeschwindigkeit $\omega$ des Krans nach dem Stoß ergibt sich aus der Bahngeschwindigkeit am Einschlagspunkt, die im Stoß beteiligte reduzierte Masse beinhaltet $r$
+Um nebenbei eine Aussage über den Radius $r$ für eine optimale Kraftübertragung zu können, gehen wir auf einen kleinen Exkurs und finden heraus, unter welchen Bedingungen die Winkelgeschwindigkeit maximal wird. 
+Die Winkelgeschwindigkeit $\omega$ des Krans nach dem Stoß ergibt sich aus der Bahngeschwindigkeit am Einschlagspunkt, die im Stoß beteiligte reduzierte Masse beinhaltet $r$ nach der ja optimiert werden soll.
 \[
 \omega = \frac{v_b'}{r} \qquad m_{eff} = \frac{I}{r^2}
 \]
-Der Zusammenhang zwischen den Geschwindigkeiten vor und nach dem Stoß über den Stoßkoeffizienten $k$ ist folgendermaßen beschrieben. Da der Kran anfangs ruht fällt $v_b = 0$ weg, des Weiteren kann die Gleichung umgestellt werden, um später $v_{n,c}'$ durch seine Definition zu substituieren
+Der Zusammenhang zwischen den Geschwindigkeiten vor und nach dem Stoß über den Stoßkoeffizienten $k$ ist folgendermaßen beschrieben. Da der Kran anfangs ruht, fällt $v_b = 0$ weg, des Weiteren kann die Gleichung umgestellt werden, um später $v_{c,t}'$ durch seine Definition zu substituieren.
 \[
-\left(v_{n,c} - v_b\right) \cdot k = v_b' - v_{n,c}' \qquad v_{n,c} \cdot k = v_b'-v_{n,c}' \qquad v_{n,c}' = v_b'- v_{n,c} \cdot k
+\left(v_{c,t} - v_b\right) \cdot k = v_b' - v_{c,t}' \qquad v_{c,t} \cdot k = v_b'-v_{c,t}' \qquad v_{c,t}' = v_b'- v_{c,t} \cdot k
 \]
-Durch die Beziehung der Impulserhaltung beim Stoß ergibt sich folgendes. $v_b = 0$ fällt wieder weg, anschließend kann $v_{n,c}'$ eingesetzt werden:
+Durch die Beziehung der Impulserhaltung beim Stoß ergibt sich folgendes. $v_b = 0$ fällt wieder weg, anschließend kann $v_{c,t}'$ eingesetzt werden:
 \[
-v_{n,c} \cdot m_c + v_b \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{n,c} \cdot m_c = v_{n,c}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{n,c} \cdot m_c =\left(v_b'- v_{n,c} \cdot k \right)  \cdot m_c + v_b' \cdot m_{eff}
+v_{c,t} \cdot m_c + v_b \cdot m_c = v_{c,t}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{c,t} \cdot m_c = v_{c,t}' \cdot m_c + v_b' \cdot m_{eff} \quad v_{c,t} \cdot m_c =\left(v_b'- v_{c,t} \cdot k \right)  \cdot m_c + v_b' \cdot m_{eff}
 \]
 Durch Anschließendes Ausmultiplizieren und $v_b'$ Ausklammern
 \[
-v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot m_c \cdot m_c + v_b' \cdot m_{eff} \qquad v_{n,c} \cdot m_c = - v_{n,c} \cdot k \cdot m_c \; + \; v_b'\cdot \left( m_c + m_{eff}\right)
+v_{c,t} \cdot m_c = - v_{c,t} \cdot k \cdot m_c \; + \; v_b'\cdot m_c \cdot m_c + v_b' \cdot m_{eff} \qquad v_{c,t} \cdot m_c = - v_{c,t} \cdot k \cdot m_c \; + \; v_b'\cdot \left( m_c + m_{eff}\right)
 \]
-$v_{n,c} \cdot k \cdot m_c$ Addieren, $m_c$ Ausklammern
+$v_{c,t} \cdot k \cdot m_c$ Addieren, $m_c$ Ausklammern
 \[
-v_{n,c} \cdot m_c \; + \; v_{n,c} \cdot k \cdot m_c = v_b'\cdot \left( m_c + m_{eff}\right) \qquad v_{n,c} \cdot m_c \cdot \left(1+k\right) = v_b'\cdot \left( m_c + m_{eff}\right)
+v_{c,t} \cdot m_c \; + \; v_{c,t} \cdot k \cdot m_c = v_b'\cdot \left( m_c + m_{eff}\right) \qquad v_{c,t} \cdot m_c \cdot \left(1+k\right) = v_b'\cdot \left( m_c + m_{eff}\right)
 \]
-Auflösen nach $v_b'$, anschließend kann $m_{eff} = \frac{I}{r^2}$ eingesetzt werden, um die Abhängigkeit des Radius $r$ einzuführen
+Auflösen nach $v_b'$, anschließend kann $m_{eff} = \frac{I}{r^2}$ eingesetzt werden, um die Abhängigkeit des Radius $r$ einzuführen.
 \[
-\frac{v_{n,c} \cdot m_c \cdot \left(1+k\right)}{ m_c + m_{eff}} = v_b' \qquad v_b' = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
+\frac{v_{c,t} \cdot m_c \cdot \left(1+k\right)}{ m_c + m_{eff}} = v_b' \qquad v_b' = \frac{v_{c,t} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}}
 \]
 Mit $v_b' = \omega\cdot r$ ergibt sich:
 \[
-\omega\cdot r = \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}} \qquad \omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c + \frac{I}{r^2}}\cdot \frac{1}{r}
+\omega\cdot r = \frac{v_{c,t} \cdot m_c \cdot (1 + k)}{k \cdot m_c + \frac{I}{r^2}} \qquad \omega= \frac{v_{c,t} \cdot m_c \cdot (1 + k)}{m_c + \frac{I}{r^2}}\cdot \frac{1}{r}
 \]
 Ausmultiplizieren:
 \[
-\omega= \frac{v_{n,c} \cdot m_c \cdot (1 + k)}{m_c \cdot r^2 + I}\cdot \frac{r^2}{r} \qquad = \frac{v_{n,c} \cdot m_c \cdot (1 + k)\cdot r}{m_c \cdot r^2 + I}
+\omega= \frac{v_{c,t} \cdot m_c \cdot (1 + k)}{m_c \cdot r^2 + I}\cdot \frac{r^2}{r} \qquad = \frac{v_{c,t} \cdot m_c \cdot (1 + k)\cdot r}{m_c \cdot r^2 + I}
 \]
 Für optimale Einschlagsposition Winkelgeschwindigkeit maximieren: $\omega$ nach unserer gesuchten Größe $r$ ableiten und Nullstelle finden:
 \[
-\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (m_c \cdot r^2 + I) - v_{n,c} \cdot m_c \cdot (1 + k) \cdot r \cdot 2 \cdot m_c \cdot r}{(m_c \cdot r^2 + I)^2} \; \overset{!}{=} \; 0
+\frac{d\omega}{dr} = \frac{v_{c,t} \cdot m_c \cdot (1 + k) \cdot (m_c \cdot r^2 + I) - v_{c,t} \cdot m_c \cdot (1 + k) \cdot r \cdot 2 \cdot m_c \cdot r}{(m_c \cdot r^2 + I)^2} \; \overset{!}{=} \; 0
 \]
-Faktor $v_{n,c} \cdot m_c \cdot (1 + k)$ ausklammern:
+Faktor $v_{c,t} \cdot m_c \cdot (1 + k)$ ausklammern:
 \[
-\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot \left[(m_c \cdot r^2 + I) - r \cdot 2 \cdot m_c \cdot r\right]}{(m_c \cdot r^2 + I)^2}
+\frac{d\omega}{dr} = \frac{v_{c,t} \cdot m_c \cdot (1 + k) \cdot \left[(m_c \cdot r^2 + I) - r \cdot 2 \cdot m_c \cdot r\right]}{(m_c \cdot r^2 + I)^2}
 \]
 Und Zähler vereinfachen:
 \[
@@ -202,17 +199,48 @@ Und Zähler vereinfachen:
 \]
 Somit:
 \[
-\frac{d\omega}{dr} = \frac{v_{n,c} \cdot m_c \cdot (1 + k) \cdot (I - m_c \cdot r^2)}{(m_c \cdot r^2 + I)^2}
+\frac{d\omega}{dr} = \frac{v_{c,t} \cdot m_c \cdot (1 + k) \cdot (I - m_c \cdot r^2)}{(m_c \cdot r^2 + I)^2}
 \]
 Für ein Extremum muss die Ableitung 0 ergeben, es wird nach einer Zählernullstelle gesucht: 
 \[
-\frac{d\omega}{dr} = 0 \qquad \underbrace{v_{n,c} \cdot m_c \cdot (1 + k)}_{>0} \cdot (I - m_c \cdot r^2) = 0
+\frac{d\omega}{dr} = 0 \qquad \underbrace{v_{c,t} \cdot m_c \cdot (1 + k)}_{>0} \cdot (I - m_c \cdot r^2) = 0
 \]
-Da $v_{n,c} \cdot m_c \cdot (1 + k) > 0$, folgt:
+Da $v_{c,t} \cdot m_c \cdot (1 + k) > 0$, folgt:
 \[
 I - m_c \cdot r^2 \overset{!}{=} 0 \qquad I = m_c \cdot r^2 \qquad r^2 = \frac{I}{m_c} \qquad r_{opt} = \pm \sqrt{\frac{I}{m_c}}
 \]
 
-
 \subsection{FEM Analyse}
-cool :DAD:SD:ASDUIAFHwuihQAWEUIFRHWSEUIFASLJDFBN
+\begin{wrapfigure}{l}{0.6\textwidth} %L
+	\centering
+	\includegraphics[width=0.58\textwidth]{resources/seq4/03-fem-screenshot.png}
+	\vspace*{-5mm}
+	\begin{flushright}
+		{\scriptsize Eigenkreation; Modelliert und Ausgewertet in FreeCad}
+	\end{flushright}
+	
+	\captionsetup{
+		labelfont=bf,
+		textfont=footnotesize,
+		skip=0pt
+	}
+	\caption{Belastung und Auslenkung des Kranarms}
+	\label{fig:04_fem}
+	%\vspace{-10pt}
+\end{wrapfigure}
+Auch wenn diese Kollision aus physikalischer Sicht alle grundlegenden Regeln erfüllt, bleibt unklar, ob sie in dieser Form auch realistisch ist. Um die Sequenz zusätzlich unter statischen Gesichtspunkten zu überprüfen, habe ich den Kranarm nachmodelliert und mittels FEM-Analyse die Verformung sowie die auftretenden Spannungen ausgewertet.
+\\
+Zur Modellierung des 3D-Gittergerüsts habe ich \textit{FreeCAD} benutzt, das über ein integriertes Interface für den \textit{CalculiX}-FEM-Solver verfügt. Da klassische Finite-Elemente-Methoden die Kräfte über das gesamte Volumen verteilen, bestand bei mir die Befürchtung, dass das 3D-Modell entweder extrem fein vernetzt werden müsste, was den Rechenaufwand erheblich steigern würde, oder dass die Ergebnisse unbrauchbar wären. Eine Alternative stellen sogenannte \textit{Truss Solver} dar, die speziell für die Analyse von Gitterstrukturen mit schlanken Querschnitten und geringem Volumenanteil entwickelt wurden. Beispiele hierfür sind \textit{OpenSees} und \textit{Trusspy} als Python-basierte Lösungen oder der im Softwarepaket des \textit{Z88 Aurora}-Solvers der Universität Bayreuth enthaltene Ansatz. 
+\\
+Da mir diese vermeintliche Inkompatibilität leider erst nach dem Modellieren auffiel, habe ich es dennoch probiert. Zur Validierung habe ich das 15\,m lange Kranarmgerüst mit 10cm Durchmesser Streben mit einer Endlast von 3\,t etwa 30kN belastet. Unter Verwendung des Stahls \href{https://www.bohler-edelstahl.com/en/products/s690-microclean/}{S690MC} ergab sich eine maximale Durchbiegung von etwa 40\,mm und eine maximale Spannungsbelastung von rund 60\,MPa. Die Spannungsgrenze des verwendeten Böhler S690 Microclean Stahl liegt bei 690\,MPa, somit sind die berechneten Werte als sehr plausibel einzustufen. 
+\\
+%https://chatgpt.com/share/691196f8-f7a0-8008-9020-c16a0b5c3b24
+Mit dieser Bestätigung, dass die FEM-Methode korrekt arbeitet, kann das eigentliche Problem betrachtet werden. Im zugrunde liegenden Szenario tritt jedoch eine Kollision auf, die streng genommen dynamisch modelliert werden müsste. Um sie dennoch in einem statischen Solver abbilden zu können, wird der Impuls des kollidierenden Fahrzeugs über die Kollisionsdauer in eine äquivalente statische Kraft umgerechnet. Vereinfachend gilt hierbei:
+$ F_\text{stat} = \frac{\Delta p}{\Delta t}$
+Der Impuls $p$ ergibt sich aus der Masse des \textit{Dodge Charger Hellcat}, \href{https://www.auto-data.net/en/dodge-charger-vii-ld-facelift-2019-srt-hellcat-redeye-6.2-v8-797hp-widebody-automatic-45690}{etwas über 2\,t} und einer Geschwindigkeit von 55\,m/s. Durch Analyse der Filmsequenz lässt sich erkennen, dass Fahrzeug und Kran für etwa zwei Frames Kontakt haben also $\tfrac{2}{25}$s Kontaktzeit. Daraus ergibt sich eine stark vereinfachte, angenäherte statische Kraft von etwa 1{,}375\,kN. 
+\\
+Bei der erneuten Berechnung resultiert erwartungsgemäß eine deutlich höhere Spannungsbelastung als zuvor. Wie in der entsprechenden Abbildung ersichtlich, liegen die meisten Volumenelemente zwar noch unterhalb der Grenze von 690\,MPa, jedoch überschreiten einige diese Grenze deutlich. Der Kranarm würde sich in diesem Fall nicht nur plastisch verformen, sondern mit hoher Wahrscheinlichkeit auch reißen. 
+\\
+Es existieren zwar Stahl- oder Gusseisenvarianten, die theoretisch Spannungen von über 900\,MPa aushalten können (Beispielsweise \href{https://www.steelnumber.com/en/steel_composition_eu.php?name_id=1549}{EN-GJS-800-8}). Diese Werkstoffe sind jedoch meist spröde und weisen keine ausreichende Duktilität auf, wie sie für eine solche Konstruktion erforderlich wäre. Daher sind sie für diese Anwendung in der Praxis ungeeignet.
+
+

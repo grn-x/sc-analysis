@@ -1,6 +1,6 @@
 \section{Vierte Sequenz}
 Nachdem nun die Kraftübertragung des Autos auf den Kranarm beschrieben und daraus eine resultierende Bewegung des Krans abgeleitet wurde, soll abschließend untersucht werden, wie die Kollision der Kugel mit dem ausschwenkenden Gegengewicht verläuft. 
-
+\\
 \begin{wrapfigure}{l}{0.5\textwidth} %L
 	\centering
 	\includegraphics[width=0.48\textwidth]{resources/seq5/00_sketch-initial.png}
@@ -18,7 +18,6 @@ Nachdem nun die Kraftübertragung des Autos auf den Kranarm beschrieben und dara
 	\label{fig:05_sketch_initial}
 	%\vspace{-10pt}
 \end{wrapfigure}
-
 In \hyperref[fig:05_sketch_initial]{Abbildung~\ref*{fig:05_sketch_initial}} ist eine vereinfachte Darstellung des Szenarios zu sehen. Die Kugel rollt ausgehend vom Ursprung des imaginären Koordinatensystems und trifft den Kranarm im Punkt $P$. Sämtliche Umgebungsparameter müssen in diesem Zusammenhang neu definiert werden, da zwar ähnliche Konstellationen bereits untersucht wurden, diese jedoch auf die Position des Autos und des Kranauslegers bezogen waren – nicht jedoch auf die der Kugel und des Gegengewichts. Der Abstand des Kugelursprungs zum Krandrehpunkt, also $x_\text{off}$ und $y_\text{off}$, ist daher neu zu bestimmen; ebenso ist die Anfangsgeschwindigkeit der Kugel bislang unbekannt. Der Kranwinkel $\varphi$ zum Zeitpunkt der Kollision zwischen Kugel und Gegengewicht kann hingegen aus der zuvor ermittelten resultierenden Winkelgeschwindigkeit berechnet werden.
 \\
 Mit einem vollständigen System aus diesen Eingangsgrößen ließe sich die Kollision zwischen Gegengewicht und Kugel vollständig beschreiben und daraus ein Ablenkwinkel beziehungsweise ein resultierender Geschwindigkeitsvektor bestimmen.
@@ -38,7 +37,7 @@ Aus diesen Gegebenheiten geht hervor, dass die analytische Gleichung, die sich h
 \\%TODO 
 Der erste Ansatz, das Problem durch Minimierung des Kugel-Gegengewicht-Abstands mittels des Goldenen-Schnitt-Minimierungsalgorithmus zu lösen, funktionierte zwar in den meisten Situationen, erwies sich dann jedoch in der Gesamtheit als nicht immer zuverlässig. 
 \\
-Der entsprechende, Ansatz ist weiterhin im Online-Repository dokumentiert und kann unter \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/DEPRECATED--reduced_golden_section.py}{diesem Link} eingesehen werden.
+Der entsprechende, Ansatz ist weiterhin im Online-Repositorium dokumentiert und kann unter \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/DEPRECATED--reduced_golden_section.py}{diesem Link} eingesehen werden.
 \\
 Im Folgenden wird daher ausschließlich der letztlich erfolgreiche Algorithmus erläutert.
 \subsubsection{Rotiertes Koordinatensystem}
@@ -203,7 +202,7 @@ Berücksichtigt man bei der Dynamik des Kranarms eine zeitliche Verzögerung und
 \]
 Der \textit{mod $2 \pi$} Operator normiert die Kranwinkel nach vollständigen Umdrehungen auf $\leq 360\,^{\circ}$, das tiefgestellte Plus ist die \enquote{Positivteil-Notation} und agiert wie die $max(x,y)$ Funktion. Solange $T < T_{\text{offset}}$ hat die Rotation noch nicht begonnen, dieser Teilterm ergibt null, und die Funktion gibt nur den ursprünglichen Startwinkel zurück. 
 \\
-Analytisch kann für diese Gleichung, wie oben bereits beschrieben, keine Nullstelle errechnet werden. Daher habe ich in \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py}{Python ein Hybridverfahren} zum numerischen Lösen diese Nullstellenproblems geschrieben. 
+Analytisch kann für diese Gleichung, wie oben bereits beschrieben, keine Nullstelle errechnet werden. Daher habe ich in \href{https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py}{Python ein Hybridverfahren} zum numerischen Lösen diese Nullstellenproblems geschrieben\footnote{Eine dadurch entstandene Animation ist auch \hyperref[https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/kugel_kran_animation.gif]{online zu finden}}. %TODO
 \\
 Das Programm ist so konfiguriert, dass es zunächst das schnellere Newton-Raphson-Verfahren bevorzugt. 
 Sollte dieses jedoch fehlschlagen, wird automatisch auf die robustere Bisektionsmethode zurückgegriffen. 

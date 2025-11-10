@@ -1,7 +1,7 @@
 \FloatBarrier  % Beendet das Wrapping vor der nächsten Section
 \section{Erste Sequenz}
  %works? keep whitespace
-\begin{wrapfigure}{R}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.48\textwidth]{resources/seq2/00_xy-angle_dom-pov.png}
 	\vspace*{-5mm}
@@ -27,10 +27,6 @@ Zur Vereinfachung wird die Breite des Fahrzeugs auf einen einzelnen Referenzpunk
 
 
 \subsection{Rampenwinkel} %im kontext
-Der Geometrie des Sprungs ist in \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}} simpel skizziert worden. Der rote Punkt im linken oberen Eck steht für den Absprung des Autos, den Punkt ab dem die Reifen den Boden verlassen und die Flugbahn beginnt.
-Die Zeichnung stellt den Sachverhalt aus der Obersicht dar. Die Flugbahn wird daher nicht nur aus der zur Erdoberfläche parallelen XY-Ebene, sondern zu einem Teil auch aus der %für die Höhe zuständige
-XZ-Ebene betrachtet. 
-Dadurch ergibt sich die leichte Krümmung der orange gestrichelten Flugbahn des Autos.
 \begin{wrapfigure}{l}{0.4\textwidth} %L
 	\centering
 	\includegraphics[width=0.38\textwidth]{resources/seq2/sketch-simple.png}
@@ -48,18 +44,29 @@ Dadurch ergibt sich die leichte Krümmung der orange gestrichelten Flugbahn des 
 	\label{fig:01_xy-angle_sketch-simple}
 	%\vspace{-10pt}
 \end{wrapfigure}
+Der Geometrie des Sprungs ist in \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}} simpel skizziert worden. Der rote Punkt im linken oberen Eck steht für den Absprung des Autos, den Punkt ab dem die Reifen den Boden verlassen und die Flugbahn beginnt.
+Die Zeichnung stellt den Sachverhalt aus der Obersicht dar. Die Flugbahn wird daher nicht nur aus der zur Erdoberfläche parallelen XY-Ebene, sondern zu einem Teil auch aus der %für die Höhe zuständige
+XZ-Ebene betrachtet. 
+Dadurch ergibt sich die leichte Krümmung der orange gestrichelten Flugbahn des Autos.
+\\
 Der zweite rote Punkt steht für den Drehpunkt des Turmkrans und ist im Echtwelt-Äquivalent mit dem Drehkranz auf dem Gittermastturm gleichzusetzen. 
 Über den Betrag der Differenz der jeweiligen X und Y Komponente der Koordinaten, werden die Punkte in Relation gesetzt. Da die beiden Punkte nur über ihre relativen Abstände definiert sind, wäre es hier falsch von einem Koordinatensystem zu sprechen, viel eher befinden wir uns in einem metrischen Raum \parencite{MetrischerRaumWiki}. %todo 
 \\
-Der grüne Balken der durch besagten Punkt verläuft ist dementsprechend das Oberschwenkwerk. Der hintere Teil der Linie, der mit der X-Achse den Drehwinkel $\varphi$ einschließt, trägt im Film das Gegengewicht.
-Dom muss mit dem vorderen Teil, dem Ausleger, kollidieren um den Kran in die richtige Drehbewegung zu versetzen.
+Der grüne Balken, der durch besagten Punkt verläuft ist dementsprechend das Oberschwenkwerk. Der hintere Teil der Linie, der mit der X-Achse den Drehwinkel $\varphi$ einschließt, trägt im Film das Gegengewicht.
+Dom muss mit dem vorderen Teil, dem Ausleger, kollidieren, um den Kran in die richtige Drehbewegung zu versetzen.
 \\
 Der grün-markierte Bereich zwischen den beiden Pfeilen kennzeichnet alle für einen erfolgreichen Stoß gültigen Winkel. 
 
 
 
 \subsection{Berechnung}
-
+Zur vollständigen Beschreibung des Systems und zur Eliminierung aller Unbekannten ist eine sukzessive Zerlegung in Teil-Dreiecke erforderlich. Daher muss ich mich im Folgenden auch vieler grundlegenden Gesetze der Trigonometrie bedienen. Jede dieser Unbekannten kann mithilfe bekannter Größen trigonometrisch gelöst werden, wodurch sich neue Werte ergeben, die wiederum als Ausgangspunkt für die nächste Berechnungsiteration dienen. Durch dieses schrittweise Vorgehen lässt sich das gesamte System vollständig rekonstruieren. \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angle_sketch-detailed}} zeigt eine detailliertere Version von \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}}. In \hyperref[fig:02_xy-angle_sketch-detailed]{~\ref*{fig:02_xy-angle_sketch-detailed}} sind nun alle relevanten Größen eingetragen. Des Weiteren befinden wir uns jetzt in Draufsicht. Die beiden gekrümmten orangenen Pfeile sind als violette Geraden eingezeichnet. 
+\\
+Zu Beginn sind lediglich die Abstände $x$ und $y$, die Auslegerlänge $b$ sowie der Winkel $\varphi$ bekannt. Der Winkel $\sigma$ ist in dieser Phase nicht aus den gegebenen Größen bestimmbar, da er sich im Intervall zwischen $\beta$ und $\beta + \delta$ befindet und später als externer Eingabewinkel definiert wird.
+\\
+Um unnötige Rechenschritte überspringen zu können, wird unter anderem aus diesem Grund $\beta$ und $\delta$ errechnet. Dadurch kann bereits vorab durch einfaches Abgleichen mit den Intervallgrenzen eine boolesche Kollisionsvorhersage für jeden Winkel $\sigma$ getroffen werden. 
+\\
+Für spätere Rechnungen sind wir außerdem pro Eingangswinkel $\sigma$ auch noch an den Werten $r$ für den Abstand zwischen Einschlags- und Drehpunkt, $t$ der Länge X-Komponente der Flugkurve und $\tau$ dem Einschlagwinkel interessiert. \hspace*{\fill}
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.48\textwidth]{resources/seq2/sketch-detailed.png}
@@ -77,15 +84,6 @@ Der grün-markierte Bereich zwischen den beiden Pfeilen kennzeichnet alle für e
 	\label{fig:02_xy-angle_sketch-detailed}
 	%\vspace{-10pt}
 \end{wrapfigure}
-Zur vollständigen Beschreibung des Systems und zur Eliminierung aller Unbekannten ist eine sukzessive Zerlegung in Teil-Dreiecke erforderlich. Daher muss sich im Folgenden auch vieler grundlegenden Gesetze der Trigonometrie bedient werden. Jede dieser Unbekannten kann mithilfe bekannter Größen trigonometrisch gelöst werden, wodurch sich neue Werte ergeben, die wiederum als Ausgangspunkt für die nächste Berechnungsiteration dienen. Durch dieses schrittweise Vorgehen lässt sich das gesamte System vollständig rekonstruieren. \hyperref[fig:02_xy-angle_sketch-detailed]{Abbildung~\ref*{fig:02_xy-angle_sketch-detailed}} zeigt eine detailliertere Version von \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}}. In \hyperref[fig:02_xy-angle_sketch-detailed]{~\ref*{fig:02_xy-angle_sketch-detailed}} sind nun alle relevanten Größen eingetragen. Des weiteren befinden wir uns jetzt in strikter Draufsicht. Die beiden gekrümmten orangenen Pfeile sind als violette Geraden eingezeichnet. 
-\\
-Zu Beginn sind lediglich die Abstände $x$ und $y$, die Auslegerlänge $b$ sowie der Winkel $\varphi$ bekannt. Der Winkel $\sigma$ ist in dieser Phase nicht aus den gegebenen Größen bestimmbar, da er sich im Intervall zwischen $\beta$ und $\beta + \delta$ befindet und später als externer Eingabewinkel definiert wird.
-\\
-Um unnötige Rechenschritte überspringen zu können wird unter anderem aus diesem Grund $\beta$ und $\delta$ errechnet. Dadurch kann bereits vorab durch einfaches Abgleichen mit den Intervallgrenzen eine boolesche Kollisionsvorhersage für jeden Winkel $\sigma$ getroffen werden. 
-\\
-Für spätere Rechnungen sind wir außerdem pro Eingangswinkel $\sigma$ auch noch an den Werten $r$ für den Abstand zwischen Einschlags- und Drehpunkt, $t$ der Länge X-Komponente der Flugkurve und $\tau$ dem Impaktwinkel interessiert. %TODO
-\\
-\\
 Die Hypotenuse $h$ ist die direkte Distanz zwischen Ursprung und Drehpunkt. Sie ergibt sich aus aus dem Satz des Pythagoras mit $h=\sqrt{x^2+y^2}$.\\
 Der Winkel $\alpha$ lässt sich mit dem SSS-Fall des Kosinussatz berechnen:\\
 $\alpha=\arccos(\frac{h^2+y^2-x^2}{2\cdot h\cdot y})$.
@@ -94,11 +92,11 @@ $\alpha=\arccos(\frac{h^2+y^2-x^2}{2\cdot h\cdot y})$.
 \\
 Um das gegenüberliegende Dreieck mit der selben Hypotenuse $h$, aber mit Kathete $u$ und Gegenkathete $b$ zu beschreiben, muss bei den Kranwinkeln begonnen werden.
 $\gamma$ und $\varphi$ bilden einen $90\degree$ Winkel zwischen gedachter X- und Y-Achse. Daraus folgt: $\gamma=90\degree-\varphi$\\
-Da das Oberschwenkwerk des Krans eine gerade Linie bildet gilt $\varepsilon=180\degree-\alpha-\gamma$
+Da das Oberschwenkwerk des Krans eine gerade Linie bildet, gilt $\varepsilon=180\degree-\alpha-\gamma$
 \\
-Nun da wir uns bis in das 2. Dreieck vorgearbeitet haben können auch hier die inneren Winkel berechnet werden.
-Per SWS-Fall des Sinussatzes gilt $u=\sqrt{h^2+b^2-2\cdot h \cdot b\sin(\varepsilon)}$
-$\kappa=\arcsin(\frac{\sin(\varepsilon)}{u}\cdot h)$
+Da wir uns bis in das 2. Dreieck vorgearbeitet haben, können nun auch hier die inneren Winkel berechnet werden.
+Per SWS-Fall des Sinussatzes gilt $u=\sqrt{h^2+b^2-2\cdot h \cdot b\sin(\varepsilon)}$ und 
+$\kappa=\arccos(\frac{b^2+u^2-h^2)}{2\cdot b \cdot u})$
 Und schließlich $\delta=180\degree-\varepsilon-\kappa$
 \\
 \\

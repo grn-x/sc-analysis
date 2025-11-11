@@ -72,13 +72,22 @@ wobei die Signum-Funktion das Vorzeichen des Kreuzprodukts liefert und somit die
 	\label{fig:06_demo_placeholder}
 	%\vspace{-10pt}
 \end{wrapfigure}
-Es ist möglich die über die Website \url{https://grn-x.github.io/sc-analysis/} die Startparameter festzulegen und dann einen 3D-Scatterplot kreieren zu lassen, der die resultierenden Winkel und Erfolgschancen widerspiegelt.
+Ursprünglich war geplant, die Ergebnisse parametrisiert in Form eines 3D-Scatterplots, \hyperref[fig:06_demo_placeholder]{Abbildung~\ref*{fig:06_demo_placeholder}}, darzustellen. Dabei wären die Rahmenbedingungen wie etwa die Abstände oder Gewichtskonfigurationen zwar vorab festzulegen gewesen, die variablen Werte, auf die Dom allerdings direkten Einfluss gehabt hätte, also Geschwindigkeit, Beschleunigung und Auffahrwinkel, hätten über die Position relativ zu den Koordinatenachsen angegeben werden können. Das Resultat jeder Berechnungskombination würde dann ein Datenelement im dreidimensionalen Raum darstellen, bei dem die Koordinaten die Inputwerte widerspiegeln, das, basierend auf dem final berechneten Ablenkungswinkel der Kugel, farblich enkodiert, ob die Szene für diese Werte erfolgreich gewesen wäre.
 \\
-Beim Durchrechnen fällt leider auf, dass Dom auch mit sehr großen Geschwindigkeiten, leider kaum eine Chance hat, den Kran in wirklich relevante Bewegung zu versetzen. 
+Diesen Plan habe ich nicht aufgegeben, das Grundgerüst steht schon eine Weile, nur müssen die bereits funktionierenden Rechnungen noch über UI-Elemente angebunden werden. Innerhalb der nächsten Tage plane ich fest, eine vollkommen funktionstüchtige Version zum Laufen zu bringen, nur war es mir wegen des wenn auch nicht völlig unerwartet großen Umfangs der Arbeit zeitlich nicht mehr möglich, auch noch eine Website aufzusetzen.
 \\
-Außerdem muss leider angemerkt werden dass die Größe des durch die Haftreibung zusätzlich entstandenen Vektors verschwindend gering ist und kaum einen Einfluss auf das Gesamtergebnis hat
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-\newpage\null\thispagestyle{empty}\newpage
+\\
+Abschließend lässt sich auch ohne konkrete Visualisierung eine grobe Bilanz ziehen. 
+Beim Durchrechnen fällt leider auf, dass die meisten dieser kinematischen Darbietungen zumindest teilweise durchaus plausibel erscheinen. Ursprünglich hatte ich mich darauf gefreut, den Film aufgrund seiner Realitätsferne hart verurteilen zu können, dieser Triumph bleibt nun leider aus.  
+\\
+Ein paar mehr oder weniger überraschende Details sind dabei unter anderem wie gering der durch die Haftreibung resultierende Vektor nach dem Überdrehen der Kugel ist. Auch ist es so, dass Dom im Flug nicht unbedingt sämtliche Türen aufreißen sollte, in bisherigen Berechnungen gab es unter diesem Fall keine einzige Flugkurve, die das Ziel erreicht hätte. Diesen Tipp befolgt Dom im Film bereits vorbildlich.
+\\
+Was allerdings gar nicht richtig erscheint, ist die auffällig große resultierende Geschwindigkeit des Kranarms in der filmischen Realität. Nicht nur, weil der Ausleger die dabei entstehenden seitlichen Kräfte kaum aushalten könnte, sondern vor Allem, weil er sich im Film, gemessen an den realistischen Masseverhältnissen zwischen Auto und Kran, vergleichsweise schnell bewegt.
+\\
+\\
+Auch wenn es aktuell leider noch keine interaktive Anwendung gibt, ist die Website \url{https://grn-x.github.io/sc-analysis/} als Ableger des Repositoriums \url{https://github.com/grn-x/sc-analysis} aber bereits online und enthält weitere Ressourcen, wie entstandene Animationen, einige Code-Snippets, wie z.B. das Python-Skript, sowie alle lokal archivierten Websites und Online-Ressourcen, die für das Schreiben dieser Arbeit verwendet wurden.  
+
+
 \iffalse
 \subsubsection{Sequenz 1}
 Parameter für \hyperref[fig:01_xy-angle_sketch-simple]{Abbildung~\ref*{fig:01_xy-angle_sketch-simple}}: \\

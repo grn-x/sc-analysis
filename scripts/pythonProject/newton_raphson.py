@@ -12,12 +12,12 @@ matplotlib.use('TkAgg')
 # ============================================================================
 # PARAMETER
 # ============================================================================
-x_off = 10.0  # Pivot x-Position (alt)
+x_off = 20.0  # Pivot x-Position (alt)
 y_off = -5.0  # Pivot y-Position (alt)
 r = 5.0  # Armlänge (Kreisdradius)
-alpha_0 = math.radians(130)#math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
-omega = 3.5  # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
-v = 30  # Kugelgeschwindigkeit (m/s)
+alpha_0 = math.radians(45)#math.radians(80)#3 / 5 * np.pi  # Kran-Startwinkel im ALTEN System (rad)
+omega = 0.10408033771302085    # Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
+v = 15  # Kugelgeschwindigkeit (m/s)
 T_offset = 0.15  # Zeitverzögerung: Kran startet nach T_offset Sekunden
 
 # Preset-Zeit (s) und Steuerflag

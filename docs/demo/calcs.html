@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculations Demo</title>
+</head>
+<body>
+<script>
+  class Vector2D {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    clone() {
+      return new Vector2D(this.x, this.y);
+    }
+
+    add(other) {
+      return new Vector2D(this.x + other.x, this.y + other.y);
+    }
+
+    subtract(other) {
+      return new Vector2D(this.x - other.x, this.y - other.y);
+    }
+
+    dot(other) {
+      return this.x * other.x + this.y * other.y;
+    }
+
+    magnitude() {
+      return Math.sqrt(this.x ** 2 + this.y ** 2);
+    }
+
+    scale(scalar) {
+      return new Vector2D(this.x * scalar, this.y * scalar);
+    }
+
+    normalize() {
+      const mag = this.magnitude();
+      return mag === 0 ? new Vector2D(0, 0) : this.scale(1 / mag);
+    }
+  }
+
+
+  /**
+   * Berechnet die Kollisionszeit zwischen einer fliegenden Kugel und einem rotierenden Kranarm
+   *
+   * @param {number} x_off - Pivot x-Position (m)
+   * @param {number} y_off - Pivot y-Position (m)
+   * @param {number} r - Armlänge / Kreisradius (m)
+   * @param {number} alpha_0 - Kran-Startwinkel im alten System (Grad)
+   * @param {number} omega - Winkelgeschwindigkeit (rad/s), positiv = gegen Uhrzeiger
+   * @param {number} v - Kugelgeschwindigkeit (m/s)
+   * @param {number} T_offset - Zeitverzögerung: Kran startet nach T_offset Sekunden (s)
+   * @returns {Object} { time: number, theta: number, phi: number } - Kollisionszeit in Sekunden, Abschusswinkel theta (rad), Position phi (rad), oder { time: -1, theta: null, phi: null } falls keine Kollision möglich
+   */
+  function calculateCraneCollision(x_off, y_off, r, alpha_0, omega, v, T_offset = 0) {
+
+    // ========================================================================
+    // KOORDINATENTRANSFORMATION
+    // ========================================================================
+
+    // Konvertiere alpha_0 von Grad zu Radiant
+    const alpha_0_rad = alpha_0 * Math.PI / 180;
+
+    // Distanz vom alten Ursprung zum Drehpunkt (negativ, Kugel links vom Drehpunkt)
+    const u = -Math.sqrt(x_off ** 2 + y_off ** 2);
+
+    // Rotationswinkel des Koordinatensystems
+    const rotation_angle = Math.atan2(y_off, x_off);
+
+    // Kran-Startwinkel im neuen System
+    const alpha_start = (Math.PI / 2 - alpha_0_rad) - rotation_angle;
+
+    // ========================================================================
+    // HILFSFUNKTIONEN
+    // ========================================================================
+
+    /**
+     * Streckenfunktion: Distanz zwischen Kugelursprung U und Schnittpunkt mit Kreissegment
+     */
+    function h_theta(theta) {
+      const sin_theta = Math.sin(theta);
+      const cos_theta = Math.cos(theta);
+      const discriminant = r ** 2 - u ** 2 * sin_theta ** 2;
+
+      if (discriminant < 0) {
+        return Infinity; // Kein Schnittpunkt
+      }
+
+      return -u * cos_theta + Math.sqrt(discriminant);
+    }
+
+    /**
+     * Umkehrfunktion: Berechne θ aus Flugzeit T
+     */
+    function theta_from_T(T) {
+      if (T === 0 || Math.abs(T) < 1e-10) {
+        return NaN;
+      }
+
+      const arg = -(u ** 2 + (T * v) ** 2 - r ** 2) / (2 * u * T * v);
+
+      if (arg < -1 || arg > 1) {
+        return NaN; // Ungültig
+      }
+
+      return Math.acos(arg);
+    }
+
+    /**
+     * Kugelposition P auf dem Kreissegment für gegebenes θ
+     */
+    function P_kugel(theta) {
+      const h = h_theta(theta);
+      const x = h * Math.cos(theta) + u;
+      const y = h * Math.sin(theta);
+      return [x, y];
+    }
+
+    /**
+     * Kugelwinkel φ im inneren Kreissegment als Funktion der Zeit
+     */
+    function phi_kugel(T) {
+      const theta = theta_from_T(T);
+
+      if (isNaN(theta)) {
+        return NaN;
+      }
+
+      const [x, y] = P_kugel(theta);
+      const phi = Math.atan2(y, x);
+
+      // Nur 1. Quadrant ist gültig [0, π/2]
+      if (phi < 0 || phi > Math.PI / 2) {
+        return NaN;
+      }
+
+      return phi;
+    }
+
+    /**
+     * Kranwinkel φ als Funktion der Zeit
+     */
+    function phi_kran(T, skip_normalization = false) {
+      let phi;
+
+      if (T < T_offset) {
+        phi = alpha_start;
+      } else {
+        phi = alpha_start + omega * (T - T_offset);
+      }
+
+      // Normalisiere auf [0, 2π[
+      if (!skip_normalization) {
+        phi = phi % (2 * Math.PI);
+        if (phi < 0) phi += 2 * Math.PI;
+      }
+
+      return phi;
+    }
+
+    /**
+     * Differenzfunktion: Δφ(T) = φ_kugel(T) - φ_kran(T)
+     */
+    function delta_phi(T) {
+      const phi_k = phi_kugel(T);
+      const phi_kr = phi_kran(T);
+
+      if (isNaN(phi_k)) {
+        return Infinity; // Kugel außerhalb gültigen Bereichs
+      }
+
+      // Prüfe ob Kran im Kreissegment [0, π/2]
+      if (phi_kr < 0 || phi_kr > Math.PI / 2) {
+        return Infinity;
+      }
+
+      return phi_k - phi_kr;
+    }
+
+    // ========================================================================
+    // GÜLTIGKEITSBEREICH
+    // ========================================================================
+
+    const theta_min = 0.0;
+    const h_min = h_theta(theta_min);
+    const T_min = h_min / v;
+
+    const theta_max = Math.atan(r / Math.abs(u));
+    const h_max = h_theta(theta_max);
+    const T_max = h_max / v;
+
+    const phi_min = 0.0;
+    const phi_max = Math.PI / 2;
+
+    // ========================================================================
+    // GUARD CLAUSE: Analytische Kollisionsprüfung
+    // ========================================================================
+
+    const T_check_min = Math.min(T_min, T_max);
+    const T_check_max = Math.max(T_min, T_max);
+
+    // Effektive Rotationsdauer des Krans
+    const T_kran_start_effective = Math.max(T_check_min, T_offset);
+
+    if (T_kran_start_effective >= T_check_max) {
+      return -1; // Kran rotiert noch nicht
+    }
+
+    const rotation_duration = T_check_max - T_kran_start_effective;
+
+    // Winkelpositionen des Krans (ohne Modulo-Normalisierung)
+    const phi_kran_start = alpha_start + omega * Math.max(0, T_check_min - T_offset);
+    const phi_kran_end = alpha_start + omega * Math.max(0, T_check_max - T_offset);
+    const delta_phi_kran = phi_kran_end - phi_kran_start;
+
+    // Prüfe ob Kran das Segment [0, π/2] durchläuft
+    let collision_possible = false;
+
+    // Fall A: Mindestens eine volle 90° Drehung
+    if (Math.abs(delta_phi_kran) >= Math.PI / 2) {
+      collision_possible = true;
+    } else {
+      // Fall B: Kleine Rotation
+      const phi_start_mod = ((phi_kran_start % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      const phi_end_mod = ((phi_kran_end % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+      const segment_min = 0.0;
+      const segment_max = Math.PI / 2;
+
+      if (omega >= 0) {
+        // Vorwärts (gegen Uhrzeigersinn)
+        if (phi_start_mod <= phi_end_mod) {
+          if (phi_start_mod <= segment_max && phi_end_mod >= segment_min) {
+            collision_possible = true;
+          }
+        } else {
+          // Wrap-Around
+          collision_possible = true;
+        }
+      } else {
+        // Rückwärts (im Uhrzeigersinn)
+        if (phi_end_mod <= phi_start_mod) {
+          if (phi_end_mod <= segment_max && phi_start_mod >= segment_min) {
+            collision_possible = true;
+          }
+        } else {
+          // Wrap-Around
+          if (segment_min <= phi_start_mod || segment_max >= phi_end_mod) {
+            collision_possible = true;
+          }
+        }
+      }
+    }
+
+    if (!collision_possible) {
+      return { time: -1, theta: null, phi: null }; // Kran durchläuft Segment nicht
+    }
+
+    // ========================================================================
+    // NULLSTELLENSUCHE: Newton-Raphson mit Bisection-Fallback
+    // ========================================================================
+
+    /**
+     * Numerische Ableitung von Δφ(T)
+     */
+    function delta_phi_derivative(T, epsilon = 1e-6) {
+      return (delta_phi(T + epsilon) - delta_phi(T - epsilon)) / (2 * epsilon);
+    }
+
+    /**
+     * Newton-Raphson-Verfahren
+     */
+    function newton_raphson(func, dfunc, T_initial, T_min_bound, T_max_bound, tol = 1e-3, max_iter = 20) {
+      let T_current = T_initial;
+
+      for (let iteration = 0; iteration < max_iter; iteration++) {
+        const function_value = func(T_current);
+
+        // Abbruch 1: Nullstelle gefunden
+        if (Math.abs(function_value) < tol) {
+          return [T_current, iteration + 1];
+        }
+
+        const derivative_value = dfunc(T_current);
+
+        // Abbruch 2: Horizontale Tangente
+        if (Math.abs(derivative_value) < 1e-10) {
+          return [null, iteration + 1];
+        }
+
+        // Newton-Schritt
+        const T_next = T_current - function_value / derivative_value;
+
+        // Abbruch 3: Außerhalb des gültigen Bereichs
+        if (T_next < T_min_bound || T_next > T_max_bound) {
+          return [null, iteration + 1];
+        }
+
+        T_current = T_next;
+      }
+
+      // Abbruch 4: Maximale Iterationen
+      return [null, max_iter];
+    }
+
+    /**
+     * Bisektionsmethode
+     */
+    function bisection(func, T_left_start, T_right_start, tol = 1e-3, max_iter = 50) {
+      let T_left = T_left_start;
+      let T_right = T_right_start;
+
+      let f_left = func(T_left);
+      let f_right = func(T_right);
+
+      // Vorbedingung: Vorzeichenwechsel
+      if (f_left * f_right > 0) {
+        return [null, 0];
+      }
+
+      for (let iteration = 0; iteration < max_iter; iteration++) {
+        const T_mid = (T_left + T_right) / 2;
+        const f_mid = func(T_mid);
+
+        // Abbruch 1: Nullstelle gefunden
+        if (Math.abs(f_mid) < tol) {
+          return [T_mid, iteration + 1];
+        }
+
+        // Abbruch 2: Intervall sehr klein
+        const interval_width = T_right - T_left;
+        if (interval_width / 2 < tol) {
+          return [T_mid, iteration + 1];
+        }
+
+        // Intervall-Halbierung
+        if (f_left * f_mid < 0) {
+          T_right = T_mid;
+          f_right = f_mid;
+        } else {
+          T_left = T_mid;
+          f_left = f_mid;
+        }
+      }
+
+      // Abbruch 3: Maximale Iterationen
+      return [(T_left + T_right) / 2, max_iter];
+    }
+
+    // ========================================================================
+    // AUSFÜHRUNG: Berechnung der Kollisionszeit
+    // ========================================================================
+
+    const T_lower = Math.min(T_min, T_max);
+    const T_upper = Math.max(T_min, T_max);
+    const T0 = (T_lower + T_upper) / 2;
+
+    // Versuch 1: Newton-Raphson
+    let [T_optimal, iters_newton] = newton_raphson(
+            delta_phi, delta_phi_derivative, T0, T_lower, T_upper, 1e-6
+    );
+
+    if (T_optimal !== null) {
+      const min_error = Math.abs(delta_phi(T_optimal));
+
+      // Prüfe ob Treffer (< 1° Differenz)
+      if (min_error < Math.PI / 180) {
+        const theta_opt = theta_from_T(T_optimal);
+        const phi_opt = phi_kugel(T_optimal);
+        return { time: T_optimal, theta: theta_opt, phi: phi_opt };
+      }
+    }
+
+    // Newton-Raphson fehlgeschlagen: Bisection Fallback
+    // Vorzeichenwechsel finden
+    const num_samples = 100;
+    const T_samples = [];
+    for (let i = 0; i < num_samples; i++) {
+      T_samples.push(T_lower + (T_upper - T_lower) * i / (num_samples - 1));
+    }
+
+    const delta_phi_samples = T_samples.map(t => delta_phi(t));
+
+    let T_a = null;
+    let T_b = null;
+
+    for (let i = 0; i < delta_phi_samples.length - 1; i++) {
+      if (!isFinite(delta_phi_samples[i]) || !isFinite(delta_phi_samples[i + 1])) {
+        continue;
+      }
+      if (delta_phi_samples[i] * delta_phi_samples[i + 1] < 0) {
+        T_a = T_samples[i];
+        T_b = T_samples[i + 1];
+        break;
+      }
+    }
+
+    if (T_a !== null) {
+      const [T_optimal_bis, iters_bisection] = bisection(delta_phi, T_a, T_b, 1e-6);
+
+      if (T_optimal_bis !== null) {
+        const min_error = Math.abs(delta_phi(T_optimal_bis));
+
+        if (min_error < Math.PI / 180) {
+          const theta_opt = theta_from_T(T_optimal_bis);
+          const phi_opt = phi_kugel(T_optimal_bis);
+          return { time: T_optimal_bis, theta: theta_opt, phi: phi_opt };
+        }
+      }
+    }
+
+    return { time: -1, theta: null, phi: null }; // Keine Kollision gefunden
+  }
+
+  function seq_one(x, y, b, phi, sigma = null) {
+    const h = Math.sqrt(x ** 2 + y ** 2);
+      //console.log("h:", h);
+
+    const alpha = Math.acos((h ** 2 + y ** 2 - x ** 2) / (2 * h * y)) * (180 / Math.PI);
+    //console.log("alpha:", alpha);
+    const beta = 180 - 90 - alpha;
+    //console.log("beta:", beta);
+    const gamma = 90 - phi;
+    //  console.log("gamma:", gamma);
+    const epsilon = 180 - alpha - gamma;
+    //  console.log("epsilon:", epsilon);
+
+    // Kosinussatz statt Sinus:
+    const u = Math.sqrt(h ** 2 + b ** 2 - 2 * h * b * Math.cos(epsilon * Math.PI / 180));
+    //  console.log("u:", u);
+
+    // Sinussatz korrekt:
+    const kappa = Math.acos((b**2 + u**2 - h**2) / (2 * b * u)) * (180 / Math.PI);
+    //console.log("kappa:", kappa);
+    const delta = 180 - epsilon - kappa;
+    //  console.log("delta:", delta);
+
+    if (sigma === null) {
+      return { h, beta, delta, epsilon, u };
+    }
+
+    const tau = 180 - sigma - epsilon;
+    const t = (h / Math.sin(tau * Math.PI / 180)) * Math.sin(epsilon * Math.PI / 180);
+    const r = (h / Math.sin(tau * Math.PI / 180)) * Math.sin(sigma * Math.PI / 180);
+
+    return { tau, t, r };
+  }
+
+
+  function seq_two(
+          mode,
+          alpha, // Launch angle in degrees
+          v0, // Initial velocity
+          x_target, // Target x-coordinate
+          y_target, // Target y-coordinate
+          tolerance, // Tolerance for y
+          ax = 0, // Acceleration in x-direction (for mode 2)
+          q = 0, // Drag coefficient (for mode 3)
+          rho = 1.2, // Air density (for mode 3)
+          A = 2.38, // Cross-sectional area (for mode 3)
+          cw = 0.47, // Drag coefficient (for mode 3)
+          m = 1, // Mass of the projectile (for mode 3)
+          g = 9.81 // Gravitational acceleration
+  ) {
+    // Convert angle to radians
+    const alphaRad = (alpha * Math.PI) / 180;
+
+    // Initial velocity components
+    const v0x = v0 * Math.cos(alphaRad);
+    const v0y = v0 * Math.sin(alphaRad);
+
+    let t, y, vx, vy;
+
+    if (mode === 1) {
+      // Unaccelerated motion
+      t = x_target / v0x;
+      y = v0y * t - 0.5 * g * t ** 2;
+      vx = v0x;
+      vy = v0y - g * t;
+    } else if (mode === 2) {
+      // Accelerated motion
+      t = (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x_target)) / ax;
+      y =
+              (v0y / ax) * (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x_target)) -
+              (g / (2 * ax ** 2)) *
+              (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x_target)) ** 2;
+      vx = v0x + ax * t;
+      vy = v0y - g * t;
+    } else if (mode === 3) {
+      // Decelerated motion
+      const qValue = q || (A * rho * cw) / (2 * m);
+      t = (Math.exp(qValue * x_target) - 1) / (qValue * v0x);
+      y =
+              v0y * t -
+              0.5 * g * t ** 2 -
+              (g / (2 * qValue ** 2)) *
+              (Math.exp(qValue * x_target) - 1) ** 2;
+      vx = v0x / (qValue * v0x * t + 1);
+      vy = v0y - g * t;
+    } else {
+      throw new Error("Invalid mode. Use 1 (unaccelerated), 2 (accelerated), or 3 (decelerated).");
+    }
+
+    // Check if y is within the tolerance
+    const withinTolerance = Math.abs(y - y_target) <= tolerance;
+
+    return {
+      withinTolerance,
+      velocity: Math.sqrt(vx ** 2 + vy ** 2),
+    };
+  }
+
+  // Example usage
+  const result_two = seq_two(1, 45, 20, 5, 0.1);
+  console.log(result_two);
+
+
+  function seq_three_dpr(m, l, l0, mc, vc, /*vct=0, */ tau_deg,  vb, k, meff) {
+      // Calculate I
+      const I1 = (1 / 12) * m * l ** 2;
+      const I2 = (m / (3 * l)) * ((l + l0) ** 3 - l0 ** 3);
+      const I = I1 + I2;
+
+      const vct = vc * Math.sin(tau_deg* Math.PI / 180); // Convert tau to radians
+
+      // Calculate v'_c,t
+      const vctPrime = (mc * vct - meff * (vct - vb) * k) / (mc + meff);
+
+      // Calculate v'_b
+      const vbPrime = (mc * vct + mc * (vct - vb) * k) / (mc + meff);
+
+      // Calculate r_opt
+      const ropt = Math.sqrt(I / mc);
+
+      return {
+          I1,
+          I2,
+          I,
+          vctPrime,
+          vbPrime,
+          ropt,
+      };
+  }
+
+  function seq_three(m_boom, l_boom, l_offset, l_weight, m_weight, r_impact, mc, vc, /*vct=0, */ tau_deg,  vb, k) {
+    // Calculate I
+    const I1 = (1 / 12) * m_boom * l_boom ** 2;
+    const I2 = (m_weight / (3 * l_weight)) * ((l_weight + l_offset) ** 3 - l_offset ** 3);
+    const I = I1 + I2;
+    const m_eff = I / (r_impact ** 2);
+    const vct = vc * Math.sin(tau_deg* Math.PI / 180); // Convert tau to radians
+
+    // Calculate v'_c,t
+    const vctPrime = (mc * vct - m_eff * (vct - vb) * k) / (mc + m_eff);
+
+    // Calculate v'_b
+    const vbPrime = (mc * vct + mc * (vct - vb) * k) / (mc + m_eff);
+
+    // Calculate r_opt
+    const ropt = Math.sqrt(I / mc);
+
+    return {
+      I1,
+      I2,
+      I,
+      vctPrime,
+      vbPrime,
+      ropt,
+    };
+  }
+
+  // Updated seq_four function using Vector2D
+  function seq_four(vb, vk, rho_i, rho_a, ri, Ra, v0, delta0, m, rk, Ig, r, k) {
+    const vbVec = new Vector2D(vb.x, vb.y);
+    const vkVec = new Vector2D(vk.x, vk.y);
+
+    // Calculate v_kp and v_ko
+    const scalarProjection = vbVec.dot(vkVec) / vbVec.magnitude() ** 2;
+    const vkp = vbVec.scale(scalarProjection);
+    const vko = vkVec.subtract(vkp);
+
+    const m_eff = Ig / (r ** 2);
+    const    vkp_mag = vkp.magnitude();
+      const vkp_mag_res = (m * vkp_mag + m_eff * vbVec.magnitude() - m_eff * (vkp_mag - vb) * k) / (m + m_eff);
+
+    const vkp_res = vkp.normalize().scale(vkp_mag_res);
+
+    console.log(vkp_res);
+
+    const vk_res = vko.clone();
+    vk_res.add(vkp_res);
+
+
+
+      // Calculate I_Kugel
+    const I_Kugel = (8 * Math.PI / 15) * (rho_i * ri ** 5 + rho_a * (Ra ** 5 - ri ** 5));
+
+    //const delta_0_auto = w0*rk - v0;
+    // Calculate v(t_end)
+    const v_t_end = v0 + (delta0 * I_Kugel) / (m * rk ** 2 + I_Kugel);
+
+
+      return {
+      vkp,
+      vko,
+    vk_res,
+      I_Kugel,
+      v_t_end,
+    };
+  }
+
+  // Beispielparameter (aus dem Python-Code)
+  const result_four = calculateCraneCollision(
+          9.0,  // x_off
+          -5.0,  // y_off
+          5.0,   // r
+          130,   // alpha_0 (Grad)
+          3.5,   // omega
+          30,    // v
+          0.15   // T_offset
+  );
+
+  if (result_four.time === -1) {
+    console.log("Kollisionszeit: Keine Kollision");
+  } else {
+    console.log("Kollisionszeit:", result_four.time.toFixed(4), "Sekunden");
+    console.log("Abschusswinkel θ:", (result_four.theta * 180 / Math.PI).toFixed(2), "°");
+    console.log("Position φ:", (result_four.phi * 180 / Math.PI).toFixed(2), "°");
+  }
+  /**
+   * Splits an interval [start, end] into n equidistant values.
+   * Works for fractional values as well (e.g. 0.1 to 0.5).
+   *
+   * @param {number} start - The starting bound of the interval.
+   * @param {number} end - The ending bound of the interval.
+   * @param {number} n - Number of points (including both ends if desired).
+   * @param {boolean} [includeEnd=true] - Whether to include the end value in the result.
+   * @returns {number[]} An array of equidistant values.
+   */
+  function splitInterval(start, end, n, includeEnd = true) {
+      if (n <= 0) return [];
+      if (n === 1) return [start];
+
+      const step = (end - start) / (includeEnd ? (n - 1) : n);
+      const result = [];
+
+      for (let i = 0; i < n; i++) {
+          result.push(start + step * i);
+      }
+
+      return result;
+  }
+
+  function pipeline() {
+    const x_one = 5;
+    const y_one = 5;
+    const b = 5;
+    const phi = 45;
+    const sigma = 45;
+    const sigma_max = seq_one(x_one, y_one, b, phi).delta;
+    const beta_one = seq_one(x_one, y_one, b, phi).beta;
+
+      console.log("Maximaler Sigma-Wert:", sigma_max);
+    const t_one = seq_one(x_one, y_one, b, phi, sigma_max).t;
+    const tau_one = seq_one(x_one, y_one, b, phi, sigma_max).tau;
+    const r_one = seq_one(x_one, y_one, b, phi, sigma_max).r;
+
+    //brute forcing:
+      const v_initial_max = 90; // Max initial velocity
+      const v_initial_min = 15; // Min initial velocity
+      const v_inital_values = splitInterval(v_initial_min, v_initial_max, 50, true);
+
+      const alpha_initial_max = 50; // Max launch angle
+      const alpha_initial_min = 1; // Min launch angle
+      const alpha_initial_values = splitInterval(alpha_initial_min, alpha_initial_max, 25, true);
+
+      const a_initial_min = 0.1; // Min acceleration
+      const a_initial_max = 5.0; // Max acceleration
+      const a_initial_values = splitInterval(a_initial_min, a_initial_max, 10, true);
+
+      // balanced function:
+
+      const cw_initial_min = 0.29; // Min drag coefficient
+      const cw_initial_max = 1.24; // Max drag coefficient
+
+      const cw_A_initial_min = 2.38;
+      const cw_A_initial_max = 5.46
+      const cw_initial_values = splitInterval(cw_initial_min, cw_initial_max, 5, true).reverse();
+      const cw_A_initial_values = splitInterval(cw_A_initial_min, cw_A_initial_max, 5, true).reverse();
+
+      const m_car = 2000;
+      const g = 9.81;
+      const rho = 1.3;
+      const tolerance = 0.5;
+      const t_input = t_one;
+      const y_target = 5;
+
+      let c_angle;
+      let c_speed;
+      let c_a;
+      let c_cw;
+      let c_cw_A;
+
+      for (let i = 0; i <= 50; i++) { // speed
+          for (let j = 0; j <= 25; j++) { // angle
+              for (let k = -5; k <= 10; k++) { // acceleration
+                    if(k === 0){
+                    // use neutral model
+                        c_speed = v_inital_values[i];
+                        c_angle = alpha_initial_values[j];
+                        const result_neutral = seq_two(
+                                1,
+                                c_angle,
+                                c_speed,
+                                t_input,
+                                y_target,
+                                tolerance
+                        );
+                        if(result_neutral.withinTolerance){
+                            //console.log("Neutral Model - Speed:", c_speed, "Angle:", c_angle, "Result:", result_neutral);
+                            const result_seq_three = seq_three(
+                                    500,
+                                    30,
+                                    10,
+                                    3,
+                                    1000,
+                                    r_one,
+                                    m_car,
+                                    result_neutral.velocity,
+                                    tau_one,
+                                    0,
+                                    0.8
+                            );
+                            console.log("Seq Three Result:", result_seq_three);
+                            console.log(result_seq_three.vbPrime)
+                            console.log(result_seq_three.vbPrime/r_one * Math.PI/180, "rad/s")
+
+
+
+
+                            const result_four = calculateCraneCollision(
+                                20.0,  // x_off
+                                -5.0,  // y_off
+                                5.0,   // r
+                                45*2*Math.PI/360,   // alpha_0 (Grad)
+                                -4*result_seq_three.vbPrime/r_one * 2*Math.PI/360,   // omega
+                                15,    // v
+                                0.15   // T_offset
+                            );
+
+                            if (result_four.time === -1) {
+                                console.log("Kollisionszeit: Keine Kollision");
+                            } else {
+                                console.log("Kollisionszeit:", result_four.time.toFixed(4), "Sekunden");
+                                console.log("Abschusswinkel θ:", (result_four.theta * 180 / Math.PI).toFixed(2), "°");
+                                console.log("Position φ:", (result_four.phi * 180 / Math.PI).toFixed(2), "°");
+                            }
+
+
+                            const beta_one_rad = beta_one*2*Math.PI/360; // in radians
+                            console.log("beta_one_rad:", beta_one_rad);
+                            console.log("beta_one:", beta_one);
+                            const v_b_four =  new Vector2D(Math.cos(result_four.phi-beta_one+90*2*Math.PI/360), Math.sin(result_four.phi-beta_one+90*2*Math.PI/360)).scale(15);
+                            const v_k_four= new Vector2D(Math.cos(result_four.theta-beta_one), Math.sin(result_four.theta-beta_one)).scale(15);
+
+                            console.log("v_b_four:", v_b_four);
+                            console.log("v_k_four:", v_k_four);
+
+                            const I_crane = result_seq_three.I
+                            const r_crane = 15
+
+
+                            const result_seq_four = seq_four(
+                                v_b_four,
+                                v_k_four,
+                                1560, //gepresstes tnt
+                                7800, //stahl
+                                2,
+                                2.3,
+                                result_neutral.velocity,
+                                0.05,
+                                m_car,
+                                0.3,
+                                I_crane,
+                                r_crane,
+                                0.7
+                            );
+
+                            console.log("Seq Four Result:", result_seq_four);
+
+
+                        }
+
+                    }else if (k>0){
+                        // use acceleration model
+                        c_speed = v_inital_values[i];
+                        c_angle = alpha_initial_values[j];
+                        c_a = a_initial_values[k];
+                        const result_accel = seq_two(
+                                2,
+                                c_angle,
+                                c_speed,
+                                t_input,
+                                y_target,
+                                tolerance,
+                                c_a
+                        );
+                        if(result_accel.withinTolerance){
+                            //console.log("Acceleration Model - Speed:", c_speed, "Angle:", c_angle, "Acceleration:", c_a, "Result:", result_accel);
+                        }
+
+                    }else if (k<0){
+                        // use deceleration model
+                        c_speed = v_inital_values[i];
+                        c_angle = alpha_initial_values[j];
+                        c_cw = cw_initial_values[Math.abs(k)];
+                        c_cw_A = cw_A_initial_values[Math.abs(k)];
+                        const result_decel = seq_two(
+                                3,
+                                c_angle,
+                                c_speed,
+                                t_input,
+                                y_target,
+                                tolerance,
+                                0,
+                                (c_cw_A * rho * c_cw) / (2 * m_car),
+                                rho,
+                                c_cw_A,
+                                c_cw,
+                                m_car,
+                                g
+                        );
+                        if(result_decel.withinTolerance){
+                            console.log("Deceleration Model - Speed:", c_speed, "Angle:", c_angle, "Cw:", c_cw, "Cw_A:", c_cw_A, "Result:", result_decel);
+                        }
+
+                    }else{
+                      console.log("error in acceleration loop");
+                    }
+
+              }
+          }
+      }
+  }
+
+    pipeline();
+
+  // Example call
+  const result_three = seq_three(10, 5, 2, 3, 4, 1, 0.8, 2);
+  console.log(result_three);
+
+  // Beispielaufruf der Funktion
+  //const result_one = seq_one(3, 4, 5, 30, 45);
+  //console.log(result_one);
+
+</script>
+</body>
+</html>

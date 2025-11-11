@@ -91,6 +91,20 @@ footer {
     margin-top: 3rem;
 }
 
+.resource-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zentriert die Ressourcen horizontal */
+    gap: 20px; /* Abstand zwischen den Ressourcen */
+}
+
+.resource-container img {
+    width: 300px; /* Einheitliche Breite */
+    height: auto; /* Automatische Höhe, um das Seitenverhältnis zu erhalten */
+    border: 1px solid #ccc; /* Optional: Rahmen für bessere Sichtbarkeit */
+    border-radius: 5px; /* Optional: Abgerundete Ecken */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header h1 {

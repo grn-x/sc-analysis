@@ -18,77 +18,11 @@
             <p>Placeholder / Diese Website dokumentiert die Analyse von Filmszenen aus Fast X oder Tenet</p>
         </section>
 
-        <!--
-        <section id="toc">
-            <h2>Inhaltsverzeichnis</h2>
-            <ol>
-                <li>Einleitung
-                    <ul>
-                        <li>1.1. Inhalt des W-Seminars</li>
-                        <li>1.2. Erklärung Film Entscheidung</li>
-                    </ul>
-                </li>
-                <li>Szenen Überblick
-                    <ul>
-                        <li>2.1. Im Kontext des Handlungsstrangs</li>
-                        <li>2.2. Szenen Ziel</li>
-                        <li>2.3. Aufdröselung der Phänomene</li>
-                        <li>2.4. Grobe Einschätzung</li>
-                    </ul>
-                </li>
-                <li>Parameter der Szene
-                    <ul>
-                        <li>3.1. Drehort</li>
-                        <li>3.2. Werte der Umgebung</li>
-                        <li>3.3. Mögliche Einflussnahme</li>
-                    </ul>
-                </li>
-                <li>Analyse + Approximation der Parameter
-                    <ul>
-                        <li>4.1. Attribute Dom + Auto</li>
-                        <li>4.2. Maße
-                            <ul>
-                                <li>4.2.1. Kugelbombe</li>
-                                <li>4.2.2. Brücke</li>
-                                <li>4.2.3. Rampe</li>
-                                <li>4.2.4. Kran</li>
-                            </ul>
-                        </li>
-                        <li>4.3. Paradoxe + Unstimmigkeiten</li>
-                        <li>4.4. (Unkalibrierte Stereobild Triangulation)</li>
-                    </ul>
-                </li>
-                <li>Blockweise Abarbeitung der Phänomene in chronologischer Reihenfolge + Aufstellen der beteiligten Formeln?
-                    <ul>
-                        <li>5.1. Diese Überschrift beim Schreiben der Arbeit durch tatsächliche Szenenabschnitte + Inhalte ersetzen</li>
-                        <li>5.2. Script-Ergebnisse Einfügen</li>
-                        <li>5.3. Parameter festlegen + Formeln nach Toleranzen umstellen</li>
-                    </ul>
-                </li>
-                <li>Auswertung 3d 4 Parameter Scatterplot</li>
-                <li>Demonstration Skript + Website</li>
-            </ol>
-        </section>
-        -->
-
-        <section id="matterjs_demo">
-            <h2>Interaktive Placeholder Demo</h2>
-            <p>2D Rigid-Body-Physics Simulation zur Veranschaulichung der Szenenabschnitte und Parameter</p>
-            <div id="visualization">
-                <iframe 
-                    src="demo/matterjsPreviewTest.html" 
-                    width="100%" 
-                    height="600px" 
-                    frameborder="0"
-                    title="3D Scatterplot Visualisierung">
-                </iframe>
-            </div>
-        </section>
 
         <section id="plotly_demo">
             <h2>Interaktive Placeholder Demo</h2>
             <p>3D Farbkodiertes Scatterplot zur Visualisierung von Dom's Spielraum für eine erfolgreiche Mission</p>
-            <div id="visualization">
+            <div id="visualization-plotly">
                 <iframe 
                     src="demo/plotlyPreviewTest.html" 
                     width="100%" 
@@ -99,14 +33,26 @@
             </div>
         </section>
 
-        <section id="Python Script Demo_">
-            <h2>Animation Demo</h2>
-            <p>Responsive animation from the ressource folder</p>
+        <section id="Python Script Demo Animation">
+            <h2>Matplotlib Resultate</h2>
+            <p>Animation der Kugel-Kranarm-Kollision mit film-ähnlichen, unrealistischen Werten</p>
             <div id="animation_py">
                 <img src="resources/kugel_kran_animation.gif" alt="Animation Demo" style="width: 100%; height: auto;">
             </div>
         </section>
     </main>
+
+    <section id="Python Script Demo Plots">
+        <h2>Matplotlib Resultate</h2>
+        <p>Animation und Plots der Kugel-Kranarm-Kollision mit realistischen Werten</p>
+        <div class="resource-container">
+            <img src="resources/kugel_kran_animation-realistic.gif" alt="Animation Demo" style="width: 60%; height: auto;">
+            <img src="resources/NumericApprox-Figure_1-root-visualized.png" alt="Sequences 1" style="width: 60%; height: auto;">
+            <img src="resources/NumericApprox-Figure_3-angle_functions.png" alt="Sequences 1" style="width: 60%; height: auto;">
+            <img src="resources/NumericApprox-Figure_4-original_system.png" alt="Sequences 3" style="width: 60%; height: auto;">
+            <img src="resources/NumericApprox-Figure_2-rotated_system.png" alt="Sequences 2" style="width: 60%; height: auto;">
+        </div>
+    </section>
 
     <section id="CFD Post Processing animation - Geöffnet">
         <h2>Animation Demo</h2>
@@ -126,8 +72,8 @@
 
 
     <section id="Sketches">
-        <h2>Ressourcen</h2>
-        <p>Skizzen</p>
+        <h2>Skizzen</h2>
+        <p>Handschriftliche Notizen der zugrundeliegenden Mathematik</p>
         <div class="resource-container">
             <img src="resources/sequences_1x_light_nobg.excalidraw.svg" alt="Sequences 1" style="width: 60%; height: auto;">
             <img src="resources/seqz_4_1x_light_nobg.excalidraw.svg" alt="Sequences 2" style="width: 60%; height: auto;">
@@ -135,9 +81,76 @@
         </div>
     </section>
 
+    <!--
+    <section id="toc">
+        <h2>Inhaltsverzeichnis</h2>
+        <ol>
+            <li>Einleitung
+                <ul>
+                    <li>1.1. Inhalt des W-Seminars</li>
+                    <li>1.2. Erklärung Film Entscheidung</li>
+                </ul>
+            </li>
+            <li>Szenen Überblick
+                <ul>
+                    <li>2.1. Im Kontext des Handlungsstrangs</li>
+                    <li>2.2. Szenen Ziel</li>
+                    <li>2.3. Aufdröselung der Phänomene</li>
+                    <li>2.4. Grobe Einschätzung</li>
+                </ul>
+            </li>
+            <li>Parameter der Szene
+                <ul>
+                    <li>3.1. Drehort</li>
+                    <li>3.2. Werte der Umgebung</li>
+                    <li>3.3. Mögliche Einflussnahme</li>
+                </ul>
+            </li>
+            <li>Analyse + Approximation der Parameter
+                <ul>
+                    <li>4.1. Attribute Dom + Auto</li>
+                    <li>4.2. Maße
+                        <ul>
+                            <li>4.2.1. Kugelbombe</li>
+                            <li>4.2.2. Brücke</li>
+                            <li>4.2.3. Rampe</li>
+                            <li>4.2.4. Kran</li>
+                        </ul>
+                    </li>
+                    <li>4.3. Paradoxe + Unstimmigkeiten</li>
+                    <li>4.4. (Unkalibrierte Stereobild Triangulation)</li>
+                </ul>
+            </li>
+            <li>Blockweise Abarbeitung der Phänomene in chronologischer Reihenfolge + Aufstellen der beteiligten Formeln?
+                <ul>
+                    <li>5.1. Diese Überschrift beim Schreiben der Arbeit durch tatsächliche Szenenabschnitte + Inhalte ersetzen</li>
+                    <li>5.2. Script-Ergebnisse Einfügen</li>
+                    <li>5.3. Parameter festlegen + Formeln nach Toleranzen umstellen</li>
+                </ul>
+            </li>
+            <li>Auswertung 3d 4 Parameter Scatterplot</li>
+            <li>Demonstration Skript + Website</li>
+        </ol>
+    </section>
+    -->
+
+    <section id="matterjs_demo">
+        <h2>Interaktive Placeholder Demo</h2>
+        <p>2D Rigid-Body-Physics Simulation zur Veranschaulichung der Szenenabschnitte und Parameter</p>
+        <div id="visualization-matterjs">
+            <iframe
+                    src="demo/matterjsPreviewTest.html"
+                    width="100%"
+                    height="600px"
+                    frameborder="0"
+                    title="">
+            </iframe>
+        </div>
+    </section>
+
 
     <footer>
-        <p>&copy; 2025 SC-Analysis Projekt</p>
+        <p>&copy; 2025 SC-Analysis W-Seminarprojekt</p>
     </footer>
 
     <script src="script.js"></script>

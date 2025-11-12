@@ -2,6 +2,7 @@ const { useState, useEffect, useRef } = React;
 const Plotly = window.Plotly;
 
 const CraneBallPort = () => {
+
     // Parameters
     const [params, setParams] = useState({
         x_off: 20.0,
@@ -18,6 +19,7 @@ const CraneBallPort = () => {
     const [isAnimating, setIsAnimating] = useState(false);
     const animationRef = useRef(null);
     const canvasRef = useRef(null);
+    const containerRef = useRef(null);
 
     // Math helper functions
     const rad = (deg) => deg * Math.PI / 180;
@@ -45,10 +47,8 @@ const CraneBallPort = () => {
         // theta_from_T function
         const theta_from_T = (T) => {
             if (T === 0 || Math.abs(T) < 1e-10) return NaN;
-
             const arg = -(u ** 2 + (T * v) ** 2 - r ** 2) / (2 * u * T * v);
             if (arg < -1 || arg > 1) return NaN;
-
             return Math.acos(arg);
         };
 
@@ -64,10 +64,8 @@ const CraneBallPort = () => {
         const phi_kugel = (T) => {
             const theta = theta_from_T(T);
             if (isNaN(theta)) return NaN;
-
             const [x, y] = P_kugel(theta);
             const phi = Math.atan2(y, x);
-
             if (phi < 0 || phi > Math.PI / 2) return NaN;
             return phi;
         };
@@ -80,7 +78,6 @@ const CraneBallPort = () => {
             } else {
                 phi = alpha_start + omega * (T - T_offset);
             }
-
             if (!skip_normalization) {
                 phi = phi % (2 * Math.PI);
             }
@@ -91,10 +88,8 @@ const CraneBallPort = () => {
         const delta_phi = (T) => {
             const phi_k = phi_kugel(T);
             const phi_kr = phi_kran(T);
-
             if (isNaN(phi_k)) return Infinity;
             if (phi_kr < 0 || phi_kr > Math.PI / 2) return Infinity;
-
             return phi_k - phi_kr;
         };
 
@@ -159,26 +154,16 @@ const CraneBallPort = () => {
 
             for (let iteration = 0; iteration < max_iter; iteration++) {
                 const function_value = delta_phi(T_current);
-
-                if (Math.abs(function_value) < tol) {
-                    return [T_current, iteration + 1];
-                }
+                if (Math.abs(function_value) < tol) return [T_current, iteration + 1];
 
                 const derivative_value = delta_phi_derivative(T_current);
-
-                if (Math.abs(derivative_value) < 1e-10) {
-                    return [null, iteration + 1];
-                }
+                if (Math.abs(derivative_value) < 1e-10) return [null, iteration + 1];
 
                 const T_next = T_current - function_value / derivative_value;
-
-                if (T_next < T_min_bound || T_next > T_max_bound) {
-                    return [null, iteration + 1];
-                }
+                if (T_next < T_min_bound || T_next > T_max_bound) return [null, iteration + 1];
 
                 T_current = T_next;
             }
-
             return [null, max_iter];
         };
 
@@ -186,26 +171,17 @@ const CraneBallPort = () => {
         const bisection = (T_left_start, T_right_start, tol = 1e-3, max_iter = 50) => {
             let T_left = T_left_start;
             let T_right = T_right_start;
-
             let f_left = delta_phi(T_left);
             let f_right = delta_phi(T_right);
 
-            if (f_left * f_right > 0) {
-                return [null, 0];
-            }
+            if (f_left * f_right > 0) return [null, 0];
 
             for (let iteration = 0; iteration < max_iter; iteration++) {
                 const T_mid = (T_left + T_right) / 2;
                 const f_mid = delta_phi(T_mid);
 
-                if (Math.abs(f_mid) < tol) {
-                    return [T_mid, iteration + 1];
-                }
-
-                const interval_width = T_right - T_left;
-                if (interval_width / 2 < tol) {
-                    return [T_mid, iteration + 1];
-                }
+                if (Math.abs(f_mid) < tol) return [T_mid, iteration + 1];
+                if ((T_right - T_left) / 2 < tol) return [T_mid, iteration + 1];
 
                 if (f_left * f_mid < 0) {
                     T_right = T_mid;
@@ -215,7 +191,6 @@ const CraneBallPort = () => {
                     f_left = f_mid;
                 }
             }
-
             return [(T_left + T_right) / 2, max_iter];
         };
 
@@ -476,20 +451,40 @@ const CraneBallPort = () => {
         const width = canvas.width;
         const height = canvas.height;
 
-        const { T_min, T_max, T_optimal, r, u, theta_opt, phi_kran, theta_from_T, P_kugel } = results;
-        const t_anim_end = T_optimal ? Math.max(T_optimal * 1.3, params.T_offset + 0.5) : Math.max(T_min, T_max) * 1.2;
+        const { T_min, T_max, T_optimal, r, u, theta_opt, phi_kran, theta_from_T, P_kugel, phi_kugel, collision_possible, h_theta } = results;
+        const t_anim_end = T_optimal ? Math.max(T_optimal * 1.3, params.T_offset + 0.5) : Math.max(Math.abs(T_min), Math.abs(T_max)) * 1.2;
+
+        const fallback_theta = 0;
+        const fallback_T = h_theta(fallback_theta) / params.v;
 
         const totalFrames = 200;
+        const freezeFrames = 30;
         const fps = 30;
 
-        const animate = () => {
-            if (animationFrame >= totalFrames) {
-                setAnimationFrame(0);
+        let t;
+        if (T_optimal) {
+            const collision_frame = Math.floor((T_optimal / t_anim_end) * totalFrames);
+            if (animationFrame >= collision_frame && animationFrame < collision_frame + freezeFrames) {
+                t = T_optimal;
+            } else if (animationFrame >= collision_frame + freezeFrames) {
+                t = ((animationFrame - freezeFrames) / totalFrames) * t_anim_end;
+            } else {
+                t = (animationFrame / totalFrames) * t_anim_end;
             }
 
-            const t = (animationFrame / totalFrames) * t_anim_end;
+            if (animationFrame >= totalFrames + freezeFrames) {
+                setAnimationFrame(0);
+                return;
+            }
+        } else {
+            t = (animationFrame / totalFrames) * t_anim_end;
+            if (animationFrame >= totalFrames) {
+                setAnimationFrame(0);
+                return;
+            }
+        }
 
-            // Clear canvas
+        const animate = () => {
             ctx.clearRect(0, 0, width, height);
 
             // Transform to center coordinate system
@@ -499,35 +494,49 @@ const CraneBallPort = () => {
 
             ctx.save();
             ctx.translate(centerX, centerY);
-            ctx.scale(scale, -scale); // Flip Y axis
+            ctx.scale(scale, -scale);
 
-            // Draw circle
+            // AXES
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 1.5 / scale;
+            ctx.setLineDash([10 / scale, 5 / scale]);
+            ctx.beginPath();
+            ctx.moveTo(u - 2, 0);
+            ctx.lineTo(r + 2, 0);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, -2);
+            ctx.lineTo(0, r + 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Circle
             ctx.beginPath();
             ctx.arc(0, 0, r, 0, 2 * Math.PI);
             ctx.strokeStyle = '#ccc';
             ctx.lineWidth = 1 / scale;
             ctx.stroke();
 
-            // Draw arc segment
+            // Arc segment
             ctx.beginPath();
             ctx.arc(0, 0, r, 0, Math.PI / 2);
             ctx.strokeStyle = 'orange';
             ctx.lineWidth = 4 / scale;
             ctx.stroke();
 
-            // Draw pivot
+            // Pivot
             ctx.beginPath();
             ctx.arc(0, 0, 0.2, 0, 2 * Math.PI);
             ctx.fillStyle = 'black';
             ctx.fill();
 
-            // Draw ball start
+            // Ball start
             ctx.beginPath();
             ctx.arc(u, 0, 0.2, 0, 2 * Math.PI);
             ctx.fillStyle = 'green';
             ctx.fill();
 
-            // Draw crane arm
+            // Crane arm
             const phi_kr = phi_kran(t);
             const arm_x = r * Math.cos(phi_kr);
             const arm_y = r * Math.sin(phi_kr);
@@ -537,28 +546,32 @@ const CraneBallPort = () => {
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 3 / scale;
             ctx.stroke();
-
             ctx.beginPath();
             ctx.arc(arm_x, arm_y, 0.2, 0, 2 * Math.PI);
             ctx.fillStyle = 'blue';
             ctx.fill();
 
-            // Draw ball on arc
-            if (t >= T_min && t <= T_max) {
-                const theta_t = theta_from_T(t);
-                if (!isNaN(theta_t)) {
-                    const [ball_x, ball_y] = P_kugel(theta_t);
-                    ctx.beginPath();
-                    ctx.arc(ball_x, ball_y, 0.15, 0, 2 * Math.PI);
-                    ctx.fillStyle = 'red';
-                    ctx.fill();
-                }
+            // possible position on arc (phi_kugel)
+            const phi_k = phi_kugel(t);
+            if (!isNaN(phi_k)) {
+                const yellow_x = r * Math.cos(phi_k);
+                const yellow_y = r * Math.sin(phi_k);
+                ctx.beginPath();
+                ctx.arc(yellow_x, yellow_y, 0.2, 0, 2 * Math.PI);
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(200, 170, 0, 1)';
+                ctx.lineWidth = 2 / scale;
+                ctx.stroke();
             }
 
-            // Draw linear trajectory
-            if (T_optimal && t <= T_optimal) {
-                const x_lin = u + params.v * Math.cos(theta_opt) * t;
-                const y_lin = params.v * Math.sin(theta_opt) * t;
+            // Linear trajectory
+            const display_theta = T_optimal ? theta_opt : fallback_theta;
+            const display_T_max = T_optimal ? T_optimal : fallback_T;
+
+            if (t <= display_T_max) {
+                const x_lin = u + params.v * Math.cos(display_theta) * t;
+                const y_lin = params.v * Math.sin(display_theta) * t;
 
                 ctx.beginPath();
                 ctx.moveTo(u, 0);
@@ -570,18 +583,45 @@ const CraneBallPort = () => {
                 ctx.setLineDash([]);
 
                 ctx.beginPath();
-                ctx.arc(x_lin, y_lin, 0.15, 0, 2 * Math.PI);
+                ctx.arc(x_lin, y_lin, 0.18, 0, 2 * Math.PI);
+                ctx.fillStyle = 'lime';
+                ctx.fill();
+            } else {
+                const x_lin = u + params.v * Math.cos(display_theta) * display_T_max;
+                const y_lin = params.v * Math.sin(display_theta) * display_T_max;
+
+                ctx.beginPath();
+                ctx.moveTo(u, 0);
+                ctx.lineTo(x_lin, y_lin);
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 2 / scale;
+                ctx.setLineDash([5 / scale, 5 / scale]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.beginPath();
+                ctx.arc(x_lin, y_lin, 0.18, 0, 2 * Math.PI);
                 ctx.fillStyle = 'lime';
                 ctx.fill();
             }
 
             ctx.restore();
 
-            // Draw text
+            // Text overlay
             ctx.fillStyle = 'black';
-            ctx.font = '14px monospace';
-            ctx.fillText(`T = ${t.toFixed(3)}s`, 10, 20);
-            ctx.fillText(`φ_crane = ${deg(phi_kr).toFixed(1)}°`, 10, 40);
+            ctx.font = '16px monospace';
+            ctx.fillText(`T = ${t.toFixed(3)}s`, 10, 25);
+            ctx.fillText(`φ_crane = ${deg(phi_kr).toFixed(1)}°`, 10, 50);
+            if (!isNaN(phi_k)) {
+                ctx.fillText(`φ_ball = ${deg(phi_k).toFixed(1)}°`, 10, 75);
+            }
+            ctx.fillText(`θ = ${deg(display_theta).toFixed(1)}°`, 10, 100);
+
+            if (T_optimal && Math.abs(t - T_optimal) < 0.02) {
+                ctx.fillStyle = 'red';
+                ctx.font = 'bold 20px monospace';
+                ctx.fillText('COLLISION', 10, 130);
+            }
 
             setAnimationFrame(f => f + 1);
         };
@@ -658,15 +698,19 @@ const CraneBallPort = () => {
                         Reset
                     </button>
                 </div>
-                <canvas
-                    ref={canvasRef}
-                    width={800}
-                    height={600}
-                    className="border border-gray-300 w-full"
-                />
+                <div ref={containerRef} className="w-full">
+                    <canvas
+                        ref={canvasRef}
+                        width={1400}
+                        height={900}
+                        className="border border-gray-300 w-full h-auto"
+                        style={{display: 'block', maxWidth: '100%'}}
+                    />
+                </div>
             </div>
         </div>
     );
 };
+
 
 window.CraneBallPort = CraneBallPort;

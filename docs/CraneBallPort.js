@@ -390,11 +390,12 @@ const CraneBallPort = () => {
                         x: [step.T_left],
                         y: [deg(step.f_left)],
                         mode: 'markers+text',
+                        name: showIterationLabels ? `Interval ${i}` : '',
                         marker: { color: color, size: 10, line: { color: 'black', width: 1.5 } },
                         text: [step.f_left > 0 ? '+' : '-'],
                         textposition: 'top',
                         textfont: { color: color, size: 10 },
-                        showlegend: false
+                        showlegend: showIterationLabels
                     });
 
                     // Right point
@@ -906,7 +907,8 @@ const CraneBallPort = () => {
         <div className="p-4 max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold mb-4">Crane-Ball Collision Simulator</h1>
 
-            {/* Controls */}
+            {/*
+            //Controls
             <div className="bg-white p-4 rounded shadow mb-4">
                 <h2 className="text-xl font-semibold mb-3">Parameters</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -926,31 +928,123 @@ const CraneBallPort = () => {
                     ))}
                 </div>
             </div>
+            */}
+
+
+            {/* Controls */}
+            <div className="bg-white p-4 rounded shadow mb-4">
+                <h2 className="text-xl font-semibold mb-3">Parameters</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">x off</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={params.x_off}
+                            onChange={(e) => setParams({...params, x_off: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">y off</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={params.y_off}
+                            onChange={(e) => setParams({...params, y_off: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">β (rotation angle)</label>
+                        <input
+                            type="text"
+                            value={results ? `${deg(results.rotation_angle).toFixed(2)}°` : 'N/A'}
+                            disabled
+                            className="w-full px-2 py-1 border rounded bg-gray-100 text-gray-700 cursor-not-allowed"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">r</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={params.r}
+                            onChange={(e) => setParams({...params, r: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">alpha 0</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={params.alpha_0}
+                            onChange={(e) => setParams({...params, alpha_0: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">omega</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={params.omega}
+                            onChange={(e) => setParams({...params, omega: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">v</label>
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={params.v}
+                            onChange={(e) => setParams({...params, v: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">T offset</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={params.T_offset}
+                            onChange={(e) => setParams({...params, T_offset: parseFloat(e.target.value) || 0})}
+                            className="w-full px-2 py-1 border rounded"
+                        />
+                    </div>
+                </div>
+            </div>
 
             {/* Results */}
             {results && (
                 <div className="bg-blue-50 p-4 rounded shadow mb-4">
                     <h2 className="text-xl font-semibold mb-2">Results</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                        <div><strong>Method:</strong> {results.method_used}</div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-sm mb-3">
+                        <div><strong>Collision:</strong> {results.collision_possible ? '^ Possible' : 'x Impossible'}
+                        </div>
+                        <div><strong>Method:</strong> {results.method_used || 'N/A'}</div>
                         <div><strong>Iterations:</strong> {results.iters}</div>
+                        <div><strong>φ_collision:</strong> {results.T_optimal && !isNaN(results.phi_k_opt) ? deg(results.phi_k_opt).toFixed(2) : 'N/A'}°</div>
                         <div><strong>T_collision:</strong> {results.T_optimal?.toFixed(4) || 'N/A'}s</div>
-                        <div><strong>Collision:</strong> {results.collision_possible ? '✓ Possible' : '✗ Impossible'}</div>
+                        <div><strong>θ_min:</strong> {deg(results.theta_min).toFixed(2)}°</div>
+                        <div><strong>θ_max:</strong> {deg(results.theta_max).toFixed(2)}°</div>
+                        <div><strong>θ_collision:</strong> {results.T_optimal ? deg(results.theta_opt).toFixed(2) : 'N/A'}°</div>
+                    </div>
+                    <div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={showIterationLabels}
+                                onChange={(e) => setShowIterationLabels(e.target.checked)}
+                                className="w-4 h-4"
+                            />
+                            <span className="text-sm font-medium">Show Iteration Labels</span>
+                        </label>
                     </div>
                 </div>
             )}
-
-            <div className="bg-white p-3 rounded shadow mb-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={showIterationLabels}
-                        onChange={(e) => setShowIterationLabels(e.target.checked)}
-                        className="w-4 h-4"
-                    />
-                    <span className="text-sm font-medium">Show Iteration Labels</span>
-                </label>
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div id="plot1" className="bg-white p-2 rounded shadow" style={{height: '400px'}}></div>

@@ -555,6 +555,22 @@ const CraneBallPort = () => {
                 mode: 'lines',
                 name: 'θ(T)',
                 line: { color: 'green', width: 2 }
+            },
+            {
+                x: [Math.min(T_min, T_max), Math.min(T_min, T_max)],
+                y: [-10, 100],
+                mode: 'lines',
+                name: 'T_min',
+                line: { color: 'black', dash: 'dash', width: 1 },
+                //showlegend: true
+            },
+            {
+                x: [Math.max(T_min, T_max), Math.max(T_min, T_max)],
+                y: [-10, 100],
+                mode: 'lines',
+                name: 'T_max',
+                line: {color: 'black', dash: 'dash', width: 1},
+                //showlegend: true
             }
         ];
 
@@ -562,23 +578,87 @@ const CraneBallPort = () => {
             { type: 'line', x0: 0, x1: T_plot_end, y0: 0, y1: 0, line: { color: 'black', dash: 'dot' } },
             { type: 'line', x0: 0, x1: T_plot_end, y0: 90, y1: 90, line: { color: 'black', dash: 'dot' } }
         ];
+        const annotations3 = [];
 
         if (T_optimal) {
-            shapes3.push({
+            /*shapes3.push({
                 type: 'line',
                 x0: T_optimal,
                 x1: T_optimal,
                 y0: -10,
                 y1: 100,
                 line: { color: 'red', dash: 'dash', width: 2 }
+            });*/
+
+            traces3.push({
+                x: [T_optimal, T_optimal],
+                y: [-10, 100],
+                mode: 'lines',
+                name: 'T_collision',
+                line: { color: 'red', dash: 'dash', width: 2 },
+                //showlegend: true
             });
+
+            /*annotations3.push({
+                x: T_optimal,
+                y: 100,
+                text: 'T_optimal',
+                showarrow: true,
+                arrowhead: 2,
+                ax: 0,
+                ay: -40,
+                font: { color: 'red' }
+            });*/
+
         }
+
+        /*shapes3.push({
+            type: 'line',
+            x0: Math.min(T_min, T_max),
+            x1: Math.min(T_min, T_max),
+            y0: -10,
+            y1: 100,
+            line: { color: 'black', dash: 'dash', width: 1 }
+        });
+
+        shapes3.push({
+            type: 'line',
+            x0: Math.max(T_min, T_max),
+            x1: Math.max(T_min, T_max),
+            y0: -10,
+            y1: 100,
+            line: { color: 'black', dash: 'dash', width: 1 }
+        });
+
+        annotations3.push({
+            x: Math.min(T_min, T_max),
+            y: 100,
+            text: 'T_min',
+            showarrow: true,
+            arrowhead: 2,
+            ax: 0,
+            ay: -40,
+            font: { color: 'black' }
+        });
+
+        annotations3.push({
+            x: Math.max(T_min, T_max),
+            y: 100,
+            text: 'T_max',
+            showarrow: true,
+            arrowhead: 2,
+            ax: 0,
+            ay: -40,
+            font: { color: 'black' }
+        }); */
+
 
         Plotly.newPlot('plot3', traces3, {
             title: 'Angle Functions over Time',
             xaxis: { title: 'Time T [s]' },
             yaxis: { title: 'Angle [°]', range: [-10, 100] },
             shapes: shapes3,
+            annotations: annotations3,
             margin: { t: 40, b: 40, l: 50, r: 20 }
         }, { responsive: true });
 
@@ -905,7 +985,7 @@ const CraneBallPort = () => {
 
     return (
         <div className="p-4 max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold mb-4">Crane-Ball Collision Simulator</h1>
+            <h1 className="text-3xl font-bold mb-4">Crane-Ball Collision Angle Solver - Matplotlib Port</h1>
 
             {/*
             //Controls
@@ -936,7 +1016,7 @@ const CraneBallPort = () => {
                 <h2 className="text-xl font-semibold mb-3">Parameters</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">x off</label>
+                        <label className="block text-sm font-medium mb-1">x_off</label>
                         <input
                             type="number"
                             step="0.1"
@@ -946,7 +1026,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">y off</label>
+                        <label className="block text-sm font-medium mb-1">y_off</label>
                         <input
                             type="number"
                             step="0.1"
@@ -956,7 +1036,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">β (rotation angle)</label>
+                        <label className="block text-sm font-medium mb-1">β (system rotation angle)</label>
                         <input
                             type="text"
                             value={results ? `${deg(results.rotation_angle).toFixed(2)}°` : 'N/A'}
@@ -965,7 +1045,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">r</label>
+                        <label className="block text-sm font-medium mb-1">r (crane radius)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -975,7 +1055,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">alpha 0</label>
+                        <label className="block text-sm font-medium mb-1">α_0 (start angle in original system)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -985,7 +1065,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">omega</label>
+                        <label className="block text-sm font-medium mb-1">ω (crane angle velocity)</label>
                         <input
                             type="number"
                             step="0.01"
@@ -995,7 +1075,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">v</label>
+                        <label className="block text-sm font-medium mb-1">v (ball velocity)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1005,7 +1085,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">T offset</label>
+                        <label className="block text-sm font-medium mb-1">T_offset (crane rotation delay)</label>
                         <input
                             type="number"
                             step="0.01"

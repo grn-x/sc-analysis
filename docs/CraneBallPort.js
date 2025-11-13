@@ -17,6 +17,7 @@ const CraneBallPort = () => {
     const [results, setResults] = useState(null);
     const [animationFrame, setAnimationFrame] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [showIterationLabels, setShowIterationLabels] = useState(false);
     const animationRef = useRef(null);
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
@@ -151,20 +152,28 @@ const CraneBallPort = () => {
 
         const newton_raphson = (T_initial, T_min_bound, T_max_bound, tol = 1e-3, max_iter = 20) => {
             let T_current = T_initial;
+            const iteration_data = [];
 
             for (let iteration = 0; iteration < max_iter; iteration++) {
                 const function_value = delta_phi(T_current);
-                if (Math.abs(function_value) < tol) return [T_current, iteration + 1];
+
+                iteration_data.push({
+                    T: T_current,
+                    f_T: function_value,
+                    iteration: iteration
+                });
+
+                if (Math.abs(function_value) < tol) return [T_current, iteration + 1, iteration_data];
 
                 const derivative_value = delta_phi_derivative(T_current);
-                if (Math.abs(derivative_value) < 1e-10) return [null, iteration + 1];
+                if (Math.abs(derivative_value) < 1e-10) return [null, iteration + 1, iteration_data];
 
                 const T_next = T_current - function_value / derivative_value;
-                if (T_next < T_min_bound || T_next > T_max_bound) return [null, iteration + 1];
+                if (T_next < T_min_bound || T_next > T_max_bound) return [null, iteration + 1, iteration_data];
 
                 T_current = T_next;
             }
-            return [null, max_iter];
+            return [null, max_iter, iteration_data];
         };
 
         // Bisection
@@ -173,15 +182,22 @@ const CraneBallPort = () => {
             let T_right = T_right_start;
             let f_left = delta_phi(T_left);
             let f_right = delta_phi(T_right);
+            const iteration_data = [];
 
-            if (f_left * f_right > 0) return [null, 0];
+            if (f_left * f_right > 0) return [null, 0, iteration_data];
 
             for (let iteration = 0; iteration < max_iter; iteration++) {
                 const T_mid = (T_left + T_right) / 2;
                 const f_mid = delta_phi(T_mid);
 
-                if (Math.abs(f_mid) < tol) return [T_mid, iteration + 1];
-                if ((T_right - T_left) / 2 < tol) return [T_mid, iteration + 1];
+                iteration_data.push({
+                    T_left, T_right, T_mid,
+                    f_left, f_right, f_mid,
+                    iteration
+                });
+
+                if (Math.abs(f_mid) < tol) return [T_mid, iteration + 1, iteration_data];
+                if ((T_right - T_left) / 2 < tol) return [T_mid, iteration + 1, iteration_data];
 
                 if (f_left * f_mid < 0) {
                     T_right = T_mid;
@@ -191,20 +207,21 @@ const CraneBallPort = () => {
                     f_left = f_mid;
                 }
             }
-            return [(T_left + T_right) / 2, max_iter];
+            return [(T_left + T_right) / 2, max_iter, iteration_data];
         };
 
         // Find collision
         let T_optimal = null;
         let method_used = '';
         let iters = 0;
+        let iteration_data = [];
 
         if (collision_possible) {
             const T_lower = Math.min(T_min, T_max);
             const T_upper = Math.max(T_min, T_max);
             const T0 = (T_lower + T_upper) / 2;
 
-            [T_optimal, iters] = newton_raphson(T0, T_lower, T_upper, 1e-6);
+            [T_optimal, iters, iteration_data] = newton_raphson(T0, T_lower, T_upper, 1e-6);
 
             if (T_optimal !== null) {
                 method_used = 'Newton-Raphson';
@@ -227,7 +244,7 @@ const CraneBallPort = () => {
                 }
 
                 if (T_a !== null) {
-                    [T_optimal, iters] = bisection(T_a, T_b, 1e-6);
+                    [T_optimal, iters, iteration_data] = bisection(T_a, T_b, 1e-6);
                     method_used = 'Bisection';
                 }
             }
@@ -238,15 +255,17 @@ const CraneBallPort = () => {
         const phi_k_opt = T_optimal ? phi_kugel(T_optimal) : NaN;
         const phi_kr_opt = T_optimal ? phi_kran(T_optimal) : phi_kran(T_min);
 
+        const arm_x_opt = r * Math.cos(phi_kr_opt);
+        const arm_y_opt = r * Math.sin(phi_kr_opt);
+
         return {
             u, rotation_angle, alpha_start,
             T_min, T_max, theta_min, theta_max,
-            T_optimal, method_used, iters,
+            T_optimal, method_used, iters, iteration_data,
             theta_opt, phi_k_opt, phi_kr_opt,
-            x_opt, y_opt, r,
+            x_opt, y_opt, arm_x_opt, arm_y_opt, r,
             collision_possible,
-            // Functions for plotting
-            h_theta, theta_from_T, P_kugel, phi_kugel, phi_kran, delta_phi
+            h_theta, theta_from_T, P_kugel, phi_kugel, phi_kran, delta_phi, delta_phi_derivative
         };
     };
 
@@ -259,11 +278,11 @@ const CraneBallPort = () => {
     useEffect(() => {
         if (!results) return;
 
-        const { T_min, T_max, T_optimal, delta_phi, phi_kugel, phi_kran, theta_from_T } = results;
+        const { T_min, T_max, T_optimal, delta_phi, delta_phi_derivative, phi_kugel, phi_kran, theta_from_T, method_used, iteration_data } = results;
         const T_lower = Math.min(T_min, T_max);
         const T_upper = Math.max(T_min, T_max);
 
-        // Plot 1: Error function
+        // Plot 1: Visualized Iteration Method
         const T_range = [];
         for (let i = 0; i < 200; i++) {
             T_range.push(T_lower + (T_upper - T_lower) * i / 199);
@@ -274,38 +293,162 @@ const CraneBallPort = () => {
             return isFinite(val) ? deg(val) : null;
         });
 
-        const trace1 = {
+        const traces1 = [{
             x: T_range,
             y: delta_phi_values,
             mode: 'lines',
             name: 'Δφ(T)',
-            line: { color: 'blue', width: 2 }
-        };
+            line: { color: 'blue', width: 3 }
+        }];
 
         const shapes1 = [
-            { type: 'line', x0: T_lower, x1: T_upper, y0: 0, y1: 0, line: { color: 'gray', dash: 'dash' } }
+            { type: 'line', x0: T_lower, x1: T_upper, y0: 0, y1: 0, line: { color: 'gray', dash: 'dash', width: 1.5 } }
         ];
+
+        const annotations1 = [];
+
+        // Visualize iterations
+        if (iteration_data && iteration_data.length > 0) {
+            const colors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00'];
+
+            if (method_used === 'Newton-Raphson') {
+                // Newton-Raphson visualization
+                iteration_data.forEach((step, i) => {
+                    const color = colors[i % colors.length];
+                    const T_curr = step.T;
+                    const f_curr = step.f_T;
+
+                    // Point on function
+                    traces1.push({
+                        x: [T_curr],
+                        y: [deg(f_curr)],
+                        mode: 'markers',
+                        name: showIterationLabels ? `Iteration ${i}` : '',
+                        marker: { color: color, size: 10, line: { color: 'black', width: 1.5 } },
+                        showlegend: showIterationLabels
+                    });
+
+                    // Tangent line
+                    const df_curr = delta_phi_derivative(T_curr);
+                    if (Math.abs(df_curr) > 1e-10) {
+                        const tangent_x = [T_lower, T_upper];
+                        const tangent_y = tangent_x.map(t => deg(df_curr * (t - T_curr) + f_curr));
+
+                        traces1.push({
+                            x: tangent_x,
+                            y: tangent_y,
+                            mode: 'lines',
+                            line: { color: color, width: 1.5 },
+                            showlegend: false
+                        });
+
+                        // Zero of tangent
+                        const T_zero = T_curr - f_curr / df_curr;
+                        if (T_zero >= T_lower && T_zero <= T_upper) {
+                            traces1.push({
+                                x: [T_zero],
+                                y: [0],
+                                mode: 'markers',
+                                marker: { color: color, size: 6 },
+                                showlegend: false
+                            });
+
+                            // Vertical line to next iteration
+                            if (i < iteration_data.length - 1) {
+                                shapes1.push({
+                                    type: 'line',
+                                    x0: T_zero,
+                                    x1: T_zero,
+                                    y0: 0,
+                                    y1: deg(delta_phi(T_zero)),
+                                    line: { color: color, dash: 'dot', width: 1 }
+                                });
+                            }
+                        }
+                    }
+                });
+            } else if (method_used === 'Bisection') {
+                // Bisection visualization
+                iteration_data.forEach((step, i) => {
+                    const color_idx = Math.floor((i / iteration_data.length) * 255);
+                    const color = `rgb(${Math.floor(68 + color_idx * 0.5)}, ${Math.floor(1 + color_idx * 0.6)}, ${Math.floor(84 + color_idx * 0.3)})`;
+
+                    // Interval shading
+                    shapes1.push({
+                        type: 'rect',
+                        x0: step.T_left,
+                        x1: step.T_right,
+                        y0: Math.min(...delta_phi_values.filter(v => v !== null)) - 5,
+                        y1: Math.max(...delta_phi_values.filter(v => v !== null)) + 5,
+                        fillcolor: 'green',
+                        opacity: 0.05,
+                        line: { width: 0 }
+                    });
+
+                    // Left point
+                    traces1.push({
+                        x: [step.T_left],
+                        y: [deg(step.f_left)],
+                        mode: 'markers+text',
+                        marker: { color: color, size: 10, line: { color: 'black', width: 1.5 } },
+                        text: [step.f_left > 0 ? '+' : '-'],
+                        textposition: 'top',
+                        textfont: { color: color, size: 10 },
+                        showlegend: false
+                    });
+
+                    // Right point
+                    traces1.push({
+                        x: [step.T_right],
+                        y: [deg(step.f_right)],
+                        mode: 'markers+text',
+                        marker: { color: color, size: 10, line: { color: 'black', width: 1.5 } },
+                        text: [step.f_right > 0 ? '+' : '-'],
+                        textposition: 'top',
+                        textfont: { color: color, size: 10 },
+                        showlegend: false
+                    });
+
+                    // Midpoint
+                    traces1.push({
+                        x: [step.T_mid],
+                        y: [deg(step.f_mid)],
+                        mode: 'markers',
+                        marker: { color: color, size: 8, symbol: 'x', line: { width: 2 } },
+                        showlegend: false
+                    });
+                });
+            }
+        }
 
         if (T_optimal) {
             shapes1.push({
                 type: 'line',
                 x0: T_optimal,
                 x1: T_optimal,
-                y0: -10,
-                y1: 10,
-                line: { color: 'red', dash: 'dash', width: 2 }
+                y0: Math.min(...delta_phi_values.filter(v => v !== null)) - 5,
+                y1: Math.max(...delta_phi_values.filter(v => v !== null)) + 5,
+                line: { color: 'red', dash: 'dash', width: 2.5 }
+            });
+
+            traces1.push({
+                x: [T_optimal],
+                y: [deg(delta_phi(T_optimal))],
+                mode: 'markers',
+                name: 'Solution',
+                marker: { color: 'red', size: 15, symbol: 'star', line: { color: 'darkred', width: 2 } }
             });
         }
 
-        Plotly.newPlot('plot1', [trace1], {
-            title: `Error Function (${results.method_used})`,
+        Plotly.newPlot('plot1', traces1, {
+            title: `Iterative Root Finding: ${method_used}`,
             xaxis: { title: 'Time T [s]' },
             yaxis: { title: 'Angle Difference Δφ [°]' },
             shapes: shapes1,
             margin: { t: 40, b: 40, l: 50, r: 20 }
         }, { responsive: true });
 
-        // Plot 2: Geometry
+        // Plot 2: Geometry rotated system
         const segment_theta = [];
         const segment_x = [];
         const segment_y = [];
@@ -356,11 +499,9 @@ const CraneBallPort = () => {
                 marker: { color: 'red', size: 10 }
             });
 
-            const arm_x = results.r * Math.cos(results.phi_kr_opt);
-            const arm_y = results.r * Math.sin(results.phi_kr_opt);
             traces2.push({
-                x: [0, arm_x],
-                y: [0, arm_y],
+                x: [0, results.arm_x_opt],
+                y: [0, results.arm_y_opt],
                 mode: 'lines',
                 name: 'Crane Arm',
                 line: { color: 'blue', width: 3 }
@@ -440,9 +581,136 @@ const CraneBallPort = () => {
             margin: { t: 40, b: 40, l: 50, r: 20 }
         }, { responsive: true });
 
-    }, [results]);
+        // Plot 4: Original Coordinate System
+        const rotate_back = (x, y) => {
+            const abs_angle = Math.abs(results.rotation_angle);
+            const cos_r = Math.cos(-abs_angle);
+            const sin_r = Math.sin(-abs_angle);
+            const x_rot = x * cos_r - y * sin_r;
+            const y_rot = x * sin_r + y * cos_r;
+            const x_orig = x_rot + params.x_off;
+            const y_orig = y_rot + params.y_off;
+            return [x_orig, y_orig];
+        };
 
-    // Animation
+        const segment_x_orig = [];
+        const segment_y_orig = [];
+        for (let i = 0; i < segment_x.length; i++) {
+            const [x, y] = rotate_back(segment_x[i], segment_y[i]);
+            segment_x_orig.push(x);
+            segment_y_orig.push(y);
+        }
+
+        const circle_x = [];
+        const circle_y = [];
+        for (let i = 0; i <= 200; i++) {
+            const theta = 2 * Math.PI * i / 200;
+            circle_x.push(results.r * Math.cos(theta));
+            circle_y.push(results.r * Math.sin(theta));
+        }
+
+        const circle_x_orig = [];
+        const circle_y_orig = [];
+        for (let i = 0; i < circle_x.length; i++) {
+            const [x, y] = rotate_back(circle_x[i], circle_y[i]);
+            circle_x_orig.push(x);
+            circle_y_orig.push(y);
+        }
+
+        const traces4 = [
+            {
+                x: segment_x_orig,
+                y: segment_y_orig,
+                mode: 'lines',
+                name: 'Arc Segment',
+                line: { color: 'orange', width: 4 }
+            },
+            {
+                x: circle_x_orig,
+                y: circle_y_orig,
+                mode: 'lines',
+                name: 'Circle',
+                line: { color: 'gray', width: 1, dash: 'dash' }
+            },
+            {
+                x: [params.x_off],
+                y: [params.y_off],
+                mode: 'markers',
+                name: `Pivot (${params.x_off.toFixed(1)}, ${params.y_off.toFixed(1)})`,
+                marker: { color: 'black', size: 10 }
+            },
+            {
+                x: [0],
+                y: [0],
+                mode: 'markers',
+                name: 'Ball Start (0, 0)',
+                marker: { color: 'green', size: 10 }
+            },
+            {
+                x: [0, params.x_off],
+                y: [0, params.y_off],
+                mode: 'lines',
+                name: `Distance: ${Math.abs(results.u).toFixed(2)}m`,
+                line: { color: 'gray', width: 2, dash: 'dash' }
+            }
+        ];
+
+        if (T_optimal) {
+            const [ball_x_orig, ball_y_orig] = rotate_back(results.x_opt, results.y_opt);
+            traces4.push({
+                x: [0, ball_x_orig],
+                y: [0, ball_y_orig],
+                mode: 'lines',
+                name: 'Ball Path',
+                line: { color: 'green', dash: 'dash', width: 2 }
+            });
+            traces4.push({
+                x: [ball_x_orig],
+                y: [ball_y_orig],
+                mode: 'markers',
+                name: `Collision (T=${T_optimal.toFixed(3)}s)`,
+                marker: { color: 'red', size: 10 }
+            });
+
+            const [arm_x_orig, arm_y_orig] = rotate_back(results.arm_x_opt, results.arm_y_opt);
+            traces4.push({
+                x: [params.x_off, arm_x_orig],
+                y: [params.y_off, arm_y_orig],
+                mode: 'lines',
+                name: 'Crane Arm',
+                line: { color: 'blue', width: 3 }
+            });
+            traces4.push({
+                x: [arm_x_orig],
+                y: [arm_y_orig],
+                mode: 'markers',
+                marker: { color: 'blue', size: 10 }
+            });
+
+            traces4.push({
+                x: [ball_x_orig, arm_x_orig],
+                y: [ball_y_orig, arm_y_orig],
+                mode: 'lines',
+                line: { color: 'red', dash: 'dot', width: 2 },
+                showlegend: false
+            });
+        }
+
+        const margin_orig = 6;
+        const x_min_orig = Math.min(-margin_orig, params.x_off - results.r - margin_orig, 0);
+        const x_max_orig = Math.max(params.x_off + results.r + margin_orig, margin_orig);
+        const y_min_orig = Math.min(params.y_off - results.r - margin_orig, -margin_orig, 0);
+        const y_max_orig = Math.max(params.y_off + results.r + margin_orig, margin_orig, 0);
+
+        Plotly.newPlot('plot4', traces4, {
+            title: 'Original Coordinate System',
+            xaxis: { title: 'x [m]', scaleanchor: 'y', range: [x_min_orig, x_max_orig] },
+            yaxis: { title: 'y [m]', range: [y_min_orig, y_max_orig] },
+            margin: { t: 40, b: 40, l: 50, r: 20 }
+        }, { responsive: true });
+
+    }, [results, showIterationLabels]);
+
     useEffect(() => {
         if (!isAnimating || !results || !canvasRef.current) return;
 
@@ -487,7 +755,6 @@ const CraneBallPort = () => {
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
 
-            // Transform to center coordinate system
             const scale = Math.min(width, height) / (2 * (r + Math.abs(u)) * 1.2);
             const centerX = width / 2 - (u * scale) / 2;
             const centerY = height / 2;
@@ -553,7 +820,7 @@ const CraneBallPort = () => {
 
             // possible position on arc (phi_kugel)
             const phi_k = phi_kugel(t);
-            if (!isNaN(phi_k)) {
+            if ((!isNaN(phi_k))&&(t >= Math.min(T_min, T_max) && t <= Math.max(T_min, T_max))) {
                 const yellow_x = r * Math.cos(phi_k);
                 const yellow_y = r * Math.sin(phi_k);
                 ctx.beginPath();
@@ -612,8 +879,10 @@ const CraneBallPort = () => {
             ctx.font = '16px monospace';
             ctx.fillText(`T = ${t.toFixed(3)}s`, 10, 25);
             ctx.fillText(`φ_crane = ${deg(phi_kr).toFixed(1)}°`, 10, 50);
-            if (!isNaN(phi_k)) {
+            if ((!isNaN(phi_k))&&(t >= Math.min(T_min, T_max) && t <= Math.max(T_min, T_max))) {
                 ctx.fillText(`φ_ball = ${deg(phi_k).toFixed(1)}°`, 10, 75);
+            }else{
+                ctx.fillText(`φ_ball = N/A`, 10, 75);
             }
             ctx.fillText(`θ = ${deg(display_theta).toFixed(1)}°`, 10, 100);
 
@@ -671,14 +940,23 @@ const CraneBallPort = () => {
                 </div>
             )}
 
-            {/* Plots */}
+            <div className="bg-white p-3 rounded shadow mb-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        checked={showIterationLabels}
+                        onChange={(e) => setShowIterationLabels(e.target.checked)}
+                        className="w-4 h-4"
+                    />
+                    <span className="text-sm font-medium">Show Iteration Labels</span>
+                </label>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div id="plot1" className="bg-white p-2 rounded shadow" style={{height: '400px'}}></div>
                 <div id="plot2" className="bg-white p-2 rounded shadow" style={{height: '400px'}}></div>
                 <div id="plot3" className="bg-white p-2 rounded shadow" style={{height: '400px'}}></div>
-                <div className="bg-white p-2 rounded shadow flex items-center justify-center" style={{height: '400px'}}>
-                    <p className="text-gray-500">Original coordinates plot placeholder</p>
-                </div>
+                <div id="plot4" className="bg-white p-2 rounded shadow" style={{height: '400px'}}></div>
             </div>
 
             {/* Animation */}

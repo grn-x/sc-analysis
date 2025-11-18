@@ -1016,7 +1016,7 @@ const CraneBallPort = () => {
                 <h2 className="text-xl font-semibold mb-3">Parameters</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">x_off</label>
+                        <label className="block text-sm font-medium mb-1">x_off (m)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1026,7 +1026,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">y_off</label>
+                        <label className="block text-sm font-medium mb-1">y_off (m)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1036,7 +1036,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">β (system rotation angle)</label>
+                        <label className="block text-sm font-medium mb-1">β (system rotation angle in deg)</label>
                         <input
                             type="text"
                             value={results ? `${deg(results.rotation_angle).toFixed(2)}°` : 'N/A'}
@@ -1045,7 +1045,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">r (crane radius)</label>
+                        <label className="block text-sm font-medium mb-1">r (crane radius in m)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1055,7 +1055,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">α_0 (start angle in original system)</label>
+                        <label className="block text-sm font-medium mb-1">α_0 (start angle in original system in deg)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1065,7 +1065,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">ω (crane angle velocity)</label>
+                        <label className="block text-sm font-medium mb-1">ω (crane angle velocity in rad/s)</label>
                         <input
                             type="number"
                             step="0.01"
@@ -1075,7 +1075,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">v (ball velocity)</label>
+                        <label className="block text-sm font-medium mb-1">v (ball velocity in m/s)</label>
                         <input
                             type="number"
                             step="0.1"
@@ -1085,7 +1085,7 @@ const CraneBallPort = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">T_offset (crane rotation delay)</label>
+                        <label className="block text-sm font-medium mb-1">T_offset (crane rotation delay in s)</label>
                         <input
                             type="number"
                             step="0.01"

@@ -686,255 +686,146 @@ class Vector2D {
       };
   }
 
-  function seq_four_dpr(vb, vk, rho_i, rho_a, ri, Ra, m, Ic, rc, k) {
-    const v_b = new Vector2D(vb.x, vb.y);
-    const v_k = new Vector2D(vk.x, vk.y);
-      //orthogonalProjection v_b, vk -> {scalar, parallel: v_kp, normal: v_ko}
-          const denom = v_b.dot(v_b);
-          // if v_b is the zero vector, the projection onto it is undefined;
-          // we return parallel = zero vector and normal = vk (no component along v_b).
-          if (denom === 0) {
-              console.warn("Warning: v_b is the zero vector; projection is undefined.");
-              return {
-                  scalar: 0,
-                  parallel: new Vector2D(0, 0), // v_{kp}
-                  normal: v_k.clone()             // v_{ko} = vk - 0 = vk
-              };
-          }
-       const x = v_b.dot(v_k) / denom;
-       const v_kp = v_b.scale(x);
-       const v_ko = v_k.subtract(v_kp);
 
-          /*return {
-              scalar: x,
-              parallel: v_kp,
-              normal: v_ko
-          };*/
+        function seq_four(vb, vk, rho_i, rho_a, ri, Ra, m, Ic, rc, k) {
+            const v_b = new Vector2D(vb.x, vb.y);
+            const v_k = new Vector2D(vk.x, vk.y);
+            /* //
+          //orthogonalProjection v_b, vk -> {scalar, parallel: v_kp, normal: v_ko}
+                const denom = v_b.dot(v_b);
+                // if v_b is the zero vector, the projection onto it is undefined;
+                // we return parallel = zero vector and normal = vk (no component along v_b).
+                if (denom === 0) {
+                    console.warn("Warning: v_b is the zero vector; projection is undefined.");
+                    return {
+                        scalar: 0,
+                        parallel: new Vector2D(0, 0), // v_{kp}
+                        normal: v_k.clone()             // v_{ko} = vk - 0 = vk
+                    };
+                }
+             const x = v_b.dot(v_k) / denom;
+             const v_kp = v_b.scale(x);
+             const v_ko = v_k.subtract(v_kp);*/
 
-    const m_eff = Ic / (rc ** 2);
 
-    console.log("m_eff: ", m_eff);
+            const m_eff = Ic / (rc ** 2);
 
+            console.log("m_eff: ", m_eff);
+
 
-      // Calculate I_Kugel
-    const I_Kugel = (8 * Math.PI / 15) * (rho_i * ri ** 5 + rho_a * (Ra ** 5 - ri ** 5));
-
-    //calculate ball shell volumes
-      const V_Kugel_inner = (4/3)*(ri**3*Math.PI);
-
-      const V_Kugel_outer = (4/3)*(Ra**3*Math.PI) - V_Kugel_inner;
-
-      const m_k = V_Kugel_inner*rho_i + V_Kugel_outer* rho_a;
-    console.log("m_k: ", m_k)
-
-    /*
-      //collision between v_kp with m_Kugel_ges and vb m_eff
-      const numerator_k = m_k * v_k.magnitude() + m_eff * v_b.magnitude();
-      const dv = v_k.magnitude() - v_b.magnitude();
-
-
-      const v_kp_prime_mag = (numerator_k - m_eff * dv * k) / (m_k + m_eff);
-      const v_b_prime_mag = (numerator_k + m_k * dv * k) / (m_k + m_eff);
-
-      const v_kp_prime = v_kp.normalize().scale(v_kp_prime_mag);
-*/
-
-      // signed parallel magnitudes
-      const v_kp_mag_signed = x * v_b.magnitude();    // correct signed magnitude of v_kp
-      const v_bp_mag_signed = v_b.magnitude();        // v_b is already along its own axis
-
-      //collision between v_kp with m_Kugel_ges and vb m_eff
-      const numerator_k = m_k * v_kp_mag_signed + m_eff * v_bp_mag_signed;
-
-      const dv = v_kp_mag_signed - v_bp_mag_signed;   // signed relative parallel speed
-
-      const v_kp_prime_mag = (numerator_k - m_eff * dv * k) / (m_k + m_eff);
-      const v_b_prime_mag = (numerator_k + m_k * dv * k) / (m_k + m_eff);
-
-      // keep direction of original v_kp
-      const v_kp_prime = v_kp.normalize().scale(v_kp_prime_mag);
-
-
-
-      console.log("vko ", v_ko);
-      console.log("vkp ", v_kp);
-      console.log("vkp_prime ", v_kp_prime);
-      const v_k_res = v_ko.add(v_kp_prime);
-      console.log("vk_res", v_k_res);
-
-      const v0 = v_k_res.magnitude(); //reduced after collision
-      const w0 = v_k.magnitude() / Ra; //unaffected; using initial vk
-
-      const v_diff = v_k_res.magnitude() - v_k.magnitude();
-      const delta0 = w0 * Ra - v0;
-
-      //const v_end_mag = v0 + (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
-      const v_end_mag =  (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
-      console.log("v_end_mag", v_end_mag);
-
-      const v_end = v_k.normalize().scale(v_end_mag); //initial direction weighted with the new acceleration
-      console.log("v_end", v_end);
-
-      const vk_final = v_k_res.add(v_end);
-        console.log("vk_final", vk_final);
-
-        /*
-        //angle between vk_final and v_k_res should not be zero
-        const angle_between = Math.acos(vk_final.dot(v_k_res) / (vk_final.magnitude() * v_k_res.magnitude())) * (180 / Math.PI);
-        console.log("angle between vk_final and v_k_res:", angle_between);
-
-        //angle between vk_p and v_kp_prime should be zero
-        const angle_between_p = Math.acos(v_kp.dot(v_kp_prime) / (v_kp.magnitude() * v_kp_prime.magnitude())) * (180 / Math.PI);
-        console.log("angle between vk_p and v_kp_prime:", angle_between_p.toFixed(10));
-        */
-
-      drawVectors([
-          { x: v_b.x, y: v_b.y, label: "vb" },
-          { x: v_k.x, y: v_k.y, label: "vk" },
-          { x: v_kp.x, y: v_kp.y, label: "vk_p" },
-          { x: v_ko.x, y: v_ko.y, label: "vk_o" },
-          { x: v_kp_prime.x, y: v_kp_prime.y, label: "vk_p'" },
-          { x: v_k_res.x, y: v_k_res.y, label: "vk_res" },
-          { x: v_end.x, y: v_end.y, label: "v_end" },
-          { x: vk_final.x, y: vk_final.y, label: "vk_final" },
-      ]);
-
-
-
-
-    //const delta_0_auto = w0*rk - v0;
-    // Calculate v(t_end)
-
-      //const v_t_end = v0 + (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
-
-
-      /*return {
-      vkp,
-      vko,
-    vk_res,
-      I_Kugel,
-      v_t_end,
-    };*/
-
-
-  }
-
-
-  function seq_four(vb, vk, rho_i, rho_a, ri, Ra, m, Ic, rc, k) {
-        const v_b = new Vector2D(vb.x, vb.y);
-        const v_k = new Vector2D(vk.x, vk.y);
-
-
-        const m_eff = Ic / (rc ** 2);
-
-        console.log("m_eff: ", m_eff);
-
-
-        // Calculate I_Kugel
-        const I_Kugel = (8 * Math.PI / 15) * (rho_i * ri ** 5 + rho_a * (Ra ** 5 - ri ** 5));
-
-        //calculate ball shell volumes
-        const V_Kugel_inner = (4/3)*(ri**3*Math.PI);
-
-        const V_Kugel_outer = (4/3)*(Ra**3*Math.PI) - V_Kugel_inner;
-
-        const m_k = V_Kugel_inner*rho_i + V_Kugel_outer* rho_a;
-        console.log("m_k: ", m_k)
-
-        // --- compute unit axis n from v_b (the axis you project on) ---
-        const n = v_b.clone().normalize();   // unit collision axis
-
-        // signed parallel scalars (signed velocities along n)
-        const v_kp_signed = v_k.dot(n);      // v_k projected onto n (signed)
-        const v_bp_signed = v_b.dot(n);      // v_b projected onto n (signed) — equivalently v_b.magnitude() if n = v_b/|v_b|
-
-        // collision (1D along n) using signed scalars
-        const numerator_k = m_k * v_kp_signed + m_eff * v_bp_signed;
-        const dv = v_kp_signed - v_bp_signed;   // signed relative speed
-
-        const v_kp_prime_mag = (numerator_k - m_eff * dv * k) / (m_k + m_eff);
-        const v_b_prime_mag  = (numerator_k + m_k   * dv * k) / (m_k + m_eff);
-
-        // reconstruct parallel vector using **n** (preserves sign)
-        const v_kp_prime = n.scale(v_kp_prime_mag);
-
-        // (unchanged) perpendicular component
-        // v_kp (vector) is still v_b.scale(x) earlier; you can also recompute v_kp = n.scale(v_kp_signed)
-        const v_kp = n.scale(v_kp_signed);
-        const v_ko = v_k.subtract(v_kp);
-
-        // final vector after collision = perp + new parallel
-        const v_k_res = v_ko.add(v_kp_prime);
-
-
-        console.log("vko ", v_ko);
-        console.log("vkp ", v_kp);
-        console.log("vkp_prime ", v_kp_prime);
-        console.log("vk_res", v_k_res);
-
-        //const v0 = v_k_res.magnitude(); //reduced after collision //magnitude looses sign!
-        //const v0_signed = v_k_res.dot(n); // signed magnitude after collision
-        const v0_unsigned = v_k_res.magnitude();
-
-        /*
-        avoid this unstable division by possibly very small magnitudes
-        let v0_sign = v_kp_prime.normalize().x/v_kp.normalize().x; // v_kp and v_kp_prime are along same axis, but can
-      // point in different directions; use x-component to determine sign of the resulting magnitude direction and vector
-        v0_sign = v0_sign >= 0 ? Math.ceil(v0_sign) : Math.floor(v0_sign); //round to +1 or -1
-        console.log("v0_sign", v0_sign);
-         */
-
-          //const v0_dot = v_k_res.dot(v_k_res.normalize()); also loses sign since we dont know parallel direction of v_k_res directly
-      const v0_sign = v_kp.dot(v_kp_prime) >=0 ? 1 : -1; // sign based on whether v_kp and v_kp_prime point in same direction or not
-      console.log("sign", v0_sign);
-      console.log("unsigned", v0_unsigned);
-      const v0 = v0_unsigned * v0_sign; // signed magnitude after collision
-      console.log("v0", v0);
-
-
-
-        const w0 = v_k.magnitude() / Ra; // unaffected; using initial vk
-
-        const v_diff = v_k_res.magnitude() - v_k.magnitude();
-        const delta0 = w0 * Ra - v0;
-
-        //const v_end_mag = v0 + (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
-        const v_end_mag =  (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
-        console.log("v_end_mag", v_end_mag);
-
-        const v_end = v_k.normalize().scale(v_end_mag); //initial direction weighted with the new acceleration
-        console.log("v_end", v_end);
-
-        const vk_final = v_k_res.add(v_end);
-        console.log("vk_final", vk_final);
-
-
-        drawVectors([
-        { x: v_b.x, y: v_b.y, label: "vb" },
-        { x: v_k.x, y: v_k.y, label: "vk" },
-        { x: v_kp.x, y: v_kp.y, label: "vk_p" },
-        { x: v_ko.x, y: v_ko.y, label: "vk_o" },
-        { x: v_kp_prime.x, y: v_kp_prime.y, label: "vk_p'" },
-        { x: v_k_res.x, y: v_k_res.y, label: "vk_res" },
-        { x: v_end.x, y: v_end.y, label: "v_end" },
-        { x: vk_final.x, y: vk_final.y, label: "vk_final" },
-        ]);
-
-        return { //v_end
-            I_Kugel: I_Kugel,
-            M_Kugel: m_k,
-            vb: v_b, //unchanged
-            vk: v_k, //unchanged
-            vkp: v_kp,
-            vko: v_ko,
-            vkp_prime: v_kp_prime,
-            vk_res: v_k_res,
-            vk_rot_end: v_end,
-            vk_final: vk_final
-        };
-
-  }
-
+            // Calculate I_Kugel
+            const I_Kugel = (8 * Math.PI / 15) * (rho_i * ri ** 5 + rho_a * (Ra ** 5 - ri ** 5));
+
+            //calculate ball shell volumes
+            const V_Kugel_inner = (4/3)*(ri**3*Math.PI);
+
+            const V_Kugel_outer = (4/3)*(Ra**3*Math.PI) - V_Kugel_inner;
+
+            const m_k = V_Kugel_inner*rho_i + V_Kugel_outer* rho_a;
+            console.log("m_k: ", m_k)
+
+            // --- compute unit axis n from v_b (the axis you project on) ---
+            const n = v_b.clone().normalize();   // unit collision axis
+
+            // signed parallel scalars (signed velocities along n)
+            const v_kp_signed = v_k.dot(n);      // v_k projected onto n (signed)
+            const v_bp_signed = v_b.dot(n);      // v_b projected onto n (signed) — equivalently v_b.magnitude() if n = v_b/|v_b|
+
+            // collision (1D along n) using signed scalars
+            const numerator_k = m_k * v_kp_signed + m_eff * v_bp_signed;
+            const dv = v_kp_signed - v_bp_signed;   // signed relative speed
+
+            const v_kp_prime_mag = (numerator_k - m_eff * dv * k) / (m_k + m_eff);
+            const v_b_prime_mag  = (numerator_k + m_k   * dv * k) / (m_k + m_eff);
+
+            // reconstruct parallel vector using **n** (preserves sign)
+            const v_kp_prime = n.scale(v_kp_prime_mag);
+
+            // (unchanged) perpendicular component
+            // v_kp (vector) is still v_b.scale(x) earlier; you can also recompute v_kp = n.scale(v_kp_signed)
+            const v_kp = n.scale(v_kp_signed);
+            const v_ko = v_k.subtract(v_kp);
+
+            // final vector after collision = perp + new parallel
+            const v_k_res = v_ko.add(v_kp_prime);
+
+
+            console.log("vko ", v_ko);
+            console.log("vkp ", v_kp);
+            console.log("vkp_prime ", v_kp_prime);
+            console.log("vk_res", v_k_res);
+
+            //const v0 = v_k_res.magnitude(); //reduced after collision //magnitude looses sign!
+            //const v0_signed = v_k_res.dot(n); // signed magnitude after collision
+            const v0_unsigned = v_k_res.magnitude();
+
+            /*
+            avoid this unstable division by possibly very small magnitudes
+            let v0_sign = v_kp_prime.normalize().x/v_kp.normalize().x; // v_kp and v_kp_prime are along same axis, but can
+          // point in different directions; use x-component to determine sign of the resulting magnitude direction and vector
+            v0_sign = v0_sign >= 0 ? Math.ceil(v0_sign) : Math.floor(v0_sign); //round to +1 or -1
+            console.log("v0_sign", v0_sign);
+             */
+
+            //const v0_dot = v_k_res.dot(v_k_res.normalize()); also loses sign since we dont know parallel direction of v_k_res directly
+            const v0_sign = v_kp.dot(v_kp_prime) >=0 ? 1 : -1; // sign based on whether v_kp and v_kp_prime point in same direction or not
+            console.log("sign", v0_sign);
+            console.log("unsigned", v0_unsigned);
+            const v0 = v0_unsigned * v0_sign; // signed magnitude after collision
+            console.log("v0", v0);
+
+
+
+            const w0 = v_k.magnitude() / Ra; // unaffected; using initial vk
+
+            const v_diff = v_k_res.magnitude() - v_k.magnitude();
+            const delta0 = w0 * Ra - v0;
+
+            //const v_end_mag = v0 + (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
+            const v_end_mag =  (delta0 * I_Kugel) / (m * Ra ** 2 + I_Kugel);
+            console.log("v_end_mag", v_end_mag);
+
+            const v_end = v_k.normalize().scale(v_end_mag); //initial direction weighted with the new acceleration
+            console.log("v_end", v_end);
+
+            const vk_final = v_k_res.add(v_end);
+            console.log("vk_final", vk_final);
+
+            /*
+            //angle between vk_final and v_k_res should not be zero
+            const angle_between = Math.acos(vk_final.dot(v_k_res) / (vk_final.magnitude() * v_k_res.magnitude())) * (180 / Math.PI);
+            console.log("angle between vk_final and v_k_res:", angle_between);
+
+            //angle between vk_p and v_kp_prime should be zero
+            const angle_between_p = Math.acos(v_kp.dot(v_kp_prime) / (v_kp.magnitude() * v_kp_prime.magnitude())) * (180 / Math.PI);
+            console.log("angle between vk_p and v_kp_prime:", angle_between_p.toFixed(10));
+            */
+
+            drawVectors([
+                { x: v_b.x, y: v_b.y, label: "vb" },
+                { x: v_k.x, y: v_k.y, label: "vk" },
+                { x: v_kp.x, y: v_kp.y, label: "vk_p" },
+                { x: v_ko.x, y: v_ko.y, label: "vk_o" },
+                { x: v_kp_prime.x, y: v_kp_prime.y, label: "vk_p'" },
+                { x: v_k_res.x, y: v_k_res.y, label: "vk_res" },
+                { x: v_end.x, y: v_end.y, label: "v_end" },
+                { x: vk_final.x, y: vk_final.y, label: "vk_final" },
+            ]);
+
+            return { //v_end
+                I_Kugel: I_Kugel,
+                M_Kugel: m_k,
+                vb: v_b, //unchanged
+                vk: v_k, //unchanged
+                vkp: v_kp,
+                vko: v_ko,
+                vkp_prime: v_kp_prime,
+                vk_res: v_k_res,
+                vk_rot_end: v_end,
+                vk_final: vk_final
+            };
+
+        }
 //x off and y off to crane base center; crane angle is phi - beta (and in deg!), so already accounted for the rotation; r is boom length; v_ges is the resulting ball velocity vector after impact
 function seq_five(x_off, y_off, crane_angle_deg, r, v_ges) {
     //crane_angle = phi - beta

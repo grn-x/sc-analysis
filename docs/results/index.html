@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculations Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="control-panel">
+    <div class="section">
+        <div class="section-title">Loop Interval Settings</div>
+        <div class="param-row">
+            <div class="param-group"><label>v_min:</label><input type="number" id="v_initial_min" value="10"><button class="info-btn" onclick="showInfo('v_initial_min','Minimum initial velocity [m/s]')">?</button></div>
+            <div class="param-group"><label>v_max:</label><input type="number" id="v_initial_max" value="90"><button class="info-btn" onclick="showInfo('v_initial_max','Maximum initial velocity [m/s]')">?</button></div>
+            <div class="param-group"><label>v_steps:</label><input type="number" id="v_steps" value="50"><button class="info-btn" onclick="showInfo('v_steps','Number of velocity values to test')">?</button></div>
+            <div class="param-group"><label>α_min:</label><input type="number" id="alpha_initial_min" value="1"><button class="info-btn" onclick="showInfo('alpha_initial_min','Minimum launch angle [deg]')">?</button></div>
+            <div class="param-group"><label>α_max:</label><input type="number" id="alpha_initial_max" value="50"><button class="info-btn" onclick="showInfo('alpha_initial_max','Maximum launch angle [deg]')">?</button></div>
+            <div class="param-group"><label>α_steps:</label><input type="number" id="alpha_steps" value="25"><button class="info-btn" onclick="showInfo('alpha_steps','Number of angle values to test')">?</button></div>
+        </div>
+        <div class="param-row">
+            <div class="param-group"><label>a_min:</label><input type="number" id="a_initial_min" value="0.1" step="0.1"><button class="info-btn" onclick="showInfo('a_initial_min','Minimum acceleration [m/s²]')">?</button></div>
+            <div class="param-group"><label>a_max:</label><input type="number" id="a_initial_max" value="5.0" step="0.1"><button class="info-btn" onclick="showInfo('a_initial_max','Maximum acceleration [m/s²]')">?</button></div>
+            <div class="param-group"><label>a_steps:</label><input type="number" id="a_steps" value="10"><button class="info-btn" onclick="showInfo('a_steps','Number of acceleration values')">?</button></div>
+            <div class="param-group"><label>cw_min:</label><input type="number" id="cw_initial_min" value="0.29" step="0.01"><button class="info-btn" onclick="showInfo('cw_initial_min','Minimum drag coefficient [-]')">?</button></div>
+            <div class="param-group"><label>cw_max:</label><input type="number" id="cw_initial_max" value="1.24" step="0.01"><button class="info-btn" onclick="showInfo('cw_initial_max','Maximum drag coefficient [-]')">?</button></div>
+            <div class="param-group"><label>cwA_min:</label><input type="number" id="cw_A_initial_min" value="2.38" step="0.01"><button class="info-btn" onclick="showInfo('cw_A_initial_min','Minimum cross-sectional area [m²]')">?</button></div>
+            <div class="param-group"><label>cwA_max:</label><input type="number" id="cw_A_initial_max" value="5.46" step="0.01"><button class="info-btn" onclick="showInfo('cw_A_initial_max','Maximum cross-sectional area [m²]')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">seq_one Parameters (Geometry)</div>
+        <div class="param-row">
+            <div class="param-group"><label>x:</label><input type="number" id="seq1_x" value="50"><button class="info-btn" onclick="showInfo('x','X-coordinate distance [m]')">?</button></div>
+            <div class="param-group"><label>y:</label><input type="number" id="seq1_y" value="-5"><button class="info-btn" onclick="showInfo('y','Y-coordinate distance [m]')">?</button></div>
+            <div class="param-group"><label>b:</label><input type="number" id="seq1_b" value="15"><button class="info-btn" onclick="showInfo('b','Base distance parameter [m]')">?</button></div>
+            <div class="param-group"><label>φ:</label><input type="number" id="seq1_phi" value="45"><button class="info-btn" onclick="showInfo('phi','Angle phi [degrees]')">?</button></div>
+            <div class="param-group"><label>σ:</label><input type="number" id="seq1_sigma" value="45"><button class="info-btn" onclick="showInfo('sigma','Angle sigma [degrees]')">?</button></div>
+            <div class="param-group"><label>σ_max:</label><input type="number" id="seq1_sigma_max" disabled><button class="info-btn" onclick="showInfo('σ_max','CALCULATED: Maximum sigma from seq_one(x,y,b,φ).delta')">?</button></div>
+            <div class="param-group"><label>β:</label><input type="number" id="seq1_beta" disabled><button class="info-btn" onclick="showInfo('β','CALCULATED: Beta angle from seq_one')">?</button></div>
+            <div class="param-group"><label>t:</label><input type="number" id="seq1_t" disabled><button class="info-btn" onclick="showInfo('t','CALCULATED: From seq_one with sigma_max')">?</button></div>
+            <div class="param-group"><label>τ:</label><input type="number" id="seq1_tau" disabled><button class="info-btn" onclick="showInfo('τ','CALCULATED: From seq_one with sigma_max')">?</button></div>
+            <div class="param-group"><label>r:</label><input type="number" id="seq1_r" disabled><button class="info-btn" onclick="showInfo('r','CALCULATED: From seq_one with sigma_max')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">seq_two Parameters (Projectile Motion)</div>
+        <div class="param-row">
+            <div class="param-group"><label>m_car:</label><input type="number" id="seq2_m_car" value="2000"><button class="info-btn" onclick="showInfo('m_car','Mass of the car/projectile [kg]')">?</button></div>
+            <div class="param-group"><label>g:</label><input type="number" id="seq2_g" value="9.81" step="0.01"><button class="info-btn" onclick="showInfo('g','Gravitational acceleration [m/s²]')">?</button></div>
+            <div class="param-group"><label>ρ:</label><input type="number" id="seq2_rho" value="1.3" step="0.1"><button class="info-btn" onclick="showInfo('ρ','Air density [kg/m³]')">?</button></div>
+            <div class="param-group"><label>tol:</label><input type="number" id="seq2_tolerance" value="0.5" step="0.1"><button class="info-btn" onclick="showInfo('tolerance','Tolerance for y-target match [m]')">?</button></div>
+            <div class="param-group"><label>y_tgt:</label><input type="number" id="seq2_y_target" value="5"><button class="info-btn" onclick="showInfo('y_target','Target y-coordinate [m]')">?</button></div>
+            <div class="param-group"><label>t_input:</label><input type="number" id="seq2_t_input" disabled><button class="info-btn" onclick="showInfo('t_input','CALCULATED: Uses seq_one.t')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">seq_three Parameters (Crane Boom Collision)</div>
+        <div class="param-row">
+            <div class="param-group"><label>m_boom:</label><input type="number" id="seq3_m_boom" value="500"><button class="info-btn" onclick="showInfo('m_boom','Mass of the crane boom [kg]')">?</button></div>
+            <div class="param-group"><label>l_boom:</label><input type="number" id="seq3_l_boom" value="30"><button class="info-btn" onclick="showInfo('l_boom','Length of the crane boom [m]')">?</button></div>
+            <div class="param-group"><label>l_off:</label><input type="number" id="seq3_l_offset" value="10"><button class="info-btn" onclick="showInfo('l_offset','Offset distance of counterweight from rotation axis [m]')">?</button></div>
+            <div class="param-group"><label>l_wgt:</label><input type="number" id="seq3_l_weight" value="3"><button class="info-btn" onclick="showInfo('l_weight','Length of the counterweight section [m]')">?</button></div>
+            <div class="param-group"><label>m_wgt:</label><input type="number" id="seq3_m_weight" value="10000"><button class="info-btn" onclick="showInfo('m_weight','Mass of the counterweight [kg]')">?</button></div>
+            <div class="param-group"><label>r_imp:</label><input type="number" id="seq3_r_impact" disabled><button class="info-btn" onclick="showInfo('r_impact','CALCULATED: Uses seq_one.r')">?</button></div>
+            <div class="param-group"><label>mc:</label><input type="number" id="seq3_mc" disabled><button class="info-btn" onclick="showInfo('mc','CALCULATED: Uses m_car from seq_two')">?</button></div>
+            <div class="param-group"><label>vc:</label><input type="number" id="seq3_vc" disabled><button class="info-btn" onclick="showInfo('vc','CALCULATED: Vehicle speed from seq_two result')">?</button></div>
+            <div class="param-group"><label>τ_deg:</label><input type="number" id="seq3_tau_deg" disabled><button class="info-btn" onclick="showInfo('τ_deg','CALCULATED: Uses seq_one.tau')">?</button></div>
+            <div class="param-group"><label>vb:</label><input type="number" id="seq3_vb" value="0"><button class="info-btn" onclick="showInfo('vb','Initial tangential boom velocity [m/s]')">?</button></div>
+            <div class="param-group"><label>k:</label><input type="number" id="seq3_k" value="0.8" step="0.1"><button class="info-btn" onclick="showInfo('k','Coefficient of restitution [-]')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">calculateCraneCollision Parameters</div>
+        <div class="param-row">
+            <div class="param-group"><label>x_off:</label><input type="number" id="crane_x_off" value="80"><button class="info-btn" onclick="showInfo('x_off','Pivot x-position [m]')">?</button></div>
+            <div class="param-group"><label>y_off:</label><input type="number" id="crane_y_off" value="-10"><button class="info-btn" onclick="showInfo('y_off','Pivot y-position [m]')">?</button></div>
+            <div class="param-group"><label>r:</label><input type="number" id="crane_r" value="15"><button class="info-btn" onclick="showInfo('r','Arm length / circle radius [m]')">?</button></div>
+            <div class="param-group"><label>α_0:</label><input type="number" id="crane_alpha_0" value="90"><button class="info-btn" onclick="showInfo('α_0','Crane start angle [degrees]')">?</button></div>
+            <div class="param-group"><label>ω:</label><input type="number" id="crane_omega" disabled><button class="info-btn" onclick="showInfo('ω','CALCULATED: Angular velocity from seq_three.vbPrime/r_one [rad/s]')">?</button></div>
+            <div class="param-group"><label>v_bomb:</label><input type="number" id="crane_v_bomb" value="20"><button class="info-btn" onclick="showInfo('v_bomb','Ball/bomb velocity [m/s]')">?</button></div>
+            <div class="param-group"><label>T_off:</label><input type="number" id="crane_T_offset" value="0.55" step="0.01"><button class="info-btn" onclick="showInfo('T_offset','Time delay: crane starts after T_offset seconds [s]')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">seq_four Parameters (Ball Collision)</div>
+        <div class="param-row">
+            <div class="param-group"><label>ρ_i:</label><input type="number" id="seq4_rho_i" value="1560"><button class="info-btn" onclick="showInfo('ρ_i','Inner material density (e.g. pressed TNT) [kg/m³]')">?</button></div>
+            <div class="param-group"><label>ρ_a:</label><input type="number" id="seq4_rho_a" value="7800"><button class="info-btn" onclick="showInfo('ρ_a','Outer shell density (e.g. steel) [kg/m³]')">?</button></div>
+            <div class="param-group"><label>r_i:</label><input type="number" id="seq4_ri" value="1" step="0.1"><button class="info-btn" onclick="showInfo('r_i','Inner radius of ball [m]')">?</button></div>
+            <div class="param-group"><label>R_a:</label><input type="number" id="seq4_Ra" value="1.1" step="0.1"><button class="info-btn" onclick="showInfo('R_a','Outer radius of ball [m]')">?</button></div>
+            <div class="param-group"><label>m:</label><input type="number" id="seq4_m" disabled><button class="info-btn" onclick="showInfo('m','CALCULATED: Uses m_car from seq_two')">?</button></div>
+            <div class="param-group"><label>I_c:</label><input type="number" id="seq4_Ic" disabled><button class="info-btn" onclick="showInfo('I_c','CALCULATED: Moment of inertia from seq_three.I')">?</button></div>
+            <div class="param-group"><label>r_c:</label><input type="number" id="seq4_rc" value="15"><button class="info-btn" onclick="showInfo('r_c','Crane radius for effective mass calculation [m]')">?</button></div>
+            <div class="param-group"><label>k:</label><input type="number" id="seq4_k" value="0.7" step="0.1"><button class="info-btn" onclick="showInfo('k','Coefficient of restitution for ball collision [-]')">?</button></div>
+            <div class="param-group"><label>v_b:</label><input type="text" id="seq4_vb" disabled style="width:80px"><button class="info-btn" onclick="showInfo('v_b','CALCULATED: Boom velocity vector from crane collision angles')">?</button></div>
+            <div class="param-group"><label>v_k:</label><input type="text" id="seq4_vk" disabled style="width:80px"><button class="info-btn" onclick="showInfo('v_k','CALCULATED: Ball velocity vector from crane collision angles')">?</button></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title">seq_five Parameters (Final Trajectory)</div>
+        <div class="param-row">
+            <div class="param-group"><label>x_off:</label><input type="number" id="seq5_x_off" value="50"><button class="info-btn" onclick="showInfo('x_off5','X offset to crane base center [m]')">?</button></div>
+            <div class="param-group"><label>y_off:</label><input type="number" id="seq5_y_off" value="20"><button class="info-btn" onclick="showInfo('y_off5','Y offset to crane base center [m]')">?</button></div>
+            <div class="param-group"><label>crane_∠:</label><input type="number" id="seq5_crane_angle" disabled><button class="info-btn" onclick="showInfo('crane_angle','CALCULATED: Crane angle (φ - β) [degrees]')">?</button></div>
+            <div class="param-group"><label>r:</label><input type="number" id="seq5_r" disabled><button class="info-btn" onclick="showInfo('r5','CALCULATED: Uses seq_one.r')">?</button></div>
+            <div class="param-group"><label>v_ges:</label><input type="text" id="seq5_v_ges" disabled style="width:80px"><button class="info-btn" onclick="showInfo('v_ges','CALCULATED: Resulting ball velocity from seq_four.vk_final')">?</button></div>
+        </div>
+    </div>
+    <button id="runBtn" onclick="runPipeline()">Run Pipeline</button>
+</div>
+
+<!-- Tooltip Modal - INSERT right before <div id="vecplot"> -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="hideInfo()"></div>
+<div class="tooltip-modal" id="tooltipModal">
+    <span class="tooltip-close" onclick="hideInfo()">×</span>
+    <div class="tooltip-title" id="tooltipTitle"></div>
+    <div id="tooltipContent"></div>
+</div>
+
+<div id="vecplot" style="width:auto;height:auto;"></div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>

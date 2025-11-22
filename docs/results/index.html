@@ -118,6 +118,30 @@
 </div>
 
 <div id="results-plot" style="width:100%;height:600px;"></div>
+<div id="detail-panel" style="margin-top:20px;padding:15px;background:#f9f9f9;border:1px solid #ddd;font-family:Arial,sans-serif;font-size:12px;">
+    <div class="detail-header" style="margin-bottom:15px;">
+        <h3 style="margin:0 0 10px 0;">Run Details</h3>
+        <div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
+            <div>
+                <label>Speed (v): </label>
+                <select id="select-v" onchange="onManualSelect()"></select>
+            </div>
+            <div>
+                <label>Angle (w): </label>
+                <select id="select-w" onchange="onManualSelect()"></select>
+            </div>
+            <div>
+                <label>Accel (a): </label>
+                <select id="select-a" onchange="onManualSelect()"></select>
+            </div>
+            <span id="selected-info" style="color:#666;font-style:italic;">Click a point or select values</span>
+        </div>
+    </div>
+    <div id="detail-content" style="display:none;">
+        <div id="detail-summary" style="margin-bottom:15px;padding:10px;background:#fff;border:1px solid #eee;border-radius:4px;"></div>
+        <div id="detail-sequences"></div>
+    </div>
+</div>
 <div id="vecplot" style="width:auto;height:auto;"></div>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="main.js"></script>

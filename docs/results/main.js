@@ -1071,7 +1071,7 @@ function renderResultsPlot(results, containerId = 'results-plot') {
     const traces = createPlotTraces(groups);
 
     const layout = {
-        title: 'Collision Simulation Results',
+        title: 'Collision Simulation Results (Click a point for details)',
         scene: {
             xaxis: { title: 'Speed (m/s)' },
             yaxis: { title: 'Angle (°)' },
@@ -1083,14 +1083,22 @@ function renderResultsPlot(results, containerId = 'results-plot') {
         },
         margin: { l: 0, r: 0, t: 40, b: 0 }
     };
-
     const config = {
         responsive: true,
         displayModeBar: true
     };
+    //Plotly.newPlot(containerId, traces, layout, config);
+    Plotly.newPlot(containerId, traces, layout, { responsive: true });
 
-    Plotly.newPlot(containerId, traces, layout, config);
+
+    // Setup click handler after plot is created
+    setupPlotClickHandler(containerId);
+
+    // Populate dropdowns
+    populateDropdowns();
 }
+
+
 
 /**
  * summary statistics of results
@@ -1429,328 +1437,292 @@ function runPipeline() {
     renderResultsPlot(runResults);
 }
 
-//TODO Remove after testing
-/*
-const ignoreDebugLog = true;
-const debugVectors = false;
 
-function runPipeline() {
-    // read seq_one params from UI
-    const x_one = getVal('seq1_x');
-    const y_one = getVal('seq1_y');
-    const b = getVal('seq1_b');
-    const phi = getVal('seq1_phi');
-    const sigma = getVal('seq1_sigma');
+let currentDropdownOptions = { v: [], w: [], a: [] };
 
-    const sigma_max = seq_one(x_one, y_one, b, phi).delta;
-    const beta_one = seq_one(x_one, y_one, b, phi).beta;
+/**
+ * populate dropdowns with runResults
+ * gets called after pipeline completes
+ */
+function populateDropdowns() {
+    const vSet = new Set();
+    const wSet = new Set();
+    const aSet = new Set();
 
-    // update calculated fields in UI //TODO display in such a way?
-    setVal('seq1_sigma_max', sigma_max);
-    setVal('seq1_beta', beta_one);
-
-    console.log("Maximaler Sigma-Wert:", sigma_max);
-    const t_one = seq_one(x_one, y_one, b, phi, sigma_max).t;
-    const tau_one = seq_one(x_one, y_one, b, phi, sigma_max).tau;
-    const r_one = seq_one(x_one, y_one, b, phi, sigma_max).r;
-
-    setVal('seq1_t', t_one);
-    setVal('seq1_tau', tau_one);
-    setVal('seq1_r', r_one);
-    setVal('seq2_t_input', t_one);
-    setVal('seq3_r_impact', r_one);
-    setVal('seq3_tau_deg', tau_one);
-    setVal('seq5_r', r_one);
-    setVal('seq5_crane_angle', phi - beta_one);
-
-    // read interval settings from UI
-    const v_initial_max = getVal('v_initial_max');
-    const v_initial_min = getVal('v_initial_min');
-    const v_steps = Math.floor(getVal('v_steps'));
-    const v_inital_values = splitInterval(v_initial_min, v_initial_max, v_steps, true);
-
-    const alpha_initial_max = getVal('alpha_initial_max');
-    const alpha_initial_min = getVal('alpha_initial_min');
-    const alpha_steps = Math.floor(getVal('alpha_steps'));
-    const alpha_initial_values = splitInterval(alpha_initial_min, alpha_initial_max, alpha_steps, true);
-
-    const a_initial_min = getVal('a_initial_min');
-    const a_initial_max = getVal('a_initial_max');
-    const a_steps = Math.floor(getVal('a_steps'));
-    const a_initial_values = splitInterval(a_initial_min, a_initial_max, a_steps, true);
-
-    const cw_initial_min = getVal('cw_initial_min');
-    const cw_initial_max = getVal('cw_initial_max');
-    const cw_A_initial_min = getVal('cw_A_initial_min');
-    const cw_A_initial_max = getVal('cw_A_initial_max');
-    const cw_initial_values = splitInterval(cw_initial_min, cw_initial_max, 5, true).reverse();
-    const cw_A_initial_values = splitInterval(cw_A_initial_min, cw_A_initial_max, 5, true).reverse();
-
-    // read seq_two params from UI
-    const m_car = getVal('seq2_m_car');
-    const g = getVal('seq2_g');
-    const rho = getVal('seq2_rho');
-    const tolerance = getVal('seq2_tolerance');
-    const t_input = t_one;
-    const y_target = getVal('seq2_y_target');
-
-    setVal('seq3_mc', m_car);
-    setVal('seq4_m', m_car);
-
-    // read seq_three params from UI
-    const seq3_m_boom = getVal('seq3_m_boom');
-    const seq3_l_boom = getVal('seq3_l_boom');
-    const seq3_l_offset = getVal('seq3_l_offset');
-    const seq3_l_weight = getVal('seq3_l_weight');
-    const seq3_m_weight = getVal('seq3_m_weight');
-    const seq3_vb = getVal('seq3_vb');
-    const seq3_k = getVal('seq3_k');
-
-    // read crane collision params from UI
-    const crane_x_off = getVal('crane_x_off');
-    const crane_y_off = getVal('crane_y_off');
-    const crane_r = getVal('crane_r');
-    const crane_alpha_0 = getVal('crane_alpha_0');
-    const crane_v_bomb = getVal('crane_v_bomb');
-    const crane_T_offset = getVal('crane_T_offset');
-
-    // read seq_four params from UI
-    const seq4_rho_i = getVal('seq4_rho_i');
-    const seq4_rho_a = getVal('seq4_rho_a');
-    const seq4_ri = getVal('seq4_ri');
-    const seq4_Ra = getVal('seq4_Ra');
-    const seq4_rc = getVal('seq4_rc');
-    const seq4_k = getVal('seq4_k');
-
-    // read seq_five params from UI
-    const seq5_x_off = getVal('seq5_x_off');
-    const seq5_y_off = getVal('seq5_y_off');
-
-    let c_angle, c_speed, c_a, c_cw, c_cw_A;
-
-    // helper function for the collision sequence execution
-    function runCollisionSequence(branchName, result_trajectory) {
-        // seq_three
-        const result_seq_three = seq_three(
-            seq3_m_boom, seq3_l_boom, seq3_l_offset, seq3_l_weight, seq3_m_weight,
-            r_one, m_car, result_trajectory.velocity, tau_one, seq3_vb, seq3_k
-        );
-
-        if (!isFinite(result_seq_three.vbPrime) || !isFinite(result_seq_three.I)) {
-            console.log(`[${branchName}] FAILED at seq_three: Invalid vbPrime or I`);
-            return null;
-        }
-
-        setVal('seq3_vc', result_trajectory.velocity);
-        setVal('seq4_Ic', result_seq_three.I);
-        setVal('crane_omega', result_seq_three.vbPrime / r_one);
-
-        if (!ignoreDebugLog) {
-            console.log("Seq Three Result:", result_seq_three);
-            console.log("Input speed: ", result_trajectory.velocity);
-            console.log(result_seq_three.vbPrime);
-            console.log(result_seq_three.omega_b_prime, "rad/s");
-            console.log(result_seq_three.ropt, "optimaler Radius");
-        }
-
-        // calculateCraneCollision
-        const result_four = calculateCraneCollision(
-            crane_x_off, crane_y_off, crane_r, crane_alpha_0,
-            result_seq_three.vbPrime / r_one,
-            crane_v_bomb, crane_T_offset
-        );
-
-        if (result_four.time === null) {
-            console.log(`[${branchName}] FAILED at calculateCraneCollision: No collision possible`);
-            return null;
-        }
-
-        console.log("Kollisionszeit:", result_four.time.toFixed(4), "Sekunden");
-        console.log("Abschusswinkel deg θ:", result_four.theta.toFixed(2), "°");
-        console.log("Position deg φ:", result_four.phi.toFixed(2), "°");
-        console.log("-------------------------");
-        console.log("beta one deg: ", result_four.beta);
-        console.log("result four phi deg: ", result_four.phi);
-        console.log("result four theta deg", result_four.theta);
-
-        // Calculate vectors for seq_four
-        const v_b_angle_rad = (result_four.phi - result_four.beta + 90) * (Math.PI / 180);
-        const v_k_angle_rad = (result_four.theta + result_four.beta) * (Math.PI / 180);
-
-        const v_b_four = new Vector2D(Math.cos(v_b_angle_rad), Math.sin(v_b_angle_rad))
-            .scale(result_seq_three.omega_b_prime * r_one);
-        const v_k_four = new Vector2D(Math.cos(v_k_angle_rad), Math.sin(v_k_angle_rad))
-            .scale(crane_v_bomb);
-
-        if (!isFinite(v_b_four.x) || !isFinite(v_k_four.x)) {
-            console.log(`[${branchName}] FAILED: Invalid velocity vectors for seq_four`);
-            return null;
-        }
-
-        setVal('seq4_vb', `(${v_b_four.x.toFixed(2)},${v_b_four.y.toFixed(2)})`);
-        setVal('seq4_vk', `(${v_k_four.x.toFixed(2)},${v_k_four.y.toFixed(2)})`);
-
-        if (!ignoreDebugLog) {
-            console.log("v_k_angle: ", result_four.theta + beta_one);
-            console.log("v_b-prime: ", result_seq_three.vbPrime);
-            console.log("v_b_four:", v_b_four);
-            console.log("v_k_four:", v_k_four);
-        }
-
-        // seq_four
-        const result_seq_four = seq_four(
-            v_b_four, v_k_four,
-            seq4_rho_i, seq4_rho_a, seq4_ri, seq4_Ra,
-            m_car, result_seq_three.I, seq4_rc, seq4_k
-        );
-
-        if (!result_seq_four.vk_final || !isFinite(result_seq_four.vk_final.x)) {
-            console.log(`[${branchName}] FAILED at seq_four: Invalid vk_final`);
-            return null;
-        }
-
-        if (!ignoreDebugLog) console.log("Seq Four Result:", result_seq_four);
-
-        // seq_five
-        const result_final = seq_five(
-            seq5_x_off, seq5_y_off,
-            phi - beta_one, r_one,
-            result_seq_four.vk_final
-        );
-
-        if (!isFinite(result_final.eta_offset) || !isFinite(result_final.eta_vector)) {
-            console.log(`[${branchName}] FAILED at seq_five: Invalid eta values`);
-            return null;
-        }
-
-        setVal('seq5_v_ges', `(${result_seq_four.vk_final.x.toFixed(2)},${result_seq_four.vk_final.y.toFixed(2)})`);
-
-        console.log(`[${branchName}] SUCCESS - Final Result:`, result_final);
-        return result_final;
+    for (const r of runResults) {
+        vSet.add(r.v_idx);
+        wSet.add(r.w_idx);
+        aSet.add(r.a_idx);
     }
 
-    // main loop
-    for (let i = 0; i < v_steps; i++) {
-        for (let j = 0; j < alpha_steps; j++) {
-            for (let k = -5; k <= a_steps; k++) {
+    currentDropdownOptions.v = [...vSet].sort((a, b) => a - b);
+    currentDropdownOptions.w = [...wSet].sort((a, b) => a - b);
+    currentDropdownOptions.a = [...aSet].sort((a, b) => a - b);
 
-                if (k === 0) {
-                    // NEUTRAL MODEL
-                    c_speed = v_inital_values[i];
-                    c_angle = alpha_initial_values[j];
+    const selectV = document.getElementById('select-v');
+    const selectW = document.getElementById('select-w');
+    const selectA = document.getElementById('select-a');
 
-                    const result_neutral = seq_two(
-                        1, c_angle, c_speed, t_input, y_target, tolerance
-                    );
+    // Clear and populate
+    selectV.innerHTML = '<option value="">--</option>';
+    selectW.innerHTML = '<option value="">--</option>';
+    selectA.innerHTML = '<option value="">--</option>';
 
-                    if (!result_neutral.withinTolerance) {
-                        console.log(`[NEUTRAL i=${i} j=${j}] Skipped: Outside tolerance`);
-                        continue;
-                    }
+    for (const v of currentDropdownOptions.v) {
+        // Find a result with this v to get the actual speed value
+        const sample = runResults.find(r => r.v_idx === v);
+        const speed = sample ? sample.x.toFixed(2) : v;
+        selectV.innerHTML += `<option value="${v}">${v} (${speed} m/s)</option>`;
+    }
 
-                    if (!isFinite(result_neutral.velocity)) {
-                        console.log(`[NEUTRAL i=${i} j=${j}] FAILED at seq_two: Invalid velocity`);
-                        continue;
-                    }
+    for (const w of currentDropdownOptions.w) {
+        const sample = runResults.find(r => r.w_idx === w);
+        const angle = sample ? sample.y.toFixed(2) : w;
+        selectW.innerHTML += `<option value="${w}">${w} (${angle}°)</option>`;
+    }
 
-                    if (!ignoreDebugLog)console.log("Neutral Model - Speed:", c_speed, "Angle:", c_angle, "Result:", result_neutral);
+    for (const a of currentDropdownOptions.a) {
+        const sample = runResults.find(r => r.a_idx === a);
+        let label = `${a}`;
+        if (a === 0) label += ' (NEUTRAL)';
+        else if (a > 0) label += ` (ACCEL: ${sample?.accel_value?.toFixed(2) || '?'})`;
+        else label += ` (DECEL: cw=${sample?.accel_value?.toFixed(2) || '?'})`;
+        selectA.innerHTML += `<option value="${a}">${label}</option>`;
+    }
+}
 
+/**
+ * Set dropdown values programmatically from click
+ */
+function setDropdownValues(v_idx, w_idx, a_idx) {
+    document.getElementById('select-v').value = v_idx;
+    document.getElementById('select-w').value = w_idx;
+    document.getElementById('select-a').value = a_idx;
+}
 
-                    const finalResult = runCollisionSequence(
-                        `NEUTRAL i=${i} j=${j} speed=${c_speed.toFixed(2)} angle=${c_angle.toFixed(2)}`,
-                        result_neutral
-                    );
+/**
+ * Get dropdown selection
+ */
+function getDropdownSelection() {
+    const v = document.getElementById('select-v').value;
+    const w = document.getElementById('select-w').value;
+    const a = document.getElementById('select-a').value;
 
-                    if (finalResult === null){
-                        console.log(`[NEUTRAL i=${i} j=${j}] FAILED; Collision sequence failed`);
-                        continue;
-                    }
+    if (v === '' || w === '' || a === '') return null;
 
-                } else if (k > 0) {
-                    // ACCELERATION MODEL
-                    c_speed = v_inital_values[i];
-                    c_angle = alpha_initial_values[j];
-                    c_a = a_initial_values[k];
+    return {
+        v_idx: parseInt(v),
+        w_idx: parseInt(w),
+        a_idx: parseInt(a)
+    };
+}
 
-                    if (c_a === undefined){
-                        console.log(`[ACCEL i=${i} j=${j} k=${k}] Skipped: Undefined acceleration`);
-                        continue;
-                    }
+/**
+ * Find run result by indices
+ */
+function findRunResult(v_idx, w_idx, a_idx) {
+    return runResults.find(r =>
+        r.v_idx === v_idx &&
+        r.w_idx === w_idx &&
+        r.a_idx === a_idx
+    );
+}
 
-                    const result_accel = seq_two(
-                        2, c_angle, c_speed, t_input, y_target, tolerance, c_a
-                    );
+/**
+ * click handler for the plot
+ */
+function setupPlotClickHandler(containerId = 'results-plot') {
+    const plotDiv = document.getElementById(containerId);
 
-                    if (!result_accel.withinTolerance) {
-                        console.log(`[NEUTRAL i=${i} j=${j}] Skipped: Outside tolerance`);
-                        continue;
-                    }
+    plotDiv.on('plotly_click', function(data) {
+        if (!data.points || data.points.length === 0) return;
 
-                    if (!isFinite(result_accel.velocity)) {
-                        console.log(`[ACCEL i=${i} j=${j} k=${k}] FAILED at seq_two: Invalid velocity`);
-                        continue;
-                    }
+        const point = data.points[0];
+        const x = point.x;  // speed
+        const y = point.y;  // angle
+        const z = point.z;  // a_idx
 
-                    if (!ignoreDebugLog) {
-                        console.log("Acceleration Model - Speed:", c_speed, "Angle:", c_angle, "Acceleration:", c_a, "Result:", result_accel);
-                    }
+        // Find matching result
+        const result = runResults.find(r =>
+            Math.abs(r.x - x) < 0.01 &&
+            Math.abs(r.y - y) < 0.01 &&
+            r.z === z
+        );
 
-                    const finalResult = runCollisionSequence(
-                        `ACCEL i=${i} j=${j} k=${k} speed=${c_speed.toFixed(2)} angle=${c_angle.toFixed(2)} a=${c_a.toFixed(2)}`,
-                        result_accel
-                    );
+        if (result) {
+            setDropdownValues(result.v_idx, result.w_idx, result.a_idx);
+            displayRunDetails(result);
+        }
+    });
+}
 
-                    if (finalResult === null){
-                      console.log(`[ACCEL i=${i} j=${j} k=${k}] FAILED; Collision sequence failed`);
-                        continue;
-                    }
+/**
+ * manual dropdown selection
+ */
+function onManualSelect() {
+    const selection = getDropdownSelection();
+    if (!selection) {
+        document.getElementById('selected-info').textContent = 'Select all three values';
+        document.getElementById('detail-content').style.display = 'none';
+        return;
+    }
 
-                } else if (k < 0) {
-                    // DECELERATION MODEL
-                    c_speed = v_inital_values[i];
-                    c_angle = alpha_initial_values[j];
-                    c_cw = cw_initial_values[Math.abs(k)];
-                    c_cw_A = cw_A_initial_values[Math.abs(k)];
+    const result = findRunResult(selection.v_idx, selection.w_idx, selection.a_idx);
+    if (result) {
+        displayRunDetails(result);
+    } else {
+        document.getElementById('selected-info').textContent = 'No data for this combination';
+        document.getElementById('detail-content').style.display = 'none';
+    }
+}
 
-                    if (c_cw === undefined || c_cw_A === undefined) continue;
+/**
+ * Display full details for run result
+ */
+function displayRunDetails(result) {
+    const infoEl = document.getElementById('selected-info');
+    const contentEl = document.getElementById('detail-content');
+    const summaryEl = document.getElementById('detail-summary');
+    const seqEl = document.getElementById('detail-sequences');
 
-                    const result_decel = seq_two(
-                        3, c_angle, c_speed, t_input, y_target, tolerance,
-                        0,
-                        (c_cw_A * rho * c_cw) / (2 * m_car),
-                        rho, c_cw_A, c_cw, m_car, g
-                    );
+    // update info text
+    const cls = classifyResult(result);
+    let statusText = '';
+    if (cls.category === 'early_fail') statusText = 'X Early Failure';
+    else if (cls.category === 'angle_fail') statusText = 'x️ Angle Failure';
+    else statusText = '^ Success';
 
-                    if (!result_decel.withinTolerance) {
-                        console.log(`[DECEL i=${i} j=${j} k=${k}] Skipped: Outside tolerance`);
-                        continue;
-                    }
+    infoEl.innerHTML = `<strong>${result.branch}</strong> | ${statusText} | Seq Level: ${result.seq_success}/5`;
 
-                    if (!isFinite(result_decel.velocity)) {
-                        console.log(`[DECEL i=${i} j=${j} k=${k}] FAILED at seq_two: Invalid velocity`);
-                        continue;
-                    }
+    let accelSubDiv = '';
+    //depending on acceleration define line:
+    if(result.a_idx === 0){
 
-                    if (!ignoreDebugLog) {
-                        console.log("Deceleration Model - Speed:", c_speed, "Angle:", c_angle, "Cw:", c_cw, "Cw_A:", c_cw_A, "Result:", result_decel);
-                    }
+    } else if(result.a_idx > 0){
 
-                    const finalResult = runCollisionSequence(
-                        `DECEL i=${i} j=${j} k=${k} speed=${c_speed.toFixed(2)} angle=${c_angle.toFixed(2)} cw=${c_cw.toFixed(2)}`,
-                        result_decel
-                    );
+    } else if (result.a_idx < 0){
 
-                    if (finalResult === null){
-                        console.log(`[DECEL i=${i} j=${j} k=${k}] FAILED; Collision sequence failed`);
-                        continue;
-                    }
+    }
 
-                } else {
-                    if (!ignoreDebugLog) console.log("error in acceleration loop");
-                }
+    // summary
+    summaryEl.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
+            <div><strong>Speed:</strong> ${result.x.toFixed(2)} m/s (v=${result.v_idx})</div>
+            <div><strong>Angle:</strong> ${result.y.toFixed(2)}° (w=${result.w_idx})</div>
+            <div><strong>Branch:</strong> ${result.branch}</div>
+            <div><strong>Acceleration Index:</strong> a=${result.a_idx}</div> 
+            <div><strong>Accel Value:</strong> ${result.accel_value?.toFixed(4) || 'N/A'}</div>
+            <div><strong>Eta Angle:</strong> ${result.eta_angle !== null ? result.eta_angle.toFixed(4) + '°' : 'N/A'}</div>
+        </div>
+    `;
+
+    /*summaryEl.innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
+            <div><strong>Speed:</strong> ${result.x.toFixed(2)} m/s (v=${result.v_idx})</div>
+            <div><strong>Angle:</strong> ${result.y.toFixed(2)}° (w=${result.w_idx})</div>
+            <div><strong>Accel Index:</strong> ${result.a_idx}</div>
+            <div><strong>Branch:</strong> ${result.branch}</div>
+            <div><strong>Accel Value:</strong> ${result.accel_value?.toFixed(4) || 'N/A'}</div>
+            <div><strong>Eta Angle:</strong> ${result.eta_angle !== null ? result.eta_angle.toFixed(4) + '°' : 'N/A'}</div>
+        </div>
+    `;*/
+
+    // build sequence details
+    seqEl.innerHTML = '';
+
+    // seq_two
+    seqEl.innerHTML += buildSequenceBlock('seq_two', result.seq_two, result.seq_success >= 1);
+
+    // seq_three
+    seqEl.innerHTML += buildSequenceBlock('seq_three', result.seq_three, result.seq_success >= 2);
+
+    // crane_collision
+    seqEl.innerHTML += buildSequenceBlock('crane_collision', result.crane_collision, result.seq_success >= 3);
+
+    // vectors
+    if (result.vectors) {
+        seqEl.innerHTML += `
+            <div style="margin-top:10px;padding:10px;background:#fff;border:1px solid #eee;border-radius:4px;">
+                <h4 style="margin:0 0 8px 0;color:#333;">Vectors</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div><strong>v_b:</strong> (${result.vectors.v_b?.x?.toFixed(4) || '?'}, ${result.vectors.v_b?.y?.toFixed(4) || '?'})</div>
+                    <div><strong>v_k:</strong> (${result.vectors.v_k?.x?.toFixed(4) || '?'}, ${result.vectors.v_k?.y?.toFixed(4) || '?'})</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // seq_four
+    seqEl.innerHTML += buildSequenceBlock('seq_four', result.seq_four, result.seq_success >= 4);
+
+    // seq_five
+    seqEl.innerHTML += buildSequenceBlock('seq_five', result.seq_five, result.seq_success >= 5);
+
+    contentEl.style.display = 'block';
+}
+
+/**
+ *build HTML for a single sequence block
+ */
+function buildSequenceBlock(name, data, reached) {
+    const statusColor = reached ? '#4a4' : '#a44';
+    const statusIcon = reached ? '^' : 'x';
+    const bgColor = reached ? '#f0fff0' : '#fff0f0';
+
+    if (!data) {
+        return `
+            <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;opacity:0.6;">
+                <h4 style="margin:0;color:${statusColor};">${statusIcon} ${name} - Not Reached</h4>
+            </div>
+        `;
+    }
+
+    const inputHtml = formatObject(data.input, 'Inputs');
+    const resultHtml = formatObject(data.result, 'Results');
+
+    return `
+        <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
+            <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                <div>${inputHtml}</div>
+                <div>${resultHtml}</div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * fromat object for display
+ */
+function formatObject(obj, title) {
+    if (!obj) return `<div><em>${title}: N/A</em></div>`;
+
+    let html = `<div><strong>${title}:</strong><ul style="margin:5px 0;padding-left:20px;">`;
+
+    for (const [key, value] of Object.entries(obj)) {
+        let displayValue;
+
+        if (value === null || value === undefined) {
+            displayValue = 'null';
+        } else if (typeof value === 'object') {
+            if (value.x !== undefined && value.y !== undefined) {
+                // Vector2D
+                displayValue = `(${value.x?.toFixed(4) || '?'}, ${value.y?.toFixed(4) || '?'})`;
+            } else {
+                // Other non-vector object; show abbreviation
+                displayValue = '{...}';
             }
+        } else if (typeof value === 'number') {
+            displayValue = value.toFixed(4);
+        } else if (typeof value === 'boolean') {
+            displayValue = value ? '^ true' : 'x false';
+        } else {
+            displayValue = String(value);
         }
+
+        html += `<li><code>${key}</code>: ${displayValue}</li>`;
     }
 
-    console.log("Pipeline complete.");
-}*/
+    html += '</ul></div>';
+    return html;
+}

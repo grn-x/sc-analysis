@@ -906,7 +906,531 @@ function splitInterval(start, end, n, includeEnd = true) {
     return result;
 }
 
+/**
+ * Creates run result object storing all sequence data
+ * for ~50*25*20 = 25,000 objects with ~500 bytes each -> ~12.5 MB total seems manageable for modern systems?
+ */
+function createRunResult(v_idx, w_idx, a_idx, speed, angle, accel_value, branch) {
+    return {
+        // Coordinates for 3D plot
+        x: speed,           // bare speed value
+        y: angle,           // bare angle value
+        z: a_idx,           // acceleration iterator (bare values would be too dense)
 
+        // Meta info
+        branch: branch,     // 'NEUTRAL', 'ACCEL', 'DECEL'
+        v_idx: v_idx,
+        w_idx: w_idx,
+        a_idx: a_idx,
+        accel_value: accel_value,  // actual acceleration/cw value
+
+        // Sequence completion level (0-5)
+        // 0 = seq_two failed, 1 = seq_three failed, 2 = crane failed,
+        // 3 = vectors failed, 4 = seq_four failed, 5 = seq_five completed
+        seq_success: 0,
+
+        // final result (null if not reached)
+        eta_angle: null,    // deciding factor for success :DD
+
+        // sequence results getting populated as the pipeline progresses
+        seq_two: null,
+        seq_three: null,
+        crane_collision: null,
+        vectors: null,
+        seq_four: null,
+        seq_five: null
+    };
+}
+
+// global results collection for manipulation from different scopes
+let runResults = [];
+
+
+/**
+ * Classifies run result for visualization
+ * Returns { category, color, size, opacity }
+ */
+function classifyResult(result) {
+    // failed before final angle calculation
+    if (result.seq_success < 5 || result.eta_angle === null) {
+        return {
+            category: 'early_fail',
+            color: 'rgba(255, 0, 0, 0.15)',  // very transparent red
+            size: 3,
+            opacity: 0.15
+        };
+    }
+
+    // Reached final angle but negative (failure)
+    if (result.eta_angle < 0) {
+        return {
+            category: 'angle_fail',
+            color: 'rgba(255, 50, 50, 0.5)',  // medium transparent red
+            size: 6,
+            opacity: 0.5
+        };
+    }
+
+    //Color based success visualized by angle magnitude (yellow -> green)
+    // Normalize angle for color interpolation
+    const maxAngle = 45;  // degrees  //TODO: adjust based on expected range
+    const normalized = Math.min(result.eta_angle / maxAngle, 1);
+
+    //interpolate from yellow (only closely successful) to green
+    const r = Math.round(255 * (1 - normalized));
+    const g = Math.round(180 + 75 * normalized);  // 180-255
+    const b = 0;
+
+    return {
+        category: 'success',
+        color: `rgba(${r}, ${g}, ${b}, 0.85)`,
+        size: 7,
+        opacity: 0.85
+    };
+}
+
+/**
+ * group results by classification for efficient plotting
+ */
+function groupResultsByCategory(results) {
+    const groups = {
+        early_fail: { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        angle_fail: { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        success:    { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] }
+    };
+
+    for (const result of results) {
+        const cls = classifyResult(result);
+        const group = groups[cls.category];
+
+        group.x.push(result.x);
+        group.y.push(result.y);
+        group.z.push(result.z);
+        group.colors.push(cls.color);
+        group.sizes.push(cls.size);
+        group.opacities.push(cls.opacity);
+
+        // Hover text
+        const eta = result.eta_angle !== null ? result.eta_angle.toFixed(2) + '°' : 'N/A';
+        group.texts.push(
+            `Branch: ${result.branch}<br>` +
+            `Speed: ${result.x.toFixed(2)} m/s<br>` +
+            `Angle: ${result.y.toFixed(2)}°<br>` +
+            `Accel idx: ${result.z}<br>` +
+            `Seq level: ${result.seq_success}/5<br>` +
+            `Eta: ${eta}`
+        );
+    }
+
+    return groups;
+}
+
+/**
+ * 3D scatter plot traces from grouped results
+ */
+function createPlotTraces(groups) {
+    const traces = [];
+
+    const categoryConfig = {
+        early_fail: { name: 'Early Failures', legendgroup: 'fail' },
+        angle_fail: { name: 'Angle Failures', legendgroup: 'fail' },
+        success:    { name: 'Successes', legendgroup: 'success' }
+    };
+
+    for (const [category, group] of Object.entries(groups)) {
+        if (group.x.length === 0) continue;
+
+        const config = categoryConfig[category];
+
+        traces.push({
+            x: group.x,
+            y: group.y,
+            z: group.z,
+            mode: 'markers',
+            type: 'scatter3d',
+            name: config.name,
+            legendgroup: config.legendgroup,
+            marker: {
+                size: group.sizes,
+                color: group.colors,
+                opacity: category === 'success' ? 0.85 : group.opacities[0]
+            },
+            text: group.texts,
+            hoverinfo: 'text'
+        });
+    }
+
+    return traces;
+}
+
+/**
+ * actual 3D scatter plot result
+ */
+function renderResultsPlot(results, containerId = 'results-plot') {
+    const groups = groupResultsByCategory(results);
+    const traces = createPlotTraces(groups);
+
+    const layout = {
+        title: 'Collision Simulation Results',
+        scene: {
+            xaxis: { title: 'Speed (m/s)' },
+            yaxis: { title: 'Angle (°)' },
+            zaxis: { title: 'Acceleration Index' }
+        },
+        legend: {
+            x: 0.02,
+            y: 0.98
+        },
+        margin: { l: 0, r: 0, t: 40, b: 0 }
+    };
+
+    const config = {
+        responsive: true,
+        displayModeBar: true
+    };
+
+    Plotly.newPlot(containerId, traces, layout, config);
+}
+
+/**
+ * summary statistics of results
+ */
+function getResultsStats(results) {
+    const stats = {
+        total: results.length,
+        early_fail: 0,
+        angle_fail: 0,
+        success: 0,
+        by_branch: { NEUTRAL: 0, ACCEL: 0, DECEL: 0 },
+        by_seq_level: [0, 0, 0, 0, 0, 0],  // 0-5
+        avg_success_eta: 0
+    };
+
+    let etaSum = 0;
+
+    for (const r of results) {
+        const cls = classifyResult(r);
+        stats[cls.category]++;
+        stats.by_branch[r.branch]++;
+        stats.by_seq_level[r.seq_success]++;
+
+        if (cls.category === 'success') {
+            etaSum += r.eta_angle;
+        }
+    }
+
+    if (stats.success > 0) {
+        stats.avg_success_eta = etaSum / stats.success;
+    }
+
+    return stats;
+}
+
+
+const ignoreDebugLog = true;
+const debugVectors = false;
+
+function runPipeline() {
+    // clear previous results
+    runResults = [];
+
+    // read seq_one params from UI
+    const x_one = getVal('seq1_x');
+    const y_one = getVal('seq1_y');
+    const b = getVal('seq1_b');
+    const phi = getVal('seq1_phi');
+    const sigma = getVal('seq1_sigma');
+
+    const sigma_max = seq_one(x_one, y_one, b, phi).delta;
+    const beta_one = seq_one(x_one, y_one, b, phi).beta;
+
+    setVal('seq1_sigma_max', sigma_max);
+    setVal('seq1_beta', beta_one);
+
+    console.log("Maximaler Sigma-Wert:", sigma_max);
+    const t_one = seq_one(x_one, y_one, b, phi, sigma_max).t;
+    const tau_one = seq_one(x_one, y_one, b, phi, sigma_max).tau;
+    const r_one = seq_one(x_one, y_one, b, phi, sigma_max).r;
+
+    setVal('seq1_t', t_one);
+    setVal('seq1_tau', tau_one);
+    setVal('seq1_r', r_one);
+    setVal('seq2_t_input', t_one);
+    setVal('seq3_r_impact', r_one);
+    setVal('seq3_tau_deg', tau_one);
+    setVal('seq5_r', r_one);
+    setVal('seq5_crane_angle', phi - beta_one);
+
+    // read interval settings from UI
+    const v_max = getVal('v_initial_max');
+    const v_min = getVal('v_initial_min');
+    const v_steps = Math.floor(getVal('v_steps'));
+    const v_values = splitInterval(v_min, v_max, v_steps, true);
+
+    const w_max = getVal('alpha_initial_max');
+    const w_min = getVal('alpha_initial_min');
+    const w_steps = Math.floor(getVal('alpha_steps'));
+    const w_values = splitInterval(w_min, w_max, w_steps, true);
+
+    const a_min = getVal('a_initial_min');
+    const a_max = getVal('a_initial_max');
+    const a_steps = Math.floor(getVal('a_steps'));
+    const a_values = splitInterval(a_min, a_max, a_steps, true);
+
+    const cw_min = getVal('cw_initial_min');
+    const cw_max = getVal('cw_initial_max');
+    const cw_A_min = getVal('cw_A_initial_min');
+    const cw_A_max = getVal('cw_A_initial_max');
+    const cw_values = splitInterval(cw_min, cw_max, 5, true).reverse();
+    const cw_A_values = splitInterval(cw_A_min, cw_A_max, 5, true).reverse();
+
+    // read seq_two params from UI
+    const m_car = getVal('seq2_m_car');
+    const g = getVal('seq2_g');
+    const rho = getVal('seq2_rho');
+    const tolerance = getVal('seq2_tolerance');
+    const t_input = t_one;
+    const y_target = getVal('seq2_y_target');
+
+    setVal('seq3_mc', m_car);
+    setVal('seq4_m', m_car);
+
+    // read seq_three params from UI
+    const seq3_m_boom = getVal('seq3_m_boom');
+    const seq3_l_boom = getVal('seq3_l_boom');
+    const seq3_l_offset = getVal('seq3_l_offset');
+    const seq3_l_weight = getVal('seq3_l_weight');
+    const seq3_m_weight = getVal('seq3_m_weight');
+    const seq3_vb = getVal('seq3_vb');
+    const seq3_k = getVal('seq3_k');
+
+    // read crane collision params from UI
+    const crane_x_off = getVal('crane_x_off');
+    const crane_y_off = getVal('crane_y_off');
+    const crane_r = getVal('crane_r');
+    const crane_alpha_0 = getVal('crane_alpha_0');
+    const crane_v_bomb = getVal('crane_v_bomb');
+    const crane_T_offset = getVal('crane_T_offset');
+
+    // read seq_four params from UI
+    const seq4_rho_i = getVal('seq4_rho_i');
+    const seq4_rho_a = getVal('seq4_rho_a');
+    const seq4_ri = getVal('seq4_ri');
+    const seq4_Ra = getVal('seq4_Ra');
+    const seq4_rc = getVal('seq4_rc');
+    const seq4_k = getVal('seq4_k');
+
+    // read seq_five params from UI
+    const seq5_x_off = getVal('seq5_x_off');
+    const seq5_y_off = getVal('seq5_y_off');
+
+    // helper function for the collision sequence execution
+    function runCollisionSequence(runResult, result_trajectory) {
+        // seq_three
+        const result_seq_three = seq_three(
+            seq3_m_boom, seq3_l_boom, seq3_l_offset, seq3_l_weight, seq3_m_weight,
+            r_one, m_car, result_trajectory.velocity, tau_one, seq3_vb, seq3_k
+        );
+
+        runResult.seq_three = {
+            input: { m_boom: seq3_m_boom, l_boom: seq3_l_boom, velocity: result_trajectory.velocity },
+            result: result_seq_three
+        };
+
+        if (!isFinite(result_seq_three.vbPrime) || !isFinite(result_seq_three.I)) {
+            runResult.seq_success = 1;
+            console.log(`[${runResult.branch} v=${runResult.v_idx} w=${runResult.w_idx} a=${runResult.a_idx}] FAILED at seq_three`);
+            return false;
+        }
+
+        setVal('seq3_vc', result_trajectory.velocity);
+        setVal('seq4_Ic', result_seq_three.I);
+        setVal('crane_omega', result_seq_three.vbPrime / r_one);
+
+        // calculateCraneCollision
+        const result_four = calculateCraneCollision(
+            crane_x_off, crane_y_off, crane_r, crane_alpha_0,
+            result_seq_three.vbPrime / r_one,
+            crane_v_bomb, crane_T_offset
+        );
+
+        runResult.crane_collision = {
+            input: { x_off: crane_x_off, y_off: crane_y_off, omega: result_seq_three.vbPrime / r_one },
+            result: result_four
+        };
+
+        if (result_four.time === null) {
+            runResult.seq_success = 2;
+            console.log(`[${runResult.branch} v=${runResult.v_idx} w=${runResult.w_idx} a=${runResult.a_idx}] FAILED at crane collision`);
+            return false;
+        }
+
+        // Calculate vectors for seq_four
+        const v_b_angle_rad = (result_four.phi - result_four.beta + 90) * (Math.PI / 180);
+        const v_k_angle_rad = (result_four.theta + result_four.beta) * (Math.PI / 180);
+
+        const v_b_four = new Vector2D(Math.cos(v_b_angle_rad), Math.sin(v_b_angle_rad))
+            .scale(result_seq_three.omega_b_prime * r_one);
+        const v_k_four = new Vector2D(Math.cos(v_k_angle_rad), Math.sin(v_k_angle_rad))
+            .scale(crane_v_bomb);
+
+        runResult.vectors = { v_b: v_b_four, v_k: v_k_four };
+
+        if (!isFinite(v_b_four.x) || !isFinite(v_k_four.x)) {
+            runResult.seq_success = 3;
+            console.log(`[${runResult.branch} v=${runResult.v_idx} w=${runResult.w_idx} a=${runResult.a_idx}] FAILED at vector calc`);
+            return false;
+        }
+
+        setVal('seq4_vb', `(${v_b_four.x.toFixed(2)},${v_b_four.y.toFixed(2)})`);
+        setVal('seq4_vk', `(${v_k_four.x.toFixed(2)},${v_k_four.y.toFixed(2)})`);
+
+        // seq_four
+        const result_seq_four = seq_four(
+            v_b_four, v_k_four,
+            seq4_rho_i, seq4_rho_a, seq4_ri, seq4_Ra,
+            m_car, result_seq_three.I, seq4_rc, seq4_k
+        );
+
+        runResult.seq_four = {
+            input: { rho_i: seq4_rho_i, rho_a: seq4_rho_a, ri: seq4_ri, Ra: seq4_Ra },
+            result: result_seq_four
+        };
+
+        if (!result_seq_four.vk_final || !isFinite(result_seq_four.vk_final.x)) {
+            runResult.seq_success = 4;
+            console.log(`[${runResult.branch} v=${runResult.v_idx} w=${runResult.w_idx} a=${runResult.a_idx}] FAILED at seq_four`);
+            return false;
+        }
+
+        // seq_five
+        const result_final = seq_five(
+            seq5_x_off, seq5_y_off,
+            phi - beta_one, r_one,
+            result_seq_four.vk_final
+        );
+
+        runResult.seq_five = {
+            input: { x_off: seq5_x_off, y_off: seq5_y_off, crane_angle: phi - beta_one },
+            result: result_final
+        };
+
+        if (!isFinite(result_final.eta_offset) || !isFinite(result_final.eta_vector)) {
+            runResult.seq_success = 4;  // technically seq_five failed
+            console.log(`[${runResult.branch} v=${runResult.v_idx} w=${runResult.w_idx} a=${runResult.a_idx}] FAILED at seq_five`);
+            return false;
+        }
+
+        // SUCCESS
+        runResult.seq_success = 5;
+        runResult.eta_angle = result_final.delta_eta_deg;
+
+        setVal('seq5_v_ges', `(${result_seq_four.vk_final.x.toFixed(2)},${result_seq_four.vk_final.y.toFixed(2)})`);
+
+        if (!ignoreDebugLog) {
+            console.log(`[${runResult.branch}] SUCCESS - Eta: ${runResult.eta_angle.toFixed(2)}°`);
+        }
+
+        return true;
+    }
+
+    // main loop: iterators v (speed), w (winkel/angle), a (acceleration)
+    for (let v = 0; v < v_steps; v++) {
+        for (let w = 0; w < w_steps; w++) {
+            for (let a = -5; a <= a_steps; a++) {
+
+                const c_speed = v_values[v];
+                const c_angle = w_values[w];
+
+                if (a === 0) {
+                    // NEUTRAL MODEL
+                    const runResult = createRunResult(v, w, a, c_speed, c_angle, 0, 'NEUTRAL');
+
+                    const result_neutral = seq_two(
+                        1, c_angle, c_speed, t_input, y_target, tolerance
+                    );
+
+                    runResult.seq_two = {
+                        input: { mode: 1, angle: c_angle, speed: c_speed },
+                        result: result_neutral
+                    };
+
+                    if (!result_neutral.withinTolerance || !isFinite(result_neutral.velocity)) {
+                        runResult.seq_success = 0;
+                        runResults.push(runResult);
+                        continue;
+                    }
+
+                    runCollisionSequence(runResult, result_neutral);
+                    runResults.push(runResult);
+
+                } else if (a > 0) {
+                    // ACCELERATION MODEL
+                    const c_a = a_values[a];
+                    if (c_a === undefined) continue;
+
+                    const runResult = createRunResult(v, w, a, c_speed, c_angle, c_a, 'ACCEL');
+
+                    const result_accel = seq_two(
+                        2, c_angle, c_speed, t_input, y_target, tolerance, c_a
+                    );
+
+                    runResult.seq_two = {
+                        input: { mode: 2, angle: c_angle, speed: c_speed, accel: c_a },
+                        result: result_accel
+                    };
+
+                    if (!result_accel.withinTolerance || !isFinite(result_accel.velocity)) {
+                        runResult.seq_success = 0;
+                        runResults.push(runResult);
+                        continue;
+                    }
+
+                    runCollisionSequence(runResult, result_accel);
+                    runResults.push(runResult);
+
+                } else if (a < 0) {
+                    // DECELERATION MODEL
+                    const c_cw = cw_values[Math.abs(a)];
+                    const c_cw_A = cw_A_values[Math.abs(a)];
+                    if (c_cw === undefined || c_cw_A === undefined) continue;
+
+                    const runResult = createRunResult(v, w, a, c_speed, c_angle, c_cw, 'DECEL');
+
+                    const result_decel = seq_two(
+                        3, c_angle, c_speed, t_input, y_target, tolerance,
+                        0, (c_cw_A * rho * c_cw) / (2 * m_car),
+                        rho, c_cw_A, c_cw, m_car, g
+                    );
+
+                    runResult.seq_two = {
+                        input: { mode: 3, angle: c_angle, speed: c_speed, cw: c_cw, cw_A: c_cw_A },
+                        result: result_decel
+                    };
+
+                    if (!result_decel.withinTolerance || !isFinite(result_decel.velocity)) {
+                        runResult.seq_success = 0;
+                        runResults.push(runResult);
+                        continue;
+                    }
+
+                    runCollisionSequence(runResult, result_decel);
+                    runResults.push(runResult);
+                }
+            }
+        }
+    }
+
+    // print stats and render plot :O :D
+    const stats = getResultsStats(runResults);
+    console.log("=== PIPELINE COMPLETE ===");
+    console.log("Stats:", stats);
+
+    renderResultsPlot(runResults);
+}
+
+//TODO Remove after testing
+/*
 const ignoreDebugLog = true;
 const debugVectors = false;
 
@@ -1229,4 +1753,4 @@ function runPipeline() {
     }
 
     console.log("Pipeline complete.");
-}
+}*/

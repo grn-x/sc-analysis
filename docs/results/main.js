@@ -954,22 +954,85 @@ let runResults = [];
  */
 function classifyResult(result) {
     // failed before final angle calculation
-    if (result.seq_success < 5 || result.eta_angle === null) {
+    /*if (result.seq_success < 5 || result.eta_angle === null) {
         return {
             category: 'early_fail',
             color: 'rgba(255, 0, 0, 0.15)',  // very transparent red
             size: 3,
             opacity: 0.15
         };
-    }
+    }*/
+
+    if(result.eta_angle === null){
+        /*switch (result.seq_success) {
+            case 4:
+            case 3:
+            case 2:
+                return {
+                    category: 'post-seq_2-fail', // vertical crane collision successful, but failing after (probably crane ball collision)
+                    color: 'rgba(255,68,0,0.65)',
+                    size: 10,
+                    opacity: 0.65
+                };
+
+            case 1:
+            case 0:
+                return {
+                    category: 'pre-seq_2-fail',  // vertical crane collision not reached
+                    color: 'rgba(255, 0, 0, 0.15)',  // very transparent red
+                    size: 3,
+                    opacity: 0.15
+                };
+        }
+    }*/
+
+        switch (result.seq_success) {
+            case 4:
+                return {
+                    category: 'seq4_BombWeightCollision',// shouldnt ever happen, since this part of seq 4 is non-restrictive and simply computes post-impact velocities
+                    color: 'rgba(255,0,0,0.5)',
+                    size: 8,
+                    opacity: 0.65
+                };
+
+            case 3:
+                return {
+                    category: 'seq4_BombWeightCollision_impossible',
+                    color: 'rgba(255,0,0,0.5)',
+                    size: 8,
+                    opacity: 0.65
+                };
+            case 2:
+                return {
+                    category: 'seq3_CarBoomCollision', // shouldnt ever happen, since seq 3 is non-restrictive and simply computes post-impact velocities
+                    color: 'rgba(255,0,0,0.5)',
+                    size: 8,
+                    opacity: 0.65
+                };
+            case 1:
+                return {
+                    category: 'seq2_BoomHeight_fail',  // vertical crane collision not reached
+                    color: 'rgba(255, 0, 0, 0.15)',  // very transparent red
+                    size: 3,
+                    opacity: 0.15
+                };
+            case 0:
+                return {
+                    category: 'seq1_BoomLength_fail',  // shouldnt happen because sigma angle is global and thus every single datapoint would fail; in that case this snippet wouldnt even be reached
+                    color: 'rgba(255, 0, 0, 0.15)',  // very transparent red
+                    size: 3,
+                    opacity: 0.15
+                };
+            }
+        }
 
     // Reached final angle but negative (failure)
     if (result.eta_angle < 0) {
         return {
             category: 'angle_fail',
-            color: 'rgba(255, 50, 50, 0.5)',  // medium transparent red
-            size: 6,
-            opacity: 0.5
+            color: 'rgba(255,0,0,0.8)',  // medium transparent red
+            size: 10,
+            opacity: 0.8
         };
     }
 
@@ -985,9 +1048,9 @@ function classifyResult(result) {
 
     return {
         category: 'success',
-        color: `rgba(${r}, ${g}, ${b}, 0.85)`,
-        size: 7,
-        opacity: 0.85
+        color: `rgba(${r}, ${g}, ${b}, 0.9)`,
+        size: 15,
+        opacity: 0.9
     };
 }
 
@@ -996,9 +1059,13 @@ function classifyResult(result) {
  */
 function groupResultsByCategory(results) {
     const groups = {
-        early_fail: { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
-        angle_fail: { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
-        success:    { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] }
+        seq1_BoomLength_fail:                   { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        seq2_BoomHeight_fail:                   { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        seq3_CarBoomCollision:                  { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        seq4_BombWeightCollision_impossible:    { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        seq4_BombWeightCollision:               { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        angle_fail:                             { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] },
+        success:                                { x: [], y: [], z: [], colors: [], sizes: [], opacities: [], texts: [] }
     };
 
     for (const result of results) {
@@ -1034,8 +1101,12 @@ function createPlotTraces(groups) {
     const traces = [];
 
     const categoryConfig = {
-        early_fail: { name: 'Early Failures', legendgroup: 'fail' },
-        angle_fail: { name: 'Angle Failures', legendgroup: 'fail' },
+        seq1_BoomLength_fail:                { name: 'Seq 1 Boom Length Criterion', legendgroup: 'early_fail' },
+        seq2_BoomHeight_fail:                { name: 'Seq 2 Boom Height Criterion', legendgroup: 'early_fail' },
+        seq3_CarBoomCollision:               { name: 'Seq 3 Car-Boom Collisions', legendgroup: 'fail' },
+        seq4_BombWeightCollision_impossible: { name: 'Seq 4 Bomb-Weight Collision Criterion', legendgroup: 'fail' },
+        seq4_BombWeightCollision:            { name: 'Seq 4 Bomb-Weight Collisions', legendgroup: 'fail' },
+        angle_fail: { name: 'Angle Failures', legendgroup: 'late_fail' },
         success:    { name: 'Successes', legendgroup: 'success' }
     };
 
@@ -1072,6 +1143,37 @@ function renderResultsPlot(results, containerId = 'results-plot') {
     const groups = groupResultsByCategory(results);
     const traces = createPlotTraces(groups);
 
+
+    // Add invisible dummy trace just for the colorbar
+    traces.push({
+        x: [0], y: [0], z: [0],
+        mode: 'markers',
+        type: 'scatter3d',
+        marker: {
+            size: 0.1,
+            color: [-10, 45],  // Two values spanning the range
+            cmin: -10,         // Min value for color mapping
+            cmax: 45,          // Max value for color mapping
+            colorscale: [
+                [0.0, 'rgb(255, 0, 0)'],      // -10 -> Red
+                [0.18, 'rgb(255, 0, 0)'],     // 0 -> Red (0.18 ≈ 10/55)
+                [0.19, 'rgb(255, 255, 0)'],   // Just above 0 -> Yellow
+                [1.0, 'rgb(0, 200, 0)']       // 45 -> Green
+            ],
+            colorbar: {
+                title: 'Eta Angle (°)',
+                thickness: 20,
+                len: 0.7,
+                tickvals: [-5, 0, 15, 30, 45],
+                ticktext: ['< sub-zero (=Failing)', '< 0° (Fail-Threshold)', '15°', '30°', '45°+']
+            },
+            showscale: true
+        },
+        showlegend: false,
+        hoverinfo: 'skip'
+    });
+
+
     const layout = {
         title: 'Collision Simulation Results (Click a point for details)',
         scene: {
@@ -1083,14 +1185,14 @@ function renderResultsPlot(results, containerId = 'results-plot') {
             x: 0.02,
             y: 0.98
         },
-        margin: { l: 0, r: 0, t: 40, b: 0 }
+        margin: { l: 0, r: 50, t: 40, b: 0 }
     };
     const config = {
         responsive: true,
         displayModeBar: true
     };
-    //Plotly.newPlot(containerId, traces, layout, config);
-    Plotly.newPlot(containerId, traces, layout, { responsive: true });
+    Plotly.newPlot(containerId, traces, layout, config);
+    //Plotly.newPlot(containerId, traces, layout, { responsive: true });
 
 
     // Setup click handler after plot is created
@@ -1108,12 +1210,27 @@ function renderResultsPlot(results, containerId = 'results-plot') {
 function getResultsStats(results) {
     const stats = {
         total: results.length,
-        early_fail: 0,
-        angle_fail: 0,
         success: 0,
-        by_branch: { NEUTRAL: 0, ACCEL: 0, DECEL: 0 },
-        by_seq_level: [0, 0, 0, 0, 0, 0],  // 0-5
-        avg_success_eta: 0
+        angle_fail: 0,
+        seq3_CarBoomCollision: 0,
+        seq4_BombWeightCollision_impossible: 0,
+        seq4_BombWeightCollision: 0,
+        seq2_BoomHeight_fail: 0,
+        seq1_BoomLength_fail: 0,
+        by_branch: {
+            'NEUTRAL': 0,
+            'ACCEL': 0,
+            'DECEL': 0
+        },
+        by_seq_level: {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
+        },
+        avg_success_eta: null
     };
 
     let etaSum = 0;
@@ -1595,7 +1712,11 @@ function displayRunDetails(result) {
     // update info text
     const cls = classifyResult(result);
     let statusText = '';
-    if (cls.category === 'early_fail') statusText = 'X Early Failure';
+    if (cls.category === 'seq1_BoomLength_fail') statusText = 'X Seq 1 Boom Length Fail';
+    else if (cls.category === 'seq2_BoomHeight_fail') statusText = 'X Seq 2 Boom Height Fail';
+    else if (cls.category === 'seq3_CarBoomCollision') statusText = 'X Seq 3 Car-Boom Collision';
+    else if (cls.category === 'seq4_BombWeightCollision_impossible') statusText = 'X Seq 4 Bomb-Weight Collision (Impossible)';
+    else if (cls.category === 'seq4_BombWeightCollision') statusText = 'X Seq 4 Bomb-Weight Collision';
     else if (cls.category === 'angle_fail') statusText = 'x️ Angle Failure';
     else statusText = '^ Success';
 

@@ -1302,6 +1302,8 @@ function runPipeline() {
             m_car, result_seq_three.I, seq4_rc, seq4_k
         );
 
+
+
         runResult.seq_four = {
             input: { rho_i: seq4_rho_i, rho_a: seq4_rho_a, ri: seq4_ri, Ra: seq4_Ra },
             result: result_seq_four
@@ -1673,6 +1675,34 @@ function displayRunDetails(result) {
     contentEl.style.display = 'block';
 }
 
+/*
+    * wait for element to appear in DOM
+    * from: https://stackoverflow.com/a/61511955
+    * used when creating the vector plot; the call for inserting the vectors into the plot must wait until the element even exists
+    * because both must happen in the same function, and the element is created through returning the div to the caller,
+    * the only way is to register a MutationObserver before returning, that idles until the element is created
+ */
+function waitForElm(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(() => {
+            if (document.querySelector(selector)) {
+                observer.disconnect();
+                resolve(document.querySelector(selector));
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+
 /**
  *build HTML for a single sequence block
  */
@@ -1708,12 +1738,42 @@ function buildSequenceBlock(name, data, reached) {
         return `
             <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
                 <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
-                <div style="display:grid;grid-template-columns:1fr 2fr;gap:15px;">
+                <div style="display:grid;grid-template-columns:1fr 3fr;gap:15px;">
                     <div>
                         ${inputHtml}
                         ${resultHtml}
                     </div>
                     <iframe src="${iframeSrc}" style="width:100%;height:400px;border:1px solid #ccc;"></iframe>
+                </div>
+            </div>
+        `;
+    }
+
+    if (name === 'seq_four') {
+
+        const vectors = [
+            { x: data.result.vb.x, y: data.result.vb.y, label: "vb" },
+            { x: data.result.vk.x, y: data.result.vk.y, label: "vk" },
+            { x: data.result.vkp.x, y: data.result.vkp.y, label: "vk_p" },
+            { x: data.result.vko.x, y: data.result.vko.y, label: "vk_o" },
+            { x: data.result.vkp_prime.x, y: data.result.vkp_prime.y, label: "vk_p'" },
+            { x: data.result.vk_res.x, y: data.result.vk_res.y, label: "vk_res" },
+            { x: data.result.vk_rot_end.x, y: data.result.vk_rot_end.y, label: "v_end" },
+            { x: data.result.vk_final.x, y: data.result.vk_final.y, label: "vk_final" },
+        ];
+        waitForElm('#vecplot').then(() => {
+            drawVectors(vectors);
+        });
+
+        return `
+            <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
+                <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
+                <div style="display:grid;grid-template-columns:1fr 3fr;gap:15px;">
+                    <div>
+                        ${inputHtml}
+                        ${resultHtml}
+                    </div>
+                    <div id="vecplot" style="width:100%;height:400px;border:1px solid #ccc;"></div>
                 </div>
             </div>
         `;

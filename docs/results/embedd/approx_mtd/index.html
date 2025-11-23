@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Embeddable Crane Ball Simulator</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://cdn.plot.ly/plotly-basic-latest.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body class="bg-gray-100">
+<div id="root" class="w-full h-full"></div>
+
+<!-- https://github.com/grn-x/sc-analysis/blob/main/scripts/pythonProject/newton_raphson.py
+      Port of existing Matplotlib Script
+      -> Embeddable Component of ../../../CraneBallPort.js -->
+
+<script type="text/babel" src="./CraneBallPort.js"></script>
+
+<script type="text/babel">
+  ReactDOM.createRoot(document.getElementById('root')).render(<CraneBallPort />);
+</script>
+</body>
+</html>

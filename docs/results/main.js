@@ -910,7 +910,7 @@ function splitInterval(start, end, n, includeEnd = true) {
  * Creates run result object storing all sequence data
  * for ~50*25*20 = 25,000 objects with ~500 bytes each -> ~12.5 MB total seems manageable for modern systems?
  */
-function createRunResult(v_idx, w_idx, a_idx, speed, angle, accel_value, branch) {
+function createRunResult(v_idx, w_idx, a_idx, speed, angle, accel_value, branch, cw_value=null, A_value=null,) {
     return {
         // Coordinates for 3D plot
         x: speed,           // bare speed value
@@ -922,7 +922,9 @@ function createRunResult(v_idx, w_idx, a_idx, speed, angle, accel_value, branch)
         v_idx: v_idx,
         w_idx: w_idx,
         a_idx: a_idx,
-        accel_value: accel_value,  // actual acceleration/cw value
+        accel_value: accel_value,  // actual acceleration
+        cw_value: cw_value,        // drag coefficient if applicable
+        A_value: A_value,          // cross-sectional area if applicable
 
         // Sequence completion level (0-5)
         // 0 = seq_two failed, 1 = seq_three failed, 2 = crane failed,
@@ -1403,7 +1405,7 @@ function runPipeline() {
                     const c_cw_A = cw_A_values[Math.abs(a)];
                     if (c_cw === undefined || c_cw_A === undefined) continue;
 
-                    const runResult = createRunResult(v, w, a, c_speed, c_angle, c_cw, 'DECEL');
+                    const runResult = createRunResult(v, w, a, c_speed, c_angle, -1, 'DECEL', c_cw, c_cw_A);
 
                     const result_decel = seq_two(
                         3, c_angle, c_speed, t_input, y_target, tolerance,
@@ -1595,12 +1597,19 @@ function displayRunDetails(result) {
     infoEl.innerHTML = `<strong>${result.branch}</strong> | ${statusText} | Seq Level: ${result.seq_success}/5`;
 
     let accelSubDiv = '';
+    let branchDesc = '';
     //depending on acceleration define line:
     if(result.a_idx === 0){
+        branchDesc = 'const. speed';
+        //accelSubDiv = `<div><strong>Constant Speed Model</strong></div>`;
 
     } else if(result.a_idx > 0){
+        branchDesc = `Accelerating`;
+        accelSubDiv = `<div><strong>Acceleration:</strong> ${result.accel_value?.toFixed(4)} m/s²</div>`;
 
     } else if (result.a_idx < 0){
+        branchDesc = `Decelerating`;
+        accelSubDiv = `<div><strong>Quadratic Drag: </strong> cw: ${result.cw_value?.toFixed(4)} | A: ${result.A_value?.toFixed(4)} m² </div>`;
 
     }
 
@@ -1609,9 +1618,9 @@ function displayRunDetails(result) {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
             <div><strong>Speed:</strong> ${result.x.toFixed(2)} m/s (v=${result.v_idx})</div>
             <div><strong>Angle:</strong> ${result.y.toFixed(2)}° (w=${result.w_idx})</div>
-            <div><strong>Branch:</strong> ${result.branch}</div>
             <div><strong>Acceleration Index:</strong> a=${result.a_idx}</div> 
-            <div><strong>Accel Value:</strong> ${result.accel_value?.toFixed(4) || 'N/A'}</div>
+            <div><strong>Branch:</strong> ${branchDesc}</div>
+            ${accelSubDiv}
             <div><strong>Eta Angle:</strong> ${result.eta_angle !== null ? result.eta_angle.toFixed(4) + '°' : 'N/A'}</div>
         </div>
     `;

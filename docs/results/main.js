@@ -1265,7 +1265,7 @@ function runPipeline() {
         );
 
         runResult.crane_collision = {
-            input: { x_off: crane_x_off, y_off: crane_y_off, omega: result_seq_three.vbPrime / r_one },
+            input: { x_off: crane_x_off, y_off: crane_y_off, r: crane_r, alpha_0: crane_alpha_0, omega: result_seq_three.vbPrime / r_one, v_b_mag:crane_v_bomb, t_off: crane_T_offset}, //TODO!!
             result: result_four
         };
 
@@ -1583,9 +1583,12 @@ function onManualSelect() {
  */
 function displayRunDetails(result) {
     const infoEl = document.getElementById('selected-info');
-    const contentEl = document.getElementById('detail-content');
     const summaryEl = document.getElementById('detail-summary');
+
+    const contentEl = document.getElementById('detail-content');
+    //const contentEl = document.getElementById('calc-output');
     const seqEl = document.getElementById('detail-sequences');
+    //const seqEl = document.getElementById('calc-output');
 
     // update info text
     const cls = classifyResult(result);
@@ -1688,6 +1691,33 @@ function buildSequenceBlock(name, data, reached) {
 
     const inputHtml = formatObject(data.input, 'Inputs');
     const resultHtml = formatObject(data.result, 'Results');
+
+    // handling for crane_collision -> text (1/3) + iframe (2/3)
+    if (name === 'crane_collision') {
+        const params = new URLSearchParams();
+        params.append('x_off', data.input.x_off || 0);
+        params.append('y_off', data.input.y_off || 0);
+        params.append('r', data.input.r || 0);
+        params.append('alpha_0', data.input.alpha_0 || 0);
+        params.append('omega', data.input.omega || 0);
+        params.append('v', data.input.v_b_mag || 0);
+        params.append('T_offset', data.input.t_off || 0);
+
+        const iframeSrc = `./embedd/approx_mtd/?${params.toString()}`;
+
+        return `
+            <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
+                <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
+                <div style="display:grid;grid-template-columns:1fr 2fr;gap:15px;">
+                    <div>
+                        ${inputHtml}
+                        ${resultHtml}
+                    </div>
+                    <iframe src="${iframeSrc}" style="width:100%;height:400px;border:1px solid #ccc;"></iframe>
+                </div>
+            </div>
+        `;
+    }
 
     return `
         <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">

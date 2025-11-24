@@ -1,3 +1,4 @@
+const GLOBAL_COLORSCALE_MAX_ANGLE = 20;
 
 function showInfo(name, desc) {
     document.getElementById('tooltipTitle').textContent = name;
@@ -1038,7 +1039,7 @@ function classifyResult(result) {
 
     //Color based success visualized by angle magnitude (yellow -> green)
     // Normalize angle for color interpolation
-    const maxAngle = 45;  // degrees  //TODO: adjust based on expected range
+    const maxAngle = GLOBAL_COLORSCALE_MAX_ANGLE;  // degrees  //TODO: adjust based on expected range
     const normalized = Math.min(result.eta_angle / maxAngle, 1);
 
     //interpolate from yellow (only closely successful) to green
@@ -1100,12 +1101,22 @@ function groupResultsByCategory(results) {
 function createPlotTraces(groups) {
     const traces = [];
 
-    const categoryConfig = {
+    /*const categoryConfig = {
         seq1_BoomLength_fail:                { name: 'Seq 1 Boom Length Criterion', legendgroup: 'early_fail' },
         seq2_BoomHeight_fail:                { name: 'Seq 2 Boom Height Criterion', legendgroup: 'early_fail' },
         seq3_CarBoomCollision:               { name: 'Seq 3 Car-Boom Collisions', legendgroup: 'fail' },
         seq4_BombWeightCollision_impossible: { name: 'Seq 4 Bomb-Weight Collision Criterion', legendgroup: 'fail' },
         seq4_BombWeightCollision:            { name: 'Seq 4 Bomb-Weight Collisions', legendgroup: 'fail' },
+        angle_fail: { name: 'Angle Failures', legendgroup: 'late_fail' },
+        success:    { name: 'Successes', legendgroup: 'success' }
+    };*/
+
+    const categoryConfig = {
+        seq1_BoomLength_fail:                { name: 'Seq 2 Boom Height Criterion', legendgroup: 'early_fail' },
+        seq2_BoomHeight_fail:                { name: 'Seq 3 Car-Boom Collisions', legendgroup: 'early_fail' },
+        seq3_CarBoomCollision:               { name: 'Seq 4 Bomb-Weight Collision Criterion', legendgroup: 'fail' },
+        seq4_BombWeightCollision_impossible: { name: 'Seq 4 Bomb-Weight Collisions Fail', legendgroup: 'fail' },
+        seq4_BombWeightCollision:            { name: 'Seq 4 Bomb-Weight Collisions', legendgroup: 'fail' }, //shouldnt happen
         angle_fail: { name: 'Angle Failures', legendgroup: 'late_fail' },
         success:    { name: 'Successes', legendgroup: 'success' }
     };
@@ -1143,6 +1154,13 @@ function renderResultsPlot(results, containerId = 'results-plot') {
     const groups = groupResultsByCategory(results);
     const traces = createPlotTraces(groups);
 
+    const tickvals = [-5, 0, Math.floor(GLOBAL_COLORSCALE_MAX_ANGLE/3), Math.floor(GLOBAL_COLORSCALE_MAX_ANGLE/3*2), GLOBAL_COLORSCALE_MAX_ANGLE];
+    const ticktext = ['< sub-zero (=Failing)', '< 0° (Fail-Threshold)', `${Math.floor(GLOBAL_COLORSCALE_MAX_ANGLE/3)}°`, `${Math.floor(GLOBAL_COLORSCALE_MAX_ANGLE/3*2)}°`, `${Math.floor(GLOBAL_COLORSCALE_MAX_ANGLE)}°+`] //TODO ADJUST ANGLES
+
+    //normalize to [0,1]
+    function norm(value, min=-10, max=GLOBAL_COLORSCALE_MAX_ANGLE) {
+        return (value - min) / (max - min);
+    }
 
     // Add invisible dummy trace just for the colorbar
     traces.push({
@@ -1151,21 +1169,21 @@ function renderResultsPlot(results, containerId = 'results-plot') {
         type: 'scatter3d',
         marker: {
             size: 0.1,
-            color: [-10, 45],  // Two values spanning the range
-            cmin: -10,         // Min value for color mapping
-            cmax: 45,          // Max value for color mapping
+            color: [-10, GLOBAL_COLORSCALE_MAX_ANGLE],  // Two values spanning the range
+            cmin: -10,                                  // Min value for color mapping
+            cmax: GLOBAL_COLORSCALE_MAX_ANGLE,          // Max value for color mapping
             colorscale: [
-                [0.0, 'rgb(255, 0, 0)'],      // -10 -> Red
-                [0.18, 'rgb(255, 0, 0)'],     // 0 -> Red (0.18 ≈ 10/55)
-                [0.19, 'rgb(255, 255, 0)'],   // Just above 0 -> Yellow
-                [1.0, 'rgb(0, 200, 0)']       // 45 -> Green
+                [norm(-10), 'rgb(255, 0, 0)'],                  // -10 -> Red
+                [norm(0), 'rgb(255, 0, 0)'],                    // 0 -> Red (0.18 ≈ 10/55)
+                [norm(0.1), 'rgb(255, 255, 0)'],                // Just above 0 -> Yellow
+                [norm(GLOBAL_COLORSCALE_MAX_ANGLE), 'rgb(0, 200, 0)'] // 45(glob_max_angle) -> Green
             ],
             colorbar: {
                 title: 'Eta Angle (°)',
                 thickness: 20,
                 len: 0.7,
-                tickvals: [-5, 0, 15, 30, 45],
-                ticktext: ['< sub-zero (=Failing)', '< 0° (Fail-Threshold)', '15°', '30°', '45°+']
+                tickvals: tickvals,
+                ticktext: ticktext
             },
             showscale: true
         },

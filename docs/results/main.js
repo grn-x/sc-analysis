@@ -40,6 +40,188 @@ function drawVectors(vectors) {
         margin: { t: 10 }
     });
 }
+/**
+ * Plots the trajectory for seq_two in a given container
+ * @param {string} containerId - ID of the div to plot in
+ * @param {Object} seq_two_data - The seq_two data object with input and result
+ */
+function drawSeqTwoTrajectory(containerId, seq_two_data) {
+    if (!seq_two_data || !seq_two_data.input) {
+        console.error('Invalid seq_two_data');
+        return;
+    }
+
+    const input = seq_two_data.input;
+    const result = seq_two_data.result;
+
+    // Extract parameters
+    // pull globally uniform ones from input ui, to avoid these redundant fields in seq_two_data (memory waste)
+    // actually dont; user couldve accidentally changed the value without recalculating; wrong visualization
+    // ykw globally defining these four random orphan values would hurt; save them in seq_two_data instead, to keep everything self-contained
+    const mode = input.mode;
+    const alpha = input.angle;
+    const v0 = input.speed;
+    const x_target = input.x_target;
+    const y_target = input.y_target;
+    const tolerance = input.tolerance;
+    const g = input.g;
+
+    const alphaRad = (alpha * Math.PI) / 180;
+    const v0x = v0 * Math.cos(alphaRad);
+    const v0y = v0 * Math.sin(alphaRad);
+
+
+    const numPoints = 100;
+    const x_values = [];
+    const y_values = [];
+
+
+
+
+    for (let i = 0; i <= numPoints; i++) {
+        const x = (x_target / numPoints*1.2) * i;
+        let y;
+
+        if (mode === 1) {
+            // Unaccelerated motion
+            const t = x / v0x;
+            y = v0y * t - 0.5 * g * t ** 2;
+        } else if (mode === 2) {
+            // Accelerated motion
+            const ax = input.accel || 0;
+
+            const t = (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) / ax;
+            y = (v0y / ax) * (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) -
+                (g / (2 * ax ** 2)) * (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) ** 2;
+        } else if (mode === 3) { //TODO start angle??
+            // Decelerated motion
+            //const q = input.q || 0;
+
+            const rho = input.rho || 1.2;
+            const A = input.cw_A || 2.38;
+            const cw = input.cw || 0.47;
+            const m = input.m || 1;
+
+
+            //const qValue = q || (A * rho * cw) / (2 * m);
+            const qValue = (A * rho * cw) / (2 * m);
+
+            const t = (Math.exp(qValue * x) - 1) / (qValue * v0x);
+            y = v0y * t - 0.5 * g * t ** 2 -
+                (g / (2 * qValue ** 2)) * (Math.exp(qValue * x) - 1) ** 2;
+        }
+
+        x_values.push(x);
+        y_values.push(y);
+    }
+
+    // trajectory color based on success
+    const withinTolerance = result ? result.withinTolerance : false;
+    const trajectoryColor = withinTolerance ? 'rgb(0, 200, 0)' : 'rgb(255, 0, 0)';
+
+    // trajectory trace
+    const trajectoryTrace = {
+        x: x_values,
+        y: y_values,
+        mode: 'lines',
+        type: 'scatter',
+        name: 'Trajectory',
+        line: {
+            color: trajectoryColor,
+            width: 3
+        }
+    };
+
+    // vertical line at x_target as tolerance zone
+    const toleranceTrace = {
+        x: [x_target, x_target],
+        //y: [y_target - tolerance / 2, y_target + tolerance / 2], //TODO
+        y: [y_target - tolerance, y_target + tolerance],
+        mode: 'lines',
+        type: 'scatter',
+        name: 'Target Zone',
+        line: {
+            color: 'rgb(255, 200, 0)',
+            width: 5
+        }
+    };
+
+    // target point
+    const targetTrace = {
+        x: [x_target],
+        y: [y_target],
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Target',
+        marker: {
+            color: 'rgb(255, 150, 0)',
+            size: 10,
+            symbol: 'x'
+        }
+    };
+
+    // start point
+    const startTrace = {
+        x: [0],
+        y: [0],
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Start',
+        marker: {
+            color: 'rgb(0, 0, 255)',
+            size: 8
+        }
+    };
+
+    // actual landing point //TODO this is way off
+    const landingX = x_target;
+    const landingY = y_values[y_values.length - 1]; // dont do this shit use function directly
+    const landingTrace = {
+        x: [landingX],
+        y: [landingY],
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Landing',
+        marker: {
+            color: trajectoryColor,
+            size: 10,
+            symbol: 'circle'
+        }
+    };
+
+    const data = [trajectoryTrace, toleranceTrace, targetTrace, startTrace, landingTrace];
+
+    const layout = {
+        title: `Projectile Trajectory (Mode ${mode})`,
+        xaxis: {
+            title: 'Distance (m)',
+            zeroline: true
+        },
+        yaxis: {
+            title: 'Height (m)',
+            zeroline: true
+        },
+        showlegend: true,
+        legend: {
+            x: 0.02,
+            y: 0.98
+        },
+        margin: { t: 40, b: 40, l: 50, r: 20 },
+        hovermode: 'closest'
+    };
+
+    const config = {
+        responsive: true,
+        displayModeBar: false
+    };
+
+    Plotly.newPlot(containerId, data, layout, config);
+}
+
+
+
+
+
 
 
 
@@ -602,10 +784,6 @@ function seq_two(
     };
 }
 
-// Example usage
-const result_two = seq_two(1, 45, 20, 5, 0.1);
-console.log(result_two);
-
 
 function seq_three_dpr(m, l, l0, mc, vc, /*vct=0, */ tau_deg,  vb, k, meff) {
     // Calculate I
@@ -1112,11 +1290,11 @@ function createPlotTraces(groups) {
     };*/
 
     const categoryConfig = {
-        seq1_BoomLength_fail:                { name: 'Seq 2 Boom Height Criterion', legendgroup: 'early_fail' },
+        seq1_BoomLength_fail:                { name: 'Seq 2 Boom Height invalid', legendgroup: 'early_fail' },
         seq2_BoomHeight_fail:                { name: 'Seq 3 Car-Boom Collisions', legendgroup: 'early_fail' },
-        seq3_CarBoomCollision:               { name: 'Seq 4 Bomb-Weight Collision Criterion', legendgroup: 'fail' },
-        seq4_BombWeightCollision_impossible: { name: 'Seq 4 Bomb-Weight Collisions Fail', legendgroup: 'fail' },
-        seq4_BombWeightCollision:            { name: 'Seq 4 Bomb-Weight Collisions', legendgroup: 'fail' }, //shouldnt happen
+        seq3_CarBoomCollision:               { name: 'Seq 4 Bomb-Counterweight Collision unreachable', legendgroup: 'fail' },
+        seq4_BombWeightCollision_impossible: { name: 'Seq 4 Bomb-Weight Collision Fail', legendgroup: 'fail' },
+        seq4_BombWeightCollision:            { name: 'Seq 4 Bomb-Weight Collision Pre Eta(?)', legendgroup: 'fail' }, //shouldnt happen
         angle_fail: { name: 'Angle Failures', legendgroup: 'late_fail' },
         success:    { name: 'Successes', legendgroup: 'success' }
     };
@@ -1326,8 +1504,13 @@ function runPipeline() {
     const cw_max = getVal('cw_initial_max');
     const cw_A_min = getVal('cw_A_initial_min');
     const cw_A_max = getVal('cw_A_initial_max');
-    const cw_values = splitInterval(cw_min, cw_max, 5, true).reverse();
-    const cw_A_values = splitInterval(cw_A_min, cw_A_max, 5, true).reverse();
+    const cw_values = splitInterval(cw_min, cw_max, 5, true)//.sort().reverse();
+    const cw_A_values = splitInterval(cw_A_min, cw_A_max, 5, true)//.sort().reverse();
+    //TODO add steps
+
+    console.log("cw values:", cw_values);
+    console.log("cw A values:", cw_A_values);
+
 
     // read seq_two params from UI
     const m_car = getVal('seq2_m_car');
@@ -1481,10 +1664,11 @@ function runPipeline() {
         return true;
     }
 
+
     // main loop: iterators v (speed), w (winkel/angle), a (acceleration)
-    for (let v = 0; v < v_steps; v++) {
-        for (let w = 0; w < w_steps; w++) {
-            for (let a = -5; a <= a_steps; a++) {
+    for (let v = 0; v < v_values.length; v++) {
+        for (let w = 0; w < w_values.length; w++) {
+            for (let a = (-cw_values.length); a <= a_values.length; a++) {
 
                 const c_speed = v_values[v];
                 const c_angle = w_values[w];
@@ -1498,7 +1682,7 @@ function runPipeline() {
                     );
 
                     runResult.seq_two = {
-                        input: { mode: 1, angle: c_angle, speed: c_speed },
+                        input: { mode: 1, angle: c_angle, speed: c_speed, x_target: t_input, y_target: y_target, tolerance: tolerance, g:g},
                         result: result_neutral
                     };
 
@@ -1523,7 +1707,7 @@ function runPipeline() {
                     );
 
                     runResult.seq_two = {
-                        input: { mode: 2, angle: c_angle, speed: c_speed, accel: c_a },
+                        input: { mode: 2, angle: c_angle, speed: c_speed, accel: c_a, x_target: t_input, y_target: y_target, tolerance: tolerance, g:g },
                         result: result_accel
                     };
 
@@ -1538,8 +1722,11 @@ function runPipeline() {
 
                 } else if (a < 0) {
                     // DECELERATION MODEL
-                    const c_cw = cw_values[Math.abs(a)];
-                    const c_cw_A = cw_A_values[Math.abs(a)];
+                    const c_cw = cw_values[Math.abs(a)-1];
+                    const c_cw_A = cw_A_values[Math.abs(a)-1];
+
+                    //console.log("Using cw:", c_cw, "and A:", c_cw_A, "for a index:", a);
+
                     if (c_cw === undefined || c_cw_A === undefined) continue;
 
                     const runResult = createRunResult(v, w, a, c_speed, c_angle, -1, 'DECEL', c_cw, c_cw_A);
@@ -1551,7 +1738,7 @@ function runPipeline() {
                     );
 
                     runResult.seq_two = {
-                        input: { mode: 3, angle: c_angle, speed: c_speed, cw: c_cw, cw_A: c_cw_A },
+                        input: { mode: 3, angle: c_angle, speed: c_speed, cw: c_cw, cw_A: c_cw_A, x_target: t_input, y_target: y_target, tolerance: tolerance, m: m_car, g: g, rho: rho },
                         result: result_decel
                     };
 
@@ -1625,7 +1812,7 @@ function populateDropdowns() {
         let label = `${a}`;
         if (a === 0) label += ' (NEUTRAL)';
         else if (a > 0) label += ` (ACCEL: ${sample?.accel_value?.toFixed(2) || '?'})`;
-        else label += ` (DECEL: cw=${sample?.accel_value?.toFixed(2) || '?'})`;
+        else label += ` (DECEL: cw=${sample?.cw_value?.toFixed(2) || '?'}; A=${sample?.A_value?.toFixed(2) || '?'})`;
         selectA.innerHTML += `<option value="${a}">${label}</option>`;
     }
 }
@@ -1861,6 +2048,31 @@ function buildSequenceBlock(name, data, reached) {
     const inputHtml = formatObject(data.input, 'Inputs');
     const resultHtml = formatObject(data.result, 'Results');
 
+    if (name === 'seq_two') {
+
+        if(document.getElementById('seq_two_result_plot')){
+            drawSeqTwoTrajectory('seq_two_result_plot', data);
+        }else{
+            waitForElm('#seq_two_result_plot').then(() => {
+                drawSeqTwoTrajectory('seq_two_result_plot', data);
+            });
+        }
+
+
+        return `
+            <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
+                <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
+                <div style="display:grid;grid-template-columns:1fr 3fr;gap:15px;">
+                    <div>
+                        ${inputHtml}
+                        ${resultHtml}
+                    </div>
+                    <div id="seq_two_result_plot" style="width:100%;height:400px;border:1px solid #ccc;"></div>
+                </div>
+            </div>
+        `;
+    }
+
     // handling for crane_collision -> text (1/3) + iframe (2/3)
     if (name === 'crane_collision') {
         const params = new URLSearchParams();
@@ -1880,7 +2092,14 @@ function buildSequenceBlock(name, data, reached) {
                 <div style="display:grid;grid-template-columns:1fr 3fr;gap:15px;">
                     <div>
                         ${inputHtml}
-                        ${resultHtml}
+                        ${resultHtml} 
+                        <div style="margin-top:10px;">
+                            <br/>
+                            <a href="${iframeSrc}" target="_blank" rel="noopener">View Simulation Result in Fullscreen</a>
+                            <br/>
+                            <br/>
+                            <a href="./../NumApproxRenderer.html?${params.toString()}" target="_blank" rel="noopener">View Parametrized Version in Fullscreen</a>
+                        </div>
                     </div>
                     <iframe src="${iframeSrc}" style="width:100%;height:400px;border:1px solid #ccc;"></iframe>
                 </div>
@@ -1913,6 +2132,27 @@ function buildSequenceBlock(name, data, reached) {
                         ${resultHtml}
                     </div>
                     <div id="vecplot" style="width:100%;height:400px;border:1px solid #ccc;"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    if (name === 'seq_five') {
+
+        /*
+        waitForElm('#seq_five_result_plot').then(() => {
+            drawVectors(vectors);
+        });*/
+
+        return `
+            <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
+                <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>
+                <div style="display:grid;grid-template-columns:1fr 3fr;gap:15px;">
+                    <div>
+                        ${inputHtml}
+                        ${resultHtml}
+                    </div>
+                    <div id="seq_five_result_plot" style="width:100%;height:400px;border:1px solid #ccc;"></div>
                 </div>
             </div>
         `;

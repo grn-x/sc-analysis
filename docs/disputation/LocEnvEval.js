@@ -8,11 +8,94 @@
  *
  *   // is-local checks without reevaluation
  *   if (LocalEnv.isLocal) { ... }
+ *
+ *   // show banner manually later
+ *   LocalEnv.showBanner('Custom message');
+ *   // with options:
+ *   LocalEnv.showBanner('Urgent!', { force: true, duration: 3000 });
  */
+
+const LOGGING_ENABLED = false;
 
 const LocalEnv = (() => {
     let _isLocal = null;
-    let _bannerShown = false;
+    //let _bannerShown = false; // cooldown to prevent multiple banners; true if a banner is shown
+
+    // Banner queue; manage sequential banner display (except force? TOOD) using promise-based async await timeouts
+    // used to be a simple bool flag, but now evolved into a full object, even though its still majorly dependent on
+    // correct implementation in createLocalBanner/during its usage; not that great, but works for now
+    // (ill not use this much anyways)
+    const _bannerQueue = {
+        active: false,              // currently banner showing flag; crucial in tryRegister to avoid raceconditions
+        waiters: [],                // FIFO queue of {resolve, message} objects
+        activeResolve: null,        // Resolve function to complete current banner
+        delayBetween: 150,          // Delay (ms) between banners
+
+        // Wait for turn to display banner
+        async wait(message, force = false) {
+            if(LOGGING_ENABLED)console.log('[LocalEnv] Banner queue wait called. Force:', force);
+            // Force interrupts current banner and jumps to front / highest prio
+            if (force && this.active) {
+                // Trigger immediate removal of current banner //todo low priority fix
+                if (this.activeResolve) {
+                    this.activeResolve();
+                    this.activeResolve = null;
+                }
+                this.active = false;
+                //small delay to let DOM settle
+                await new Promise(resolve => setTimeout(resolve, 100));
+                return;
+            }
+
+            // proceed if no active notification
+            if (!this.active && this.waiters.length === 0) {
+                if(LOGGING_ENABLED)console.log('[LocalEnv] No active banner, proceeding immediately');
+                return;
+            }
+
+            // otherwise: queue up and await returned promise
+            return new Promise(resolve => {
+                if(LOGGING_ENABLED)console.log('[LocalEnv] Banner queued');
+                this.waiters.push({ resolve, message });
+            });
+        },
+
+        // used to be called after wait; thinking this would be enough, though using the promise based wait only causes
+        // simultaneous registers; thus tryRegister
+        /*register() {
+            this.active = true;
+            console.log('[LocalEnv] Banner registered as active');
+        },*/
+
+        // called at start; attempt register if not active and send true; else return false and let obj wait
+        // should be implemented via a while !tryRegister loop, awaiting wait() in loop body
+        tryRegister() {
+            if (!this.active) {
+                this.active = true;
+                if(LOGGING_ENABLED)console.log('[LocalEnv] Banner tryRegister succeeded');
+                return true;
+            }
+            if(LOGGING_ENABLED)console.log('[LocalEnv] Banner tryRegister failed, already active');
+            return false;
+        },
+
+        // code assumes that after banner finishes, it autonmously calls notify to trigger next in queue
+        async notify() {
+            if(LOGGING_ENABLED)console.log('[LocalEnv] Banner finished, checking queue');
+            this.active = false;
+            this.activeResolve = null;
+
+            // delay between banners
+            if (this.waiters.length > 0) {
+                await new Promise(resolve => setTimeout(resolve, this.delayBetween));
+            }
+
+            if (this.waiters.length > 0) {
+                const next = this.waiters.shift();
+                next.resolve();
+            }
+        }
+    };
 
     function isValidIPv4Octet(num) {
         return num >= 0 && num <= 255;
@@ -100,9 +183,17 @@ const LocalEnv = (() => {
         return false;
     }
 
-    function createLocalBanner(message) {
-        if (_bannerShown) return;
-        _bannerShown = true;
+    // Now async, waits for queue, accepts duration and force params
+    async function createLocalBanner(message, duration = 5000, force = false) {
+        //if (_bannerShown) return;
+        //_bannerShown = true;
+
+        while(! _bannerQueue.tryRegister()){
+            // Wait for our turn in the queue
+            await _bannerQueue.wait(message, force);
+        }
+        // Register as active banner
+        //_bannerQueue.register();
 
         const banner = document.createElement('div');
         banner.id = 'local-env-banner';
@@ -111,10 +202,23 @@ const LocalEnv = (() => {
         const closeBtn = document.createElement('span');
         closeBtn.textContent = 'x';
         closeBtn.style.cssText = 'margin-left:10px;cursor:pointer;font-weight:bold';
-        closeBtn.onclick = () => {
+        //closeBtn.onclick = () => {
+        //    banner.style.opacity = '0';
+        //    setTimeout(() => banner.remove(), 300);
+        //};
+
+        // shared cleanup; notifies queue
+        const removeBanner = () => {
             banner.style.opacity = '0';
-            setTimeout(() => banner.remove(), 300);
+            banner.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                banner.remove();
+                // notify next waiter in queue
+                _bannerQueue.notify();
+            }, 300);
         };
+
+        closeBtn.onclick = removeBanner;
 
         banner.appendChild(closeBtn);
 
@@ -142,33 +246,50 @@ const LocalEnv = (() => {
             banner.style.transform = 'translateY(0)';
         });
 
+        // call shared cleanup after custom duration!!!
         setTimeout(() => {
             if (!banner.isConnected) return;
-            banner.style.opacity = '0';
-            banner.style.transform = 'translateY(-10px)';
-            setTimeout(() => banner.remove(), 300);
-        }, 5000);
+            removeBanner();
+        }, duration);
+    }
+
+    // internal helper that handles DOM ready logic; this gets exposed to outside
+    // passes duration and force to createLocalBanner
+    function _showBanner(message, duration = 5000, force = false) {
+        if (document.readyState !== 'loading') {
+            createLocalBanner(message, duration, force);
+        } else {
+            document.addEventListener('DOMContentLoaded', () => createLocalBanner(message, duration, force));
+        }
     }
 
     return {
         /**
          * Initialize the local environment detector
          * @param {Object} options config options:
-         * @param {boolean} options.showBanner display banner if local (default: false)
+         * @param {boolean} options.showBanner display banner if local (default: true)
          * @param {string} options.bannerMessage custom banner message
+         * @param {boolean} options.showBannerExt display banner even if not local (default: false)
+         * @param {string} options.bannerMessageExt custom banner message for non-local
          */
         init(options = {}) {
-            const { showBanner = false, bannerMessage = 'Local hosting environment detected' } = options;
+            const {
+                showBanner: shouldShowBanner = true,
+                bannerMessage = 'Local hosting environment detected',
+                showBannerExt: shouldShowBannerExt = false,
+                bannerMessageExt = 'External Host detected'
+            } = options;
 
             if (_isLocal === null) {
                 _isLocal = detectLocalEnvironment();
-                console.log('[LocalEnv] Local environment detected:', _isLocal);
+                if(LOGGING_ENABLED)console.log('[LocalEnv] Local environment detected:', _isLocal);
             }
 
-            if (showBanner && _isLocal && document.readyState !== 'loading') {
-                createLocalBanner(bannerMessage);
-            } else if (showBanner && _isLocal) {
-                document.addEventListener('DOMContentLoaded', () => createLocalBanner(bannerMessage));
+            if (_isLocal && shouldShowBanner) {
+                _showBanner(bannerMessage);
+            }
+            if (!_isLocal && shouldShowBannerExt) {
+                _showBanner(bannerMessageExt);
             }
 
             return this;
@@ -186,17 +307,16 @@ const LocalEnv = (() => {
         },
 
         /**
-         * show banner manually
+         * show banner manually (queues if one is already showing)
          * @param {string} message custom message
+         * @param {Object} options display options
+         * @param {boolean} options.force skip queue and show immediately (default: false)
+         * @param {number} options.duration how long to show banner in ms (default: 5000)
          */
-        showBanner(message = 'Local hosting environment detected') {
-            if (this.isLocal) {
-                if (document.readyState !== 'loading') {
-                    createLocalBanner(message);
-                } else {
-                    document.addEventListener('DOMContentLoaded', () => createLocalBanner(message));
-                }
-            }
+        showBanner(message = 'Manual Banner Message', options = {}) {
+            const { force = false, duration = 5000 } = options;
+            if(LOGGING_ENABLED)console.log('[LocalEnv] showBanner called');
+            _showBanner(message, duration, force);
         }
     };
 })();

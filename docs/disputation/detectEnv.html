@@ -14,45 +14,18 @@
 
 <script type="module">
     import { LocalEnv } from './LocEnvEval.js';
+    window.xy = LocalEnv;
 
-    LocalEnv.init({ showBanner: true, bannerMessage: 'Development Mode Active' });
-
-    if (LocalEnv.isLocal) {
-        console.log('Running locally - enable debug features');
-
-    }
-
-    // random ass placeholder
-    function detectEnvironment() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-        if (/android/i.test(userAgent)) {
-            return "Android Device";
-        }
-
-        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            return "iOS Device";
-        }
-
-        if (userAgent.indexOf("Win") !== -1) {
-            return "Windows OS";
-        }
-
-        if (userAgent.indexOf("Mac") !== -1) {
-            return "Mac OS";
-        }
-
-        if (userAgent.indexOf("Linux") !== -1) {
-            return "Linux OS";
-        }
-
-        return "Unknown Environment";
-    }
-
-    document.body.insertAdjacentHTML('beforeend', `<p>Detected Environment: ${detectEnvironment()}</p>`);
+    LocalEnv.init({ showBanner: true, bannerMessage: 'Local Host Detected', showBannerExt: true, bannerMessageExt: 'External Host Detected' });
 
 
+   //LocalEnv.showBanner();
 
+    await new Promise(resolve => setTimeout(resolve, 100));
+    LocalEnv.showBanner("Updated Message after 100ms");
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    LocalEnv.showBanner("Message after 3s", {force:false, duration:1000});
 
 </script>
 

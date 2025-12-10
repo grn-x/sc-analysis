@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Detect env</h1>
+
+
+
+</body>
+
+<script type="module">
+    import { LocalEnv } from './LocEnvEval.js';
+
+    LocalEnv.init({ showBanner: true, bannerMessage: 'Development Mode Active' });
+
+    if (LocalEnv.isLocal) {
+        console.log('Running locally - enable debug features');
+
+    }
+
+    // random ass placeholder
+    function detectEnvironment() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        if (/android/i.test(userAgent)) {
+            return "Android Device";
+        }
+
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            return "iOS Device";
+        }
+
+        if (userAgent.indexOf("Win") !== -1) {
+            return "Windows OS";
+        }
+
+        if (userAgent.indexOf("Mac") !== -1) {
+            return "Mac OS";
+        }
+
+        if (userAgent.indexOf("Linux") !== -1) {
+            return "Linux OS";
+        }
+
+        return "Unknown Environment";
+    }
+
+    document.body.insertAdjacentHTML('beforeend', `<p>Detected Environment: ${detectEnvironment()}</p>`);
+
+
+
+
+</script>
+
+</html>

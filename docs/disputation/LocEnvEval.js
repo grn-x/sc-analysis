@@ -13,12 +13,20 @@
  *   LocalEnv.showBanner('Custom message');
  *   // with options:
  *   LocalEnv.showBanner('Urgent!', { force: true, duration: 3000 });
+ *
+ *   // debug override; can be called before init
+ *   LocalEnv.debugOverwriteLocal(true, 'Detected Local Host; But Overwritten', 'Detected External Host; But Overwritten');
  */
 
 const LOGGING_ENABLED = false;
 
 const LocalEnv = (() => {
     let _isLocal = null;
+
+    let _debugOverride = null;
+    let _debugMsgTrue = null;
+    let _debugMsgFalse = null;
+
     //let _bannerShown = false; // cooldown to prevent multiple banners; true if a banner is shown
 
     // Banner queue; manage sequential banner display (except force? TOOD) using promise-based async await timeouts
@@ -215,7 +223,7 @@ const LocalEnv = (() => {
                 banner.remove();
                 // notify next waiter in queue
                 _bannerQueue.notify();
-            }, 300);
+            }, 400);
         };
 
         closeBtn.onclick = removeBanner;
@@ -236,7 +244,7 @@ const LocalEnv = (() => {
             z-index:99999;
             opacity:0;
             transform:translateY(-10px);
-            transition:opacity 0.3s ease,transform 0.3s ease
+            transition:opacity 0.4s ease,transform 0.4s ease
         `;
 
         document.body.appendChild(banner);
@@ -263,6 +271,20 @@ const LocalEnv = (() => {
         }
     }
 
+    // controllable debug layer between detection and usage
+    // allows overwriting detected local state for testing purposes
+    // if overwrite method is called; else actual value is returned
+    function _getEffectiveIsLocal() {
+        if (_isLocal === null) {
+            _isLocal = detectLocalEnvironment();
+        }
+
+        if (_debugOverride !== null) {
+            return _debugOverride;
+        }
+        return _isLocal;
+    }
+
     return {
         /**
          * Initialize the local environment detector
@@ -280,7 +302,7 @@ const LocalEnv = (() => {
                 bannerMessageExt = 'External Host detected'
             } = options;
 
-            if (_isLocal === null) {
+            /*if (_isLocal === null) {
                 _isLocal = detectLocalEnvironment();
                 if(LOGGING_ENABLED)console.log('[LocalEnv] Local environment detected:', _isLocal);
             }
@@ -290,7 +312,49 @@ const LocalEnv = (() => {
             }
             if (!_isLocal && shouldShowBannerExt) {
                 _showBanner(bannerMessageExt);
+            }*/
+
+            const effectiveIsLocal = _getEffectiveIsLocal();
+            if(LOGGING_ENABLED)console.log('[LocalEnv] Local environment detected:', _isLocal);
+
+            if(_debugOverride==null){ //normal execution log
+                if (_isLocal && shouldShowBanner) {
+                    _showBanner(bannerMessage);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 1: Evaluated as Local');
+                }
+                if (!_isLocal && shouldShowBannerExt) {
+                    _showBanner(bannerMessageExt);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 2: Evaluated as External');
+                }
+            }else { //debug overwrite log
+                /*if (effectiveIsLocal && shouldShowBanner) {
+                    const msg =
+                    (_debugMsgTrue) ? _debugMsgTrue : bannerMessage; // fallback to bannerMessage cannot happen accidentally
+                                                                    // _dbgMsg setter provides default method params
+                    _showBanner(msg);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 3: Debug Overwrite to Local');
+                }
+                if (!effectiveIsLocal && shouldShowBannerExt) {
+                    const msg = (_debugMsgFalse) ? _debugMsgFalse : bannerMessageExt;
+                    _showBanner(msg);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 4: Debug Overwrite to External');
+                }*/ //This block differentiates by the user created constant value, but not by the actual detection result
+                // that is overwritten; see below:
+
+                if (_isLocal && shouldShowBanner) {
+                    const msg =
+                        (_debugMsgTrue) ? _debugMsgTrue : bannerMessage; // fallback to bannerMessage cannot happen accidentally
+                    // _dbgMsg setter provides default method params
+                    _showBanner(msg);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 3: Evaluated as Local, but Overwritten to Local =', _debugOverride);
+                }
+                if (!_isLocal && shouldShowBannerExt) {
+                    const msg = (_debugMsgFalse) ? _debugMsgFalse : bannerMessageExt;
+                    _showBanner(msg);
+                    if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 4: Evaluated as External, but Overwritten to Local =', _debugOverride);
+                }
             }
+
 
             return this;
         },
@@ -300,10 +364,11 @@ const LocalEnv = (() => {
          * @returns {boolean}
          */
         get isLocal() {
-            if (_isLocal === null) {
+            /*if (_isLocal === null) {
                 _isLocal = detectLocalEnvironment();
             }
-            return _isLocal;
+            return _isLocal;*/
+            return _getEffectiveIsLocal();
         },
 
         /**
@@ -317,6 +382,20 @@ const LocalEnv = (() => {
             const { force = false, duration = 5000 } = options;
             if(LOGGING_ENABLED)console.log('[LocalEnv] showBanner called');
             _showBanner(message, duration, force);
+        },
+
+        /**
+         * Debug method to override local detection
+         * @param {boolean} isLocal force isLocal to this value
+         * @param {string} msgLocalTrue banner message when actual env is local but overridden
+         * @param {string} msgLocalFalse banner message when actual env is not local but overridden
+         */
+        debugOverwriteLocal(isLocal, msgLocalTrue= `Detected Local Host; Value was overwritten to Local = ${isLocal}`, msgLocalFalse= `Detected External Host; Value was overwritten to Local = ${isLocal}`) {
+            _debugOverride = isLocal;
+            _debugMsgTrue = msgLocalTrue;
+            _debugMsgFalse = msgLocalFalse;
+            if(LOGGING_ENABLED)console.log('[LocalEnv] Debug override set:', _debugOverride);
+            return this;
         }
     };
 })();

@@ -16,6 +16,7 @@
     import { LocalEnv } from './LocEnvEval.js';
     window.xy = LocalEnv;
 
+    LocalEnv.debugOverwriteLocal(true); //set to true to simulate local env; false to force external env behavior
     LocalEnv.init({ showBanner: true, bannerMessage: 'Local Host Detected', showBannerExt: true, bannerMessageExt: 'External Host Detected' });
 
 

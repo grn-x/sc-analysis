@@ -1,5 +1,11 @@
 import { LocalEnv } from './LocEnvEval.js';
-window.xy = LocalEnv;
+import { loadImageCaptions, createCaptionedImage } from './CaptionParser.js';
+
+
+//==============================================================================
+// Initialize LocalEnv to determine loading strategy & setup dependencies
+//==============================================================================
+
 //LocalEnv.debugOverwriteLocal(false); //confirm non local loading
 LocalEnv.init({ showBanner: true, bannerMessage: 'Local Host Detected', showBannerExt: true, bannerMessageExt: 'External Host Detected' });
 
@@ -103,11 +109,88 @@ if (LocalEnv.isLocal) {
     console.log('Using KaTeX from CDN (version:', katexConfig.version + ')'); // CDN by default: https://cdn.jsdelivr.net/npm/katex // from https://revealjs.com/math/#katex-configuration
 }
 
+//==============================================================================
+// Load image captions from README and insert into markdown processing pipeline
+//==============================================================================
+
+const CaptionParser = await loadImageCaptions('./resources/README.md');
+CaptionParser.setupPathCallback((originalPath) => {
+    //return './resources/' + originalPath;
+    if(originalPath.startsWith('resources')) {
+        return originalPath.replace('resources', '');
+    }
+});
+
+console.log('Image captions loaded. Available images:', CaptionParser.getAllImages());
+
+
+
+// "clone" Marked instance used by revealMarkdownPlugin
+const revealMarkdownPlugin = Markdown();
+
+// define Marked extension for replacing dummy tags with actual images and their captions
+const captionExt = {
+    name: 'captionedImage',
+    level: 'block',
+    start(src) {
+        // where to start matching
+        return src.indexOf('<div caption-replace-tag-img=');
+    },
+    tokenizer(src, tokens) {
+        const rule = /^<div\s+caption-replace-tag-img="([^"]+)"\s*><\/div>/;
+        const match = rule.exec(src);
+        if (match) {
+            console.log('CaptionedImage tokenizer processing src:', src);
+
+            const token = {
+                type: 'captionedImage',
+                raw: match[0],
+                src: match[1],
+                tokens: []
+            };
+            return token;
+        }
+    },
+    renderer(token) {
+        // return valid HTML string for Revealjs
+        const result = CaptionParser.createCaptionedImage(token.src);
+        console.warn('Rendering captioned image for src:', token.src, 'Result:', result);
+        return result;
+        //return `<figure><img src="${token.src}"><figcaption>Caption for ${token.src}</figcaption></figure>`;
+    }
+};
+
+function walkTokens(token) {
+    // only process HTML blocks
+    if (token.type === 'html') {
+        // Replace every <div caption-replace-tag-img="..."></div> inside this block
+        token.text = token.text.replace(
+            /<div\s+caption-replace-tag-img="([^"]+)"\s*><\/div>/g,
+            (_, src) => CaptionParser.createCaptionedImage(src)
+        );
+    }
+}
+
+// Add extension to our intercepted marked instance
+//revealMarkdownPlugin.marked.use({ extensions: [captionExt] });
+revealMarkdownPlugin.marked.use({ walkTokens: walkTokens });
+
+
+//==============================================================================
+// Initialize Reveal.js with desired configuration
+//==============================================================================
 
 const deck = Reveal({
     katex: katexConfig,
 
-    plugins: [ Markdown, RevealMath.KaTeX, Notes, Highlight, Search, Zoom ],
+    plugins: [
+
+    {
+        id: 'markdown-with-extensions',
+        init: (reveal) => revealMarkdownPlugin.init(reveal)
+    }, // use our customized markdown plugin
+        RevealMath.KaTeX, Notes, Highlight, Search, Zoom ],
+
 
     /* docs from: https://revealjs.com/config/ */
 

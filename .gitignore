@@ -4,6 +4,8 @@ writeup/latex/main.pdf
 writeup/latex/main.synctex.gz
 writeup/latex/texput.log
 
+docs/disputation/revealSamples.html
+scripts/cad/boom-lattice.FCStd
 
 # other ignore-files here:
 !scripts/cfd/openFoamCase/carOpenedCfd/.gitignore

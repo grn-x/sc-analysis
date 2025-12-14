@@ -14,6 +14,7 @@
         .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5 {
             text-transform: none;
         }
+        :root{--r-main-font-size: 28px;}
     </style>        <!-- https://github.com/hakimel/reveal.js/issues/2226 -->
 
 </head>
@@ -37,6 +38,169 @@
 
 
                 Datum: Dezember 17, 2025
+            </textarea>
+        </section>
+
+
+        <!-- EXAMPLE 1: Single Image -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Single Image Examples
+
+                <div id="img1"></div>
+
+                <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+
+
+                Text continues after the image.
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 2: Text + Image (using your flex approach) -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Text and Image Side by Side
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                Some text on the left:
+                - Point 1
+                - Point 2
+                - Point 3
+
+                </div>
+
+
+                <div style="flex: 1;" id="img2">
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                </div>
+
+
+                </div>
+
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 3: Text + Multiple Images -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Text with Multiple Images
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                Some text on the left.
+
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                </div>
+
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 4: Two Images Side by Side -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Two Images Comparison
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+</div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                </div>
+
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 5: Image + Text (reversed) -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Image Then Text
+
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                <div style="flex: 1;">
+
+                ### Analysis
+
+                The image shows important results.
+
+                </div>
+                </div>
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 6: Three Images in a Row -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Process Steps
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                </div>
+
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 7: Centered Image with Controlled Size -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Centered Image
+
+                <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+                <div style="max-width: 70%; max-height: 100%;">
+                                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+                </div>
+                </div>
+
+            </textarea>
+        </section>
+
+        <!-- EXAMPLE 8: Grid of Images -->
+        <section data-markdown>
+            <textarea data-template>
+                ## Image Grid
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+
+
+                </div>
+
+
             </textarea>
         </section>
 

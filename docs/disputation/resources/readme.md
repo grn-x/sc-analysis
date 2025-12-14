@@ -13,6 +13,10 @@ Will be gradually replaced with actual content later.
 
 ## Images 31
 
+### '/media/sequences_blank_3x_nobg.png'
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "insert relative url"
+
 ### './images/example1.png'
 - Quelle: example.com - lizenzfreies Bild, keine Namensnennung erforderlich
 - Link: https://example.com

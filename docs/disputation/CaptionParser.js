@@ -29,6 +29,26 @@ export class CaptionParser {
     }
 
     /**
+     * Optional setup: provide a callback to modify image paths at runtime;
+     * useful for shifted paths, where the paths referenced in the html differ from those in the readme
+     * @param {function(string): string} callback receives original image path and returns modified path
+     */
+    setupPathCallback(callback) {
+        if (typeof callback === 'function') {
+            this._pathCallback = callback;
+        }
+    }
+
+    /**
+     * Internal helper to apply the callback if set
+     * @param {string} imagePath
+     * @returns {string} transformed path if callback exists, otherwise original
+     */
+    _transformPath(imagePath) {
+        return this._pathCallback ? this._pathCallback(imagePath) : imagePath;
+    }
+
+    /**
      * Parse README content
      * @param {string} readmeContent full text content of the README
      */
@@ -80,7 +100,7 @@ export class CaptionParser {
      * @returns {string[]} array of caption lines
      */
     getCaption(imagePath) {
-        return this.captions.get(imagePath) || [];
+        return this.captions.get(this._transformPath(imagePath)) || [];
     }
 
     /**
@@ -88,9 +108,13 @@ export class CaptionParser {
      * @param {string} imagePath The relative path to the image (the one provided in the readme heading)
      * @returns {string} HTML formatted caption
      */
-    getCaptionHTML(imagePath) {
-        const lines = this.getCaption(imagePath);
+    getCaptionHTML(imagePath, fontSize = '0.4em') {
+        const lines = this.getCaption(imagePath);//dont transform path!!
         if (lines.length === 0) return '';
+
+        if(fontSize) {
+            return lines.map(line => `<div style="font-size: ${fontSize};">${line}</div>`).join('');
+        }
 
         return lines.map(line => `<div>${line}</div>`).join('');
     }
@@ -101,7 +125,7 @@ export class CaptionParser {
      * @returns {boolean}
      */
     hasCaption(imagePath) {
-        return this.captions.has(imagePath);
+        return this.captions.has(this._transformPath(imagePath));
     }
 
     /**
@@ -115,6 +139,7 @@ export class CaptionParser {
     /**
      * Helper function to create image element with caption
      * @param {string} src relative image source path (the one provided in the readme heading)
+     *      If no caption is found, only the image is returned and a warning is logged to console.
      * @param {object} options Optional styling options
      * @returns {string} HTML string
      */
@@ -134,6 +159,11 @@ export class CaptionParser {
         const customAttributes = Object.entries(customOptions)
             .map(([key, value]) => `${key}="${value}"`)
             .join(' ');
+
+        if(!this.hasCaption(src)) {
+            if(LOGGING_ENABLED)console.warn(`No caption found for image: ${src}`);
+            return `<img src="${src}" alt="${alt}" class="${imageClass}" style="max-width: ${maxWidth}; width: 100%; height: auto; display: block;">`;
+        }
 
         const caption = this.getCaptionHTML(src);
 

@@ -6,11 +6,13 @@ LocalEnv.init({ showBanner: true, bannerMessage: 'Local Host Detected', showBann
 let Reveal, Markdown, RevealMath, Notes, Highlight, Search, Zoom;
 
 // load modules; if LocalEnv.isLocal is true, load from local paths; else try CDN first, then fallback to local paths
+
 async function loadModule(cdnPath, localPath, moduleName) {
     if (LocalEnv.isLocal) {
         try {
             console.log(`Loading ${moduleName} locally from ${localPath}`);
-            return await import(localPath);
+            const module = await import(localPath);
+            return module.default;
         } catch (error) {
             console.warn(`Failed to load ${moduleName} locally, this shouldn't happen in local mode:`, error);
             throw error;
@@ -18,11 +20,13 @@ async function loadModule(cdnPath, localPath, moduleName) {
     } else {
         try {
             console.log(`Loading ${moduleName} from CDN: ${cdnPath}`);
-            return await import(cdnPath);
+            const module = await import(cdnPath);
+            return module.default;
         } catch (error) {
             console.warn(`Failed to load ${moduleName} from CDN, falling back to local:`, error);
             try {
-                return await import(localPath);
+                const module = await import(localPath);
+                return module.default;
             } catch (fallbackError) {
                 console.error(`Failed to load ${moduleName} from both CDN and local sources:`, fallbackError);
                 throw fallbackError;
@@ -100,7 +104,7 @@ if (LocalEnv.isLocal) {
 }
 
 
-let deck = Reveal.initialize({
+const deck = Reveal({
     katex: katexConfig,
 
     plugins: [ Markdown, RevealMath.KaTeX, Notes, Highlight, Search, Zoom ],
@@ -363,28 +367,9 @@ let deck = Reveal.initialize({
     // Time before the cursor is hidden (in ms)
     hideCursorTime: 3000,
 });
+await deck.initialize();
 
 
 
-
-
-
-
-//LocalEnv.showBanner();
-
-await new Promise(resolve => setTimeout(resolve, 100));
-LocalEnv.showBanner("Updated Message after 100ms");
-
-await new Promise(resolve => setTimeout(resolve, 3000));
-LocalEnv.showBanner("Message after 3s", {force:false, duration:1000});
-
-
-if(LocalEnv.isLocal) { //load modules locally
-
-
-}else{ //load modules from CDN
-
-
-}
 
 

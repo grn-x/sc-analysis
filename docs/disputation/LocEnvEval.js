@@ -319,11 +319,11 @@ const LocalEnv = (() => {
 
             if(_debugOverride==null){ //normal execution log
                 if (_isLocal && shouldShowBanner) {
-                    _showBanner(bannerMessage);
+                    _showBanner(bannerMessage, 7000);
                     if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 1: Evaluated as Local');
                 }
                 if (!_isLocal && shouldShowBannerExt) {
-                    _showBanner(bannerMessageExt);
+                    _showBanner(bannerMessageExt, 7000);
                     if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 2: Evaluated as External');
                 }
             }else { //debug overwrite log
@@ -345,12 +345,12 @@ const LocalEnv = (() => {
                     const msg =
                         (_debugMsgTrue) ? _debugMsgTrue : bannerMessage; // fallback to bannerMessage cannot happen accidentally
                     // _dbgMsg setter provides default method params
-                    _showBanner(msg);
+                    _showBanner(msg, 10000);
                     if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 3: Evaluated as Local, but Overwritten to Local =', _debugOverride);
                 }
                 if (!_isLocal && shouldShowBannerExt) {
                     const msg = (_debugMsgFalse) ? _debugMsgFalse : bannerMessageExt;
-                    _showBanner(msg);
+                    _showBanner(msg, 10000);
                     if(LOGGING_ENABLED)console.log('[LocalEnv] Init Path 4: Evaluated as External, but Overwritten to Local =', _debugOverride);
                 }
             }

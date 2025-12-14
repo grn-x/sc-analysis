@@ -14,11 +14,16 @@
 
 <script type="module">
     import { LocalEnv } from './LocEnvEval.js';
+    import { loadImageCaptions, createCaptionedImage } from './CaptionParser.js';
+    const captionParser = await loadImageCaptions('./resources/README.md');
+
     window.xy = LocalEnv;
+    window.xyz = captionParser;
 
     LocalEnv.debugOverwriteLocal(true); //set to true to simulate local env; false to force external env behavior
     LocalEnv.init({ showBanner: true, bannerMessage: 'Local Host Detected', showBannerExt: true, bannerMessageExt: 'External Host Detected' });
 
+    console.log("captionParser Values", captionParser.getCaptionHTML());
 
    //LocalEnv.showBanner();
 
@@ -27,6 +32,7 @@
 
     await new Promise(resolve => setTimeout(resolve, 3000));
     LocalEnv.showBanner("Message after 3s", {force:false, duration:1000});
+
 
 </script>
 

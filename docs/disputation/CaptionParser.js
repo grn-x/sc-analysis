@@ -144,15 +144,22 @@ export class CaptionParser {
      * @returns {string} HTML string
      */
     createCaptionedImage(src, options = {}) {
-        if(LOGGING_ENABLED)console.log('COptions:', options);
+        if(LOGGING_ENABLED) console.log('COptions:', options);
 
         // extract predefined options with defaults
         const {
             alt = '',
-            maxWidth = '800px',
+            w = 'auto',
+            h = 'auto',
+            p = '0',
+            cf = '1em',
+            m = '0 auto',
+            mt = null,
+            mb = null,
+            mc = '0.5em',  // margin between image and caption
             imageClass = '',
             captionClass = 'image-caption',
-            ...customOptions // capture additional custom options!
+            ...customOptions
         } = options;
 
         // custom attributes for the <div>
@@ -160,21 +167,91 @@ export class CaptionParser {
             .map(([key, value]) => `${key}="${value}"`)
             .join(' ');
 
+        // Build margin for container (respects mt/mb overrides)
+        let containerMargin = m;
+        if (mt !== null || mb !== null) {
+            const marginParts = m.split(' ');
+            const mTop = mt !== null ? mt : (marginParts[0] || '0');
+            const mRight = marginParts[1] || marginParts[0] || 'auto';
+            const mBottom = mb !== null ? mb : (marginParts[2] || marginParts[0] || '0');
+            const mLeft = marginParts[3] || marginParts[1] || marginParts[0] || 'auto';
+            containerMargin = `${mTop} ${mRight} ${mBottom} ${mLeft}`;
+        }
+
+        // Image has no margins - all spacing controlled by container
+        //const imgStyle = `max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; margin: 0 auto;`;
+        //const imgStyle = `width: auto; height: auto; object-fit: contain; display: block; margin: 0 auto;`;
+        const imgStyle = `width: ${w}; height: ${h}; object-fit: contain; display: block; margin: 0 auto;`;
+
+
+        // Caption styling with margin-top for spacing from image
+        const captionStyle = `font-size: ${cf}; margin-top: ${mc};`;
+
         if(!this.hasCaption(src)) {
-            if(LOGGING_ENABLED)console.warn(`No caption found for image: ${src}`);
-            return `<img src="${src}" alt="${alt}" class="${imageClass}" style="max-width: ${maxWidth}; width: 100%; height: auto; display: block;">`;
+            if(LOGGING_ENABLED) console.warn(`No caption found for image: ${src}`);
+            return `<div style="max-width: ${w}; max-height: ${h}; margin: ${containerMargin}; padding: ${p};"><img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle}"></div>`;
         }
 
         const caption = this.getCaptionHTML(src);
 
         return `
-        <div class="captioned-image" style="max-width: ${maxWidth}; margin: 0 auto;" ${customAttributes}>
-            <img src="${src}" alt="${alt}" class="${imageClass}" style="width: 100%; height: auto; display: block;">
-            ${caption ? `<div class="${captionClass}">${caption}</div>` : ''}
-        </div>
-    `;
+    <div class="captioned-image" style="max-width: ${w}; max-height: ${h}; margin: ${containerMargin}; padding: ${p};" ${customAttributes}>
+        <img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle}">
+        <div class="${captionClass}" style="${captionStyle}">${caption}</div>
+    </div>
+`;
     }
 
+
+    /*createCaptionedImage(src, options = {}) {
+        if(LOGGING_ENABLED)console.log('COptions:', options);
+
+        // extract predefined options with defaults
+        const {
+            alt = '',
+            //maxWidth = '800px',
+            w = '100%',
+            h = 'auto',
+            p = '0',
+            cf = '1em',
+            m= '0 auto',
+            mt = '0',
+            mb = '0',
+            imageClass = '',
+            captionClass = 'image-caption',
+            ...customOptions// capture additional custom options!
+        } = options;
+
+        // custom attributes for the <div>
+        const customAttributes = Object.entries(customOptions)
+            .map(([key, value]) => `${key}="${value}"`)
+            .join(' ');
+
+        const imgStyle = `max-width: ${w}; max-height: ${h}; width: auto; height: auto; object-fit: contain; display: block; margin: ${m}; margin-top: ${mt}; margin-bottom: ${mb};`;
+        // "max-width: ${maxWidth}; width: 100%; height: auto; display: block;"         //  padding: ${p}
+        const captionStyle = `font-size: ${cf};`;
+
+        if(!this.hasCaption(src)) {
+            if(LOGGING_ENABLED)console.warn(`No caption found for image: ${src}`);
+            return `<img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle} padding: ${p};">`;
+        }
+
+        const caption = this.getCaptionHTML(src);
+
+        return_dpr `
+        <div class="captioned-image" style="max-width: ${w}; max-height: ${h};  margin: 0 auto;" ${customAttributes}> 
+            <img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle}"">
+            ${caption ? `<div class="${captionClass}">${caption}</div>` : ''}
+        </div>
+    `;//max-width: ${maxWidth};
+
+        return `
+    <div class="captioned-image" style="max-width: ${w}; max-height: ${h}; margin: 0 auto; padding: ${p};" ${customAttributes}>
+        <img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle}">
+        <div class="${captionClass}" style="${captionStyle}">${caption}</div>
+    </div>
+`; //without padding applied to caption
+    }*/
 }
 
 // ----- static exported functions -----

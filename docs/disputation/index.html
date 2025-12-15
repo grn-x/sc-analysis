@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Full-Length-Presentation</title>
     <link rel="stylesheet" href="./imports/reveal.css">
-    <link rel="stylesheet" href="./imports/theme/night.css">
+    <link rel="stylesheet" href="./imports/theme/blood.css">
 
             <!-- black, (black-contrast), blood, (dracula, league), night,
                                   <- dark <-> light ->
@@ -15,6 +15,17 @@
             text-transform: none;
         }
         :root{--r-main-font-size: 28px;}
+
+        .reveal .slides {
+            border: 2px solid red !important;
+        }
+
+        .reveal .slides section {
+            border: 2px solid darkslategrey !important;
+        }
+
+
+
     </style>        <!-- https://github.com/hakimel/reveal.js/issues/2226 -->
 
 </head>
@@ -26,7 +37,7 @@
         <section data-markdown>
             <textarea data-template>
                 ## Fast & Frictionless X
-                #### Keine Zeit für Statik
+                ### Keine Zeit für Statik
 
                 <br>
                 <br>
@@ -39,7 +50,42 @@
 
                 Datum: Dezember 17, 2025
             </textarea>
+
+
         </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Bearbeitungsgegenstände
+                <div caption-replace-tag-img="resources/media/00_intro_sequences.png" w="80%" h="80%" cf="1em"></div>
+
+
+                Note:
+                Sequenzielles Abarbeiten
+            </textarea>
+        </section> <!-- Split Overview; animate -->
+
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Two Images Comparison
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                        <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                    </div>
+                <div style="flex: 1;">
+                        <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                    </div>
+                </div>
+
+                Note:
+                Vergleich zweier Darstellungen
+
+            </textarea>
+        </section>
+
+
 
 
         <!-- EXAMPLE 1: Single Image -->
@@ -47,11 +93,9 @@
             <textarea data-template>
                 ## Single Image Examples
 
-                <div id="img1"></div>
-
-                <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
-
-
+                <div id="img1">
+                                <div caption-replace-tag-img="resources/media/00_intro_sequences.png" w="10vw" cf="0.2em"></div>
+                </div>
 
                 Text continues after the image.
             </textarea>
@@ -96,9 +140,9 @@
 
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
-                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
-                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
-                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png" h="20vh" cf="0.3em" mb="50px" mc="-10px"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png" h="20vh" cf="0.3em"></div>
+                  <div caption-replace-tag-img="resources/media/sequences_blank_3x_nobg.png" h="20vh" cf="0.3em"></div>
 
                 </div>
                 </div>

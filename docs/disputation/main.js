@@ -160,13 +160,58 @@ const captionExt = {
     }
 };
 
-function walkTokens(token) {
+function walkTokens_dpr(token) {
     // only process HTML blocks
     if (token.type === 'html') {
         // Replace every <div caption-replace-tag-img="..."></div> inside this block
         token.text = token.text.replace(
             /<div\s+caption-replace-tag-img="([^"]+)"\s*><\/div>/g,
             (_, src) => CaptionParser.createCaptionedImage(src)
+        );
+    }
+}
+
+function walkTokens(token) {
+    if (token.type === 'html') {
+        token.text = token.text.replace(
+            /<div\s+caption-replace-tag-img="([^"]+)"([^>]*?)><\/div>/g,
+            (fullMatch, src, otherAttrs) => {
+                const options = {};
+
+                // Extract w="..." attribute
+                const wMatch = otherAttrs.match(/w="([^"]+)"/);
+                if (wMatch) options.w = wMatch[1];
+
+                // Extract h="..." attribute
+                const hMatch = otherAttrs.match(/h="([^"]+)"/);
+                if (hMatch) options.h = hMatch[1];
+
+                // Extract p="..." attribute (padding)
+                const pMatch = otherAttrs.match(/p="([^"]+)"/);
+                if (pMatch) options.p = pMatch[1];
+
+                // Extract cf="..." attribute (caption font-size)
+                const cfMatch = otherAttrs.match(/cf="([^"]+)"/);
+                if (cfMatch) options.cf = cfMatch[1];
+
+                // Extract m="..." attribute (margin)
+                const mMatch = otherAttrs.match(/m="([^"]+)"/);
+                if (mMatch) options.m = mMatch[1];
+
+                // Extract mb="..." attribute (margin-bottom)
+                const mbMatch = otherAttrs.match(/mb="([^"]+)"/);
+                if (mbMatch) options.mb = mbMatch[1];
+
+                // Extract mt="..." attribute (margin-top)
+                const mtMatch = otherAttrs.match(/mt="([^"]+)"/);
+                if (mtMatch) options.mt = mtMatch[1];
+
+                // Extract mc="..." attribute (margin img to caption)
+                const mcMatch = otherAttrs.match(/mc="([^"]+)"/);
+                if (mcMatch) options.mc = mcMatch[1];
+
+                return CaptionParser.createCaptionedImage(src, options);
+            }
         );
     }
 }

@@ -17,11 +17,11 @@ Will be gradually replaced with actual content later.
 - Eigenkreation; Gezeichnet in Excalidraw
 - Link: "insert relative url"
 
-### './images/example1.png'
+### '/media/00_intro_sequences.png'
 - Quelle: example.com - lizenzfreies Bild, keine Namensnennung erforderlich
 - Link: https://example.com
 
-### './images/example2.png'
+### '/media/00_intro_sequences.svg'
 - Quelle: Eigene Darstellung basierend auf Elel et al. (2023)
 - Link: https://doi.org/10.1234/example
 

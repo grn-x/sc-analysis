@@ -106,6 +106,7 @@ export class CaptionParser {
     /**
      * Get caption as HTML
      * @param {string} imagePath The relative path to the image (the one provided in the readme heading)
+     * @param {string} fontSize Optional font size for caption lines (default: '0.4em')
      * @returns {string} HTML formatted caption
      */
     getCaptionHTML(imagePath, fontSize = '0.4em') {

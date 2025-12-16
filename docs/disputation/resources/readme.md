@@ -65,3 +65,19 @@ https://www.google.com/maps/place/Ponte+Vittorio+Emanuele+II/@41.9012202,12.4634
 ### '/media/seq3-screenshot-geogebra.png'
 - Eigenkreation; Screenshot Funktionsplot GeoGebra
 - Link: https://www.geogebra.org/calculator/freeudvm
+
+### '/media/seq3-render-closed-back-lit.png'
+- Eigenkreation; Render-Ergebnis aus Blender-Pipeline 
+- 2023 Dodge Charger SRT Hellcat Redeye Widebody, geschlossene Türen
+
+### '/media/seq3-render-opened-front-high.png'
+- Eigenkreation; Render-Ergebnis aus Blender-Pipeline
+- 2023 Dodge Charger SRT Hellcat Redeye Widebody, geöffnete Türen
+
+### '/media/seq4-sketch.png'
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "insert relative url"
+
+### '/media/seq4-fem-screenshot.png'
+- Eigenkreation; Screenshot FEM-Simulation FreeCAD + CalculiX
+- Link: "insert relative url"

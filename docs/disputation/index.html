@@ -188,13 +188,14 @@
                 <div style="display: flex; gap: 2rem;">
                 <div style="flex: 1;">
 
-                Effektive Beschleunigung:
+                Optionen für effektive Beschleunigung:
+                - $a < 0$
+                    - Luftwiderstand
                 - $a = 0$
                     - Ausgleich
                 - $a > 0$
                     - Nitro-Triebwerk
-                - $a < 0$
-                    - Luftwiderstand
+
 
                 </div>
 
@@ -276,11 +277,11 @@
                 ## Vierte Sequenz
                 ### Auto-Kran-Kollision
 
-                - Trägheitsmoment zu Effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Gerader Zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß
 
-                - Winkelgeschwindigkeit aus Stoßgleichung errechnen
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
                 </div>
 
@@ -309,11 +310,11 @@
                 ## Vierte Sequenz
                 ### Auto-Kran-Kollision
 
-                - Trägheitsmoment zu Effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Gerader Zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß
 
-                - Winkelgeschwindigkeit aus Stoßgleichung errechnen
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
                 </div>
 
@@ -345,11 +346,11 @@
                 ## Vierte Sequenz
                 ### Auto-Kran-Kollision
 
-                - Trägheitsmoment zu Effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Gerader Zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß
 
-                - Winkelgeschwindigkeit aus Stoßgleichung errechnen
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
                 </div>
 
@@ -371,25 +372,94 @@
 
 
 
+        </section>
+
+
+
+        <section>
+            <section data-markdown>
+            <textarea data-template>
+                ## Fünfte Sequenz
+                ### Gewicht trifft Kugel
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                    <div caption-replace-tag-img="resources/media/seq5-sketch-untransformed.png"></div>
+                </div>
+                <div style="flex: 1;">
+                  <div caption-replace-tag-img="resources/media/seq5-sketch.png"></div>
+
+                </div>
+                </div>
+
+
+            </textarea>
+            </section>
+
 
             <section data-markdown>
+<textarea data-template>
+    <div style="display: flex; gap: 2rem;">
+        <div style="flex: 0.7;">
+            <div caption-replace-tag-img="resources/num_approx_anim.gif" mb="10%"></div>
+            <div caption-replace-tag-img="resources/media/seq5-angles.png"></div>
+        </div>
+        <div style="flex: 1;">
+            <a href="./../NumApproxRenderer.html" target="_blank">https://grn-x.github.io/sc-analysis/NumApproxRenderer.html/</a>
+            <iframe src="./../NumApproxRenderer.html" style="width: 100%; height: 83%; margin-top: 2%; border: 2px solid black;"></iframe>
+        </div>
+    </div>
+</textarea>
+            </section>
+
+
+        </section>
+
+        <section>
+            <section data-markdown>
+            <textarea data-template>
+                ## Sechste Sequenz
+                #### Finale Ablenkung der Kugel
+
+                <div id="img1">
+                        <div caption-replace-tag-img="resources/media/seq6-sketch.png" w="80%" cf="100%"></div>
+                </div>
+
+                Note:
+                Text inside the Note
+
+
+            </textarea>
+            </section>
+
+
+
+
+
+        </section>
+
+
+        <section data-markdown>
             <textarea data-template>
                 ## CAD & FEM
 
                 <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">
+                <div style="flex: 0.7;">
 
                 - Strukturanalyse des Auslegers
                 - Realitätsnähe validieren
-                    - Stressverteilung
+                    - Spannungsverteilung
                     - Verformungen & Bruchstellen
 
                 <br>
                 <br>
 
-                - Probleme:
-                    - Continuum- vs Truss-Solver
-                    - Statische vs Dynamische Analyse
+                - Realistische Durchführbarkeit unmöglich
+
+                <br>
+                <br>
+
+                - Übrige Rechenergebnisse plausibel
 
                 </div>
 
@@ -403,172 +473,27 @@
                 Last + Fixpunkte definieren
                 CalculiX Solver tetraeder primitive, vs Streben durchmesser modulo
                 Von Mises-Vergleichsspannung mit Material-Eigenschaften vergleichen
+                - Probleme:
+                    - Continuum- vs Truss-Solver
+                    - Statische vs Dynamische Analyse
+
             </textarea>
-            </section>
         </section>
 
-
-
-
-
-
-        <!-- EXAMPLE 1: Single Image -->
         <section data-markdown>
             <textarea data-template>
-                ## Single Image Examples
+                ## Pipeline & Parametersatz
+
+                <a href="./../results/index.html" target="_blank">https://grn-x.github.io/sc-analysis/results/</a>
+                <!--[https://grn-x.github.io/sc-analysis/results/](./../results/index.html) -->
 
                 <div id="img1">
-                                <div caption-replace-tag-img="resources/media/00_intro_sequences.png" w="10vw" cf="0.2em"></div>
+                    <iframe src="./../results/index.html" style="width: 75%; height: 60vh; border: border: 2px solid black;"></iframe>
                 </div>
 
-                Text continues after the image.
+
                 Note:
                 Text inside the Note
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 2: Text + Image (using your flex approach) -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Text and Image Side by Side
-
-                <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">
-
-                Some text on the left:
-                - Point 1
-                - Point 2
-                - Point 3
-
-                </div>
-
-
-                <div style="flex: 1;" id="img2">
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-                </div>
-
-
-                </div>
-
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 3: Text + Multiple Images -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Text with Multiple Images
-
-                <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">
-
-                Some text on the left.
-
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png" h="20vh" cf="0.3em" mb="50px" mc="-10px"></div>
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png" h="20vh" cf="0.3em"></div>
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png" h="20vh" cf="0.3em"></div>
-
-                </div>
-                </div>
-
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 4: Two Images Side by Side -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Two Images Comparison
-
-                <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-</div>
-                <div style="flex: 1;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                </div>
-
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 5: Image + Text (reversed) -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Image Then Text
-
-                <div style="display: flex; gap: 2rem; align-items: center;">
-                <div style="flex: 1;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                <div style="flex: 1;">
-
-                ### Analysis
-
-                The image shows important results.
-
-                </div>
-                </div>
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 6: Three Images in a Row -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Process Steps
-
-                <div style="display: flex; gap: 2rem;">
-                <div style="flex: 1;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                <div style="flex: 1;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                <div style="flex: 1;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                </div>
-
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 7: Centered Image with Controlled Size -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Centered Image
-
-                <div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
-                <div style="max-width: 70%; max-height: 100%;">
-                                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-                </div>
-                </div>
-
-            </textarea>
-        </section>
-
-        <!-- EXAMPLE 8: Grid of Images -->
-        <section data-markdown>
-            <textarea data-template>
-                ## Image Grid
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-                  <div caption-replace-tag-img="resources/media/00_intro_sequences.png"></div>
-
-
-                </div>
 
 
             </textarea>

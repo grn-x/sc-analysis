@@ -81,3 +81,25 @@ https://www.google.com/maps/place/Ponte+Vittorio+Emanuele+II/@41.9012202,12.4634
 ### '/media/seq4-fem-screenshot.png'
 - Eigenkreation; Screenshot FEM-Simulation FreeCAD + CalculiX
 - Link: "insert relative url"
+
+### '/media/seq5-sketch.png'
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "insert relative url"
+
+### '/media/seq5-sketch-untransformed.png'
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "insert relative url"
+
+### '/media/seq6-sketch.png'
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "insert relative url"
+
+### '/media/seq5-angles.png'
+- Eigenkreation; Interaktive Darstellung in Plotly
+- Link: https://grn-x.github.io/sc-analysis/NumApproxRenderer.html
+
+### '/num_approx_anim.gif'
+- Eigenkreation; Animation erstellt mit Matplotlib
+- WebPort: https://grn-x.github.io/sc-analysis/NumApproxRenderer.html
+
+ 

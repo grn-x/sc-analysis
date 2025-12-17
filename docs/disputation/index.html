@@ -84,6 +84,9 @@
 
                 </div>
 
+                Note:
+                Szenerie in Rom, Einzug in Vatikan
+                Brückenpfeiler
 
             </textarea>
         </section>
@@ -107,6 +110,9 @@
 
                 </div>
 
+                Note:
+                Behind the scenes
+                Brüstung
 
             </textarea>
         </section>
@@ -134,6 +140,12 @@
                 </div>
                 </div>
 
+                Note:
+                Turin vs Rom
+
+                Emanuele I & II
+
+                >150 m & 108m
 
             </textarea>
         </section>
@@ -157,7 +169,18 @@
 
                 </div>
 
+                Note:
+                inkohärenter Verlauf; Position Unterschiedlich von Schnitt zu schnitt
 
+                Weniger statische Berechnungen
+                -> Parametrisierte Gleichungen
+                Realistische Grenzwerte festlegen + schauen ob Paramtersatz dazwischen erfolgreich ist
+
+                Turin vs Rom
+
+                Emanuele I & II
+
+                >150 m & 108m
             </textarea>
         </section>
     </section>
@@ -177,6 +200,14 @@
                 </div>
 
                 Note:
+                3D Flug auf 2x 2D Ebenen aufteilen
+
+                Bedingungen Auslegertreffer; Kran auf Bahnkurve
+
+                trigonometrie sukzessive Beschreiben
+
+                2. Parameter für schrägen wurf
+
                 h ist keine Gerade!
 
             </textarea>
@@ -212,6 +243,10 @@
                 </div>
 
                 Note:
+                Nitrotriebwerk; ich gehe von filmischer Realität aus;
+
+                Nicht erhöhte Motorleistung; sondern instantane Beschleunigungswirkung
+
                 Geogebra-Simulation arbiträre Werte
 
             </textarea>
@@ -229,8 +264,11 @@
 
                 $F_L = \frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v^2$
 
+                <br>
 
                 $\ddot{x} = \frac{dv_x}{dt} = a_x$
+
+                <br>
 
                 $m \cdot \frac{dv_x}{dt} = \underbrace{-\frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v_x^2}_{F_L} $
                 </div>
@@ -245,8 +283,12 @@
                 </div>
 
                 Note:
+                Warum? Maximalwerte ermitteln; Offene Türen keine Literatur
+
                 Gekoppelt; nur x
+
                 Zweifache Ableitung nach Zeit
+
                 Newton 2; Summe Kräfte = m*a
 
             </textarea>
@@ -261,7 +303,15 @@
                 </div>
 
                 Note:
-                cw-Werte, Oberfläche...
+                cw-Werte, Oberfläche empirisch ermitteln
+
+                cfd software + Post processing
+
+                 Druckverteilung oberfläche; luftgeschwindigkeit slice
+
+                2,38m^2 - 5,46m^2
+
+                0,29 - 1,24cw bei 33m/s
             </textarea>
         </section>
     </section>
@@ -279,7 +329,7 @@
 
                 - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Teilelastischer zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
 
                 - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
@@ -294,10 +344,13 @@
                 </div>
 
                 Note:
-                Gekoppelt; nur x
-                Zweifache Ableitung nach Zeit
-                Newton 2; Summe Kräfte = m*a
+                Bedingungen für Kollision bekannt
 
+                Kinematik Kran; Reduktion 1D Kollision
+
+                Konzept effektive Masse; Spiegelt Trägheitsmoment in einem Punkt wider
+
+                Tau Sequenz 1
             </textarea>
             </section>
             <section data-markdown>
@@ -312,7 +365,7 @@
 
                 - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Teilelastischer zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
 
                 - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
@@ -329,9 +382,7 @@
                 </div>
 
                 Note:
-                Gekoppelt; nur x
-                Zweifache Ableitung nach Zeit
-                Newton 2; Summe Kräfte = m*a
+                Parallelen
 
             </textarea>
             </section>
@@ -348,7 +399,7 @@
 
                 - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
                 - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
-                - => Teilelastischer zentrischer Stoß
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
 
                 - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
 
@@ -363,9 +414,9 @@
                 </div>
 
                 Note:
-                Gekoppelt; nur x
-                Zweifache Ableitung nach Zeit
-                Newton 2; Summe Kräfte = m*a
+                Optimaler Treffpunkt für maximale Energieübertragung unabhängig von Geschwindigkeiten
+
+
 
             </textarea>
             </section>
@@ -392,24 +443,42 @@
                 </div>
                 </div>
 
+                Note:
+                Kran dreht sich: Nun Kollision mit Kugel
+
+                Parameter nicht aus Szene ablesbar
+
+                Gnädig und Kugel rollt immer gegen drehendes Gewicht
+
+                Komplizierte Lösung; Koordinaten System transformieren
 
             </textarea>
             </section>
 
 
-            <section data-markdown>
-<textarea data-template>
-    <div style="display: flex; gap: 2rem;">
-        <div style="flex: 0.7;">
-            <div caption-replace-tag-img="resources/num_approx_anim.gif" mb="10%"></div>
-            <div caption-replace-tag-img="resources/media/seq5-angles.png"></div>
-        </div>
-        <div style="flex: 1;">
-            <a href="./../NumApproxRenderer.html" target="_blank">https://grn-x.github.io/sc-analysis/NumApproxRenderer.html/</a>
-            <iframe src="./../NumApproxRenderer.html" style="width: 100%; height: 83%; margin-top: 2%; border: 2px solid black;"></iframe>
-        </div>
-    </div>
-</textarea>
+            <section data-markdown >
+                <textarea data-template>
+                    <div style="display: flex; gap: 2rem;">
+                        <div style="flex: 0.7;">
+                            <div caption-replace-tag-img="resources/num_approx_anim.gif" mb="10%"></div>
+                            <div caption-replace-tag-img="resources/media/seq5-angles.png"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <a href="./../NumApproxRenderer.html" target="_blank">https://grn-x.github.io/sc-analysis/NumApproxRenderer.html/</a>
+                            <iframe src="./../NumApproxRenderer.html" style="width: 100%; height: 83%; margin-top: 2%; border: 2px solid black;"></iframe>
+                        </div>
+                    </div>
+                    Note:
+                        vorgehensweise -> 2 Bewegungen in selben System
+
+                        Projektion auf potentielle Kreisposition:
+                        Gewicht und Kugelposition gegenläufig
+
+                        Nullstelle = Kollision
+
+                        Keine analytische Lösung möglich
+
+                </textarea>
             </section>
 
 
@@ -426,7 +495,14 @@
                 </div>
 
                 Note:
-                Text inside the Note
+
+                kugelvektor zeigt ins wasser, oder über brückenende hinaus
+
+                Grenzfall gelber vektor
+
+                Alle Berechnungen werden auf diese Größe reduziert
+
+                Beschreibt Mathematische Plausibilität, aber:
 
 
             </textarea>
@@ -493,7 +569,9 @@
 
 
                 Note:
-                Text inside the Note
+                Cliffhanger;
+
+                Nach Krämers Worten, wenn Interesse geweckt:
 
 
             </textarea>

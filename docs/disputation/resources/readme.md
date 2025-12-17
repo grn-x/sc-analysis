@@ -15,15 +15,15 @@ Will be gradually replaced with actual content later.
 
 ### '/media/sequences_blank_3x_nobg.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/00_intro_sequences.png'
-- Quelle: example.com - lizenzfreies Bild, keine Namensnennung erforderlich
-- Link: https://example.com
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/00_intro_sequences.svg'
-- Quelle: Eigene Darstellung basierend auf Elel et al. (2023)
-- Link: https://doi.org/10.1234/example
+- Eigenkreation; Gezeichnet in Excalidraw
+- Link: https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources
 
 ### '/media/ScreenShotBehindTheScenesBridge1.png'
 - Quelle © 2023 Universal Pictures, Fast X - Behind the Scenes
@@ -50,11 +50,11 @@ https://www.google.com/maps/place/Ponte+Vittorio+Emanuele+II/@41.9012202,12.4634
 
 ### '/media/seq2-sketch_detailed.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq3-sketch.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq3-dom-nitro_boost.png'
 - Quelle: Fast X (2023), Filmstill, © Universal Pictures
@@ -76,23 +76,23 @@ https://www.google.com/maps/place/Ponte+Vittorio+Emanuele+II/@41.9012202,12.4634
 
 ### '/media/seq4-sketch.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq4-fem-screenshot.png'
 - Eigenkreation; Screenshot FEM-Simulation FreeCAD + CalculiX
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq5-sketch.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq5-sketch-untransformed.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq6-sketch.png'
 - Eigenkreation; Gezeichnet in Excalidraw
-- Link: "insert relative url"
+- Link: "https://github.com/grn-x/sc-analysis/tree/main/docs/disputation/resources"
 
 ### '/media/seq5-angles.png'
 - Eigenkreation; Interaktive Darstellung in Plotly

@@ -833,7 +833,7 @@ function seq_two(
         //y=v0y*t-0.5*g*t**2 - (g/(2*qValue**2))//*(Math.exp(qValue*x_target)-1)**2;
         // i am ashamed of myself, inserting t(x) twice is once too much :D
         y = v0y * t - 0.5 * g * t ** 2;
-        //vx = v0x / (qValue * v0x * t + 1); //probab wrong aswell; q already represented in t :D
+        vx = v0x / (qValue * v0x * t + 1); //probab wrong aswell; q already represented in t :D
         vy = v0y - g * t;
     } else {
         throw new Error("Invalid mode. Use 1 (unaccelerated), 2 (accelerated), or 3 (decelerated).");

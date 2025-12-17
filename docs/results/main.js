@@ -2060,7 +2060,7 @@ function displayRunDetails(result) {
     seqEl.innerHTML += buildSequenceBlock('seq_four', result.seq_four, result.seq_success >= 4);
 
     // seq_five
-    seqEl.innerHTML += buildSequenceBlock('seq_five', result.seq_five, result.seq_success >= 5);
+    seqEl.innerHTML += buildSequenceBlock('seq_five', result.seq_five, result.seq_success >= 5&&!(cls.category === 'angle_fail'));
 
     contentEl.style.display = 'block';
 }
@@ -2203,8 +2203,8 @@ function buildSequenceBlock(name, data, reached) {
 
     if (name === 'seq_five') {
 
-        /*
-        waitForElm('#seq_five_result_plot').then(() => {
+
+        /*waitForElm('#seq_five_result_plot').then(() => {
             drawVectors(vectors);
         });*/
 
@@ -2221,7 +2221,6 @@ function buildSequenceBlock(name, data, reached) {
             </div>
         `;
     }
-
     return `
         <div style="margin-top:10px;padding:10px;background:${bgColor};border:1px solid #eee;border-radius:4px;">
             <h4 style="margin:0 0 8px 0;color:${statusColor};">${statusIcon} ${name}</h4>

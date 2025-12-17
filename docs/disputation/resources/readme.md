@@ -101,5 +101,3 @@ https://www.google.com/maps/place/Ponte+Vittorio+Emanuele+II/@41.9012202,12.4634
 ### '/num_approx_anim.gif'
 - Eigenkreation; Animation erstellt mit Matplotlib
 - WebPort: https://grn-x.github.io/sc-analysis/NumApproxRenderer.html
-
- 

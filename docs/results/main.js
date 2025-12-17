@@ -93,23 +93,31 @@ function drawSeqTwoTrajectory(containerId, seq_two_data) {
             const t = (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) / ax;
             y = (v0y / ax) * (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) -
                 (g / (2 * ax ** 2)) * (-v0x + Math.sqrt(v0x ** 2 + 2 * ax * x)) ** 2;
-        } else if (mode === 3) { //TODO start angle??
-            // Decelerated motion
-            //const q = input.q || 0;
 
-            const rho = input.rho || 1.2;
-            const A = input.cw_A || 2.38;
-            const cw = input.cw || 0.47;
-            const m = input.m || 1;
+    } else if (mode === 3) {
+        // Decelerated motion (air resistance)
+        //const q = input.q || 0;
 
+        const rho = input.rho || 1.2;
+        const A = input.cw_A || 2.38;
+        const cw = input.cw || 0.47;
+        const m = input.m || 1;
 
-            //const qValue = q || (A * rho * cw) / (2 * m);
-            const qValue = (A * rho * cw) / (2 * m);
+        //const qValue = q || (A * rho * cw) / (2 * m);
+        const qValue = (A * rho * cw) / (2 * m);
 
-            const t = (Math.exp(qValue * x) - 1) / (qValue * v0x);
+        // Use y(x) = v0y * (e^(qx) - 1)/(q*v0x) - 0.5*g*((e^(qx) - 1)/(q*v0x))^2
+        const expTerm = Math.exp(qValue * x) - 1;
+        const tValue = expTerm / (qValue * v0x);
+
+        y = v0y * tValue - 0.5 * g * tValue ** 2;
+
+        /*            const t = (Math.exp(qValue * x) - 1) / (qValue * v0x);
             y = v0y * t - 0.5 * g * t ** 2 -
                 (g / (2 * qValue ** 2)) * (Math.exp(qValue * x) - 1) ** 2;
-        }
+
+         */
+    }
 
         x_values.push(x);
         y_values.push(y);
@@ -764,12 +772,17 @@ function seq_two(
         // Decelerated motion
         const qValue = q || (A * rho * cw) / (2 * m);
         t = (Math.exp(qValue * x_target) - 1) / (qValue * v0x);
-        y =
+        //console.log("t:", t, "v0x:", v0x, "qValue:", qValue, "x_target:", x_target);
+        /*y =
             v0y * t -
             0.5 * g * t ** 2 -
             (g / (2 * qValue ** 2)) *
-            (Math.exp(qValue * x_target) - 1) ** 2;
-        vx = v0x / (qValue * v0x * t + 1);
+            (Math.exp(qValue * x_target) - 1) ** 2;*/
+        //y = v0y * Math.E**(qValue * t) - (v0y / (qValue * v0x)) - 0.5 * g * t ** 2;
+        //y=v0y*t-0.5*g*t**2 - (g/(2*qValue**2))//*(Math.exp(qValue*x_target)-1)**2;
+        // i am ashamed of myself, inserting t(x) twice is once too much :D
+        y = v0y * t - 0.5 * g * t ** 2;
+        //vx = v0x / (qValue * v0x * t + 1); //probab wrong aswell; q already represented in t :D
         vy = v0y - g * t;
     } else {
         throw new Error("Invalid mode. Use 1 (unaccelerated), 2 (accelerated), or 3 (decelerated).");

@@ -17,6 +17,57 @@ function setVal(id, val) {
     document.getElementById(id).value = typeof val === 'number' ? val.toFixed(4) : val;
 }
 
+// function to reset all number and text inputs to their HTML default values
+// logs before and after states to console; visualizes changes
+function resetToDefaults() {
+    const inputs = document.querySelectorAll('input[type="number"], input[type="text"]');
+
+    const beforeValues = [];
+    const replacedValues = [];
+    const changedPairs = [];
+
+    inputs.forEach(input => {
+        const id = input.id || '(no id)';
+        const currentValue = input.value;
+        const defaultValue = input.getAttribute('value');
+
+        beforeValues.push({ id, value: currentValue });
+
+        if (defaultValue !== null) {
+            replacedValues.push({ id, default: defaultValue });
+
+            if (currentValue !== defaultValue) {
+                changedPairs.push({
+                    id,
+                    before: currentValue,
+                    after: defaultValue,
+                    diff: `${currentValue} -> ${defaultValue}`
+                });
+            }
+
+            input.value = defaultValue;
+        }
+    });
+
+
+    console.log('Pre-Reset (all inputs):');
+    console.table(beforeValues);
+
+    console.log('Replaced Values (defaults from HTML):');
+    console.table(replacedValues);
+
+    console.log('Changed Pairs:');
+    if (changedPairs.length === 0) {
+        console.log('   No changes; all values were already at defaults');
+    } else {
+        console.table(changedPairs);
+        console.log(`   Total changed: ${changedPairs.length} out of ${inputs.length} inputs`);
+    }
+
+}
+
+
+
 
 function drawVectors(vectors) {
     const data = [];

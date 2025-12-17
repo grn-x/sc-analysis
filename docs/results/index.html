@@ -106,7 +106,10 @@
             <div class="param-group"><label>v_ges:</label><input type="text" id="seq5_v_ges" disabled style="width:80px"><button class="info-btn" onclick="showInfo('v_ges','CALCULATED: Resulting ball velocity from seq_four.vk_final')">?</button></div>
         </div>
     </div>
-    <button id="runBtn" onclick="runPipeline()">Run Pipeline</button>
+    <div class="button-row">
+        <button id="runBtn" onclick="runPipeline()">Run Pipeline</button>
+        <button id="clrBtn" onclick="resetToDefaults()">Reset All to Defaults</button>
+    </div>
 </div>
 
 <div class="tooltip-overlay" id="tooltipOverlay" onclick="hideInfo()"></div>

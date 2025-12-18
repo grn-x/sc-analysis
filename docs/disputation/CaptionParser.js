@@ -107,17 +107,33 @@ export class CaptionParser {
      * Get caption as HTML
      * @param {string} imagePath The relative path to the image (the one provided in the readme heading)
      * @param {string} fontSize Optional font size for caption lines (default: '0.4em')
+     * @param {boolean} wrapURL Optional extract URL-Pattern (default: true)
      * @returns {string} HTML formatted caption
      */
-    getCaptionHTML(imagePath, fontSize = '0.4em') {
-        const lines = this.getCaption(imagePath);//dont transform path!!
+     getCaptionHTML(imagePath, wrapURL = true, fontSize = '0.4em') {
+        let lines = this.getCaption(imagePath);//dont transform path!!
         if (lines.length === 0) return '';
 
-        if(fontSize) {
-            return lines.map(line => `<div style="font-size: ${fontSize};">${line}</div>`).join('');
+        if (wrapURL) {
+            const urlRegex = /(https?:\/\/[^\s"'<>]+)/g;
+            // http with optional s then : the // then list[] ^(negate) whitespace, enclosing quote, html tags (if something went wrong)
+            // meaning that continue pattern for any sign thats not the ones mentioned in list, for an unlimited number of occurrences +
+            // /global (allow more than one match)
+
+            lines = lines.map(line =>
+                line.replace(urlRegex, url =>
+                    `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+                )
+            );
         }
 
-        return lines.map(line => `<div>${line}</div>`).join('');
+        return lines
+            .map(line =>
+                fontSize
+                    ? `<div style="font-size: ${fontSize};">${line}</div>`
+                    : `<div>${line}</div>`
+            )
+            .join('');
     }
 
     /**
@@ -193,7 +209,7 @@ export class CaptionParser {
             return `<div style="max-width: ${w}; max-height: ${h}; margin: ${containerMargin}; padding: ${p};"><img src="${src}" alt="${alt}" class="${imageClass}" style="${imgStyle}"></div>`;
         }
 
-        const caption = this.getCaptionHTML(src);
+        const caption = this.getCaptionHTML(src, true);
 
         return `
     <div class="captioned-image" style="max-width: ${w}; max-height: ${h}; margin: ${containerMargin}; padding: ${p};" ${customAttributes}>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Full-Length-Presentation</title>
+    <link rel="stylesheet" href="./../imports/reveal.css">
+    <link rel="stylesheet" href="./../imports/theme/blood.css">
+
+            <!-- black, (black-contrast), blood, (dracula, league), night,
+                                  <- dark <-> light ->
+                        white, (white-contrast) serif, simple   -->
+
+    <style>
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5 {
+            text-transform: none;
+        }
+        :root{--r-main-font-size: 28px;}
+
+
+
+
+
+    </style>        <!-- https://github.com/hakimel/reveal.js/issues/2226 -->
+
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Fast & Frictionless X
+                ### Keine Zeit für Statik
+
+                <br>
+                <br>
+                <br>
+
+                Physik in Fast & Furious X (2023)
+                <br>
+                Ein kurzer Einblick in meine Arbeit
+
+
+                Datum: Dezember 17, 2025
+            </textarea>
+
+
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Bearbeitungsgegenstände
+                <div caption-replace-tag-img="../resources/media/00_intro_sequences.png" w="80%" h="80%" cf="1em"></div>
+
+
+                Note:
+                Sequenzielles Abarbeiten
+            </textarea>
+        </section> <!-- Split Overview; animate -->
+
+
+
+
+
+        <section>
+        <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+                ## Drehort
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                          <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_II.png" w="95%" cf="100%"></div>
+
+                </div>
+
+
+                </div>
+
+                Note:
+                Szenerie in Rom, Einzug in Vatikan
+                Brückenpfeiler
+
+            </textarea>
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+                ## Drehort
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_II.png" w="92%" cf="50%"></div>
+
+
+                </div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/ScreenShotBehindTheScenesBridge1.png" cf="50%"></div>
+
+
+                </div>
+
+                </div>
+
+                Note:
+                Behind the scenes
+                Brüstung
+
+            </textarea>
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+                ## Drehort
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_II.png" w="93%" cf="50%"></div>
+
+
+                </div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/ScreenShotBehindTheScenesBridge1.png" cf="50%"></div>
+
+
+                </div>
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_I.png" w="95%" cf="50%"></div>
+
+
+                </div>
+                </div>
+
+                Note:
+                Turin vs Rom
+
+                Emanuele I & II
+
+                >150 m & 108m
+
+            </textarea>
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+                ## Drehort
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                                  <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_II.png" w="94%" cf="50%"></div>
+
+
+                </div>
+                <div style="flex: 1;">
+                                    <div caption-replace-tag-img="../resources/media/GoogleMaps-Emanuele_I.png" cf="50%"></div>
+
+
+                </div>
+
+                </div>
+
+                Note:
+                inkohärenter Verlauf; Position Unterschiedlich von Schnitt zu schnitt
+
+                Weniger statische Berechnungen
+                -> Parametrisierte Gleichungen
+                Realistische Grenzwerte festlegen + schauen ob Paramtersatz dazwischen erfolgreich ist
+
+                Turin vs Rom
+
+                Emanuele I & II
+
+                >150 m & 108m
+            </textarea>
+        </section>
+    </section>
+
+    <section>
+        <section data-markdown>
+            <textarea data-template>
+                ## Erste & Zweite Sequenz
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                        <div caption-replace-tag-img="../resources/media/seq2-sketch_detailed.png"></div>
+                    </div>
+                <div style="flex: 1;">
+                        <div caption-replace-tag-img="../resources/media/seq3-sketch.png"></div>
+                    </div>
+                </div>
+
+                Note:
+                3D Flug auf 2x 2D Ebenen aufteilen
+
+                Bedingungen Auslegertreffer; Kran auf Bahnkurve
+
+                trigonometrie sukzessive Beschreiben
+
+                2. Parameter für schrägen wurf
+
+                h ist keine Gerade!
+
+            </textarea>
+        </section>
+        <section data-markdown>
+            <textarea data-template>
+                ## Schiefer Wurf
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                Optionen für effektive Beschleunigung:
+                - $a < 0$
+                    - Luftwiderstand
+                - $a = 0$
+                    - Ausgleich
+                - $a > 0$
+                    - Nitro-Triebwerk
+
+
+                </div>
+
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq3-dom-nitro_boost.png" h="80%" cf="70%" mb="-5%"></div>
+                  <div caption-replace-tag-img="../resources/media/seq3-dom-nitro_boost-airborne.png" h="80%" cf="70%" mb="-5%" ></div>
+                  <div caption-replace-tag-img="../resources/media/seq3-screenshot-geogebra.png" h="80%" cf="70%" ></div>
+
+                </div>
+
+
+
+                </div>
+
+                Note:
+                Nitrotriebwerk; ich gehe von filmischer Realität aus;
+
+                Nicht erhöhte Motorleistung; sondern instantane Beschleunigungswirkung
+
+                Geogebra-Simulation arbiträre Werte
+
+            </textarea>
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Luftwiderstand
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                Hohe Reynolds-Zahlen =>
+                Quadratischer Luftwiderstand
+
+                $F_L = \frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v^2$
+
+                <br>
+
+                $\ddot{x} = \frac{dv_x}{dt} = a_x$
+
+                <br>
+
+                $m \cdot \frac{dv_x}{dt} = \underbrace{-\frac{1}{2} \cdot A \cdot \rho \cdot c_w \cdot v_x^2}_{F_L} $
+                </div>
+
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq3-render-closed-back-lit.png" h="90%" cf="50%" ></div>
+                  <div caption-replace-tag-img="../resources/media/seq3-render-opened-front-high.png" h="90%" cf="50%"></div>
+                </div>
+
+
+                </div>
+
+                Note:
+                Warum? Maximalwerte ermitteln; Offene Türen keine Literatur
+
+                Gekoppelt; nur x
+
+                Zweifache Ableitung nach Zeit
+
+                Newton 2; Summe Kräfte = m*a
+
+            </textarea>
+        </section>
+        <section data-markdown>
+            <textarea data-template>
+                ## CFD-Analyse
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center;">
+                    <video data-autoplay src="../resources/anim_closed.mp4" style="width: 80%; margin-bottom: 1%;" loop autoplay muted></video>
+                    <video data-autoplay src="../resources/anim_opened-cropped.mp4" style="width: 80%;" loop autoplay muted></video>
+                </div>
+
+                Note:
+                cw-Werte, Oberfläche empirisch ermitteln
+
+                cfd software + Post processing
+
+                 Druckverteilung oberfläche; luftgeschwindigkeit slice
+
+                2,38m^2 - 5,46m^2
+
+                0,29 - 1,24cw bei 33m/s
+            </textarea>
+        </section>
+    </section>
+
+        <section>
+            <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                ## Vierte Sequenz
+                ### Auto-Kran-Kollision
+
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
+
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
+
+                </div>
+
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq4-sketch.png" w="100%" cf="50%" mt="20%" mb="20%"></div>
+                </div>
+
+
+                </div>
+
+                Note:
+                Bedingungen für Kollision bekannt
+
+                Kinematik Kran; Reduktion 1D Kollision
+
+                Konzept effektive Masse; Spiegelt Trägheitsmoment in einem Punkt wider
+
+                Tau Sequenz 1
+            </textarea>
+            </section>
+            <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                ## Vierte Sequenz
+                ### Auto-Kran-Kollision
+
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
+
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
+
+                </div>
+
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq4-sketch.png" w="89%" cf="50%" mb="-10%"></div>
+                   <div caption-replace-tag-img="../resources/media/seq2-sketch_detailed.png" w="89%" cf="50%" ></div>
+
+                </div>
+
+
+                </div>
+
+                Note:
+                Parallelen
+
+            </textarea>
+            </section>
+
+            <section data-markdown>
+            <textarea data-template>
+                <!-- .slide: data-auto-animate -->
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+
+                ## Vierte Sequenz
+                ### Auto-Kran-Kollision
+
+                - Trägheitsmoment zu effektiver Masse: $m_{\text{eff}} = \frac{I_{\text{kran}}}{r_{\text{kran}}^{2}}$
+                - Auto-Geschwindigkeitsbetrag auf Kranarm-Tangentiale normieren
+                - => Teilelastischer zentrischer Stoß $\quad r_{opt} = \pm \sqrt{\frac{I_{\text{kran}}}{m_{\text{auto}}}}$
+
+                - Resultierende Bahngeschwindigkeit des Gewichts aus Stoßgleichung errechnen
+
+                </div>
+
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq4-sketch.png" w="100%" cf="50%" mt="20%" mb="20%"></div>
+                </div>
+
+
+                </div>
+
+                Note:
+                Optimaler Treffpunkt für maximale Energieübertragung unabhängig von Geschwindigkeiten
+
+
+
+            </textarea>
+            </section>
+
+
+
+        </section>
+
+
+
+        <section>
+            <section data-markdown>
+            <textarea data-template>
+                ## Fünfte Sequenz
+                ### Gewicht trifft Kugel
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 1;">
+                    <div caption-replace-tag-img="../resources/media/seq5-sketch-untransformed.png"></div>
+                </div>
+                <div style="flex: 1;">
+                  <div caption-replace-tag-img="../resources/media/seq5-sketch.png"></div>
+
+                </div>
+                </div>
+
+                Note:
+                Kran dreht sich: Nun Kollision mit Kugel
+
+                Parameter nicht aus Szene ablesbar
+
+                Gnädig und Kugel rollt immer gegen drehendes Gewicht
+
+                Komplizierte Lösung; Koordinaten System transformieren
+
+            </textarea>
+            </section>
+
+
+            <section data-markdown >
+                <textarea data-template>
+                    <div style="display: flex; gap: 2rem;">
+                        <div style="flex: 0.7;">
+                            <div caption-replace-tag-img="../resources/num_approx_anim.gif" mb="10%"></div>
+                            <div caption-replace-tag-img="../resources/media/seq5-angles.png"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <a href="./../../NumApproxRenderer.html" target="_blank">https://grn-x.github.io/sc-analysis/NumApproxRenderer.html/</a>
+                            <iframe src="./../../NumApproxRenderer.html" style="width: 100%; height: 83%; margin-top: 2%; border: 2px solid black;"></iframe>
+                        </div>
+                    </div>
+                    Note:
+                        vorgehensweise -> 2 Bewegungen in selben System
+
+                        Projektion auf potentielle Kreisposition:
+                        Gewicht und Kugelposition gegenläufig
+
+                        Nullstelle = Kollision
+
+                        Keine analytische Lösung möglich
+
+                </textarea>
+            </section>
+
+
+        </section>
+
+        <section>
+            <section data-markdown>
+            <textarea data-template>
+                ## Sechste Sequenz
+                #### Finale Ablenkung der Kugel
+
+                <div id="img1">
+                        <div caption-replace-tag-img="../resources/media/seq6-sketch.png" w="80%" cf="100%"></div>
+                </div>
+
+                Note:
+                Stoß Kugel - Gewicht resultierender vektor + andere Effekte
+
+                kugelvektor zeigt ins wasser, oder über brückenende hinaus
+
+                Grenzfall gelber vektor
+
+                Alle Berechnungen werden auf diese Größe reduziert
+
+                Beschreibt Mathematische Plausibilität, aber:
+
+
+            </textarea>
+            </section>
+
+
+
+
+
+        </section>
+
+
+        <section data-markdown>
+            <textarea data-template>
+                ## CAD & FEM
+
+                <div style="display: flex; gap: 2rem;">
+                <div style="flex: 0.7;">
+
+                - Strukturanalyse des Auslegers
+                - Realitätsnähe validieren
+                    - Spannungsverteilung
+                    - Verformungen & Bruchstellen
+
+                <br>
+                <br>
+
+                - Realistische Durchführbarkeit unmöglich
+
+                <br>
+                <br>
+
+                - Übrige Rechenergebnisse plausibel
+
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                  <div caption-replace-tag-img="../resources/media/seq4-fem-screenshot.png" w="170%" cf="50%" mt="20%" mb="20%"></div>
+                </div>
+                </div>
+
+                Note:
+                Ausleger modellieren, meshen
+                Last + Fixpunkte definieren
+                CalculiX Solver tetraeder primitive, vs Streben durchmesser modulo
+                Von Mises-Vergleichsspannung mit Material-Eigenschaften vergleichen
+                - Probleme:
+                    - Continuum- vs Truss-Solver
+                    - Statische vs Dynamische Analyse
+
+            </textarea>
+        </section>
+
+        <section data-markdown>
+            <textarea data-template>
+                ## Pipeline & Parametersatz
+
+                <a href="./../../results/index.html" target="_blank">https://grn-x.github.io/sc-analysis/results/</a>
+                <!--[https://grn-x.github.io/sc-analysis/results/](./../../results/index.html) -->
+
+                <div id="img1">
+                    <iframe src="./../../results/index.html" style="width: 75%; height: 60vh; border: border: 2px solid black;"></iframe>
+                </div>
+
+
+                Note:
+                Cliffhanger;
+
+                Nach Krämers Worten, wenn Interesse geweckt:
+
+
+            </textarea>
+        </section>
+
+    </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

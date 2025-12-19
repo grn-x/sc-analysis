@@ -31,6 +31,8 @@ export class CaptionParser {
     /**
      * Optional setup: provide a callback to modify image paths at runtime;
      * useful for shifted paths, where the paths referenced in the html differ from those in the readme
+     * correct relative path from the html gets passed to the callback, to provide the possibility to adjust it,
+     * to match the keys/headings from the readme
      * @param {function(string): string} callback receives original image path and returns modified path
      */
     setupPathCallback(callback) {
@@ -116,9 +118,8 @@ export class CaptionParser {
 
         if (wrapURL) {
             const urlRegex = /(https?:\/\/[^\s"'<>]+)/g;
-            // http with optional s then : the // then list[] ^(negate) whitespace, enclosing quote, html tags (if something went wrong)
-            // meaning that continue pattern for any sign thats not the ones mentioned in list, for an unlimited number of occurrences +
-            // /global (allow more than one match)
+            // Match http and optional s, then ://, then any char (with list []) except (^) whitespace(\s), quotes, or <>, repeated +
+            // global flag for multiple matches
 
             lines = lines.map(line =>
                 line.replace(urlRegex, url =>
